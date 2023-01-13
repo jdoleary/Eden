@@ -1,0 +1,17 @@
+{
+    "version": "1.0.0",
+    "files": [
+        {
+            "path": "next\\content.md",
+            "hash": "7144ebdb9410318857c9ccb107e03f9596f90683dcdf6d9264487c58b559a045"
+        },
+        {
+            "path": "next\\template",
+            "hash": "085c1ac3a71ea96772a88fa4b94441248cf0e2da02a4a96589e7a75763438fb3"
+        },
+        {
+            "path": "template",
+            "hash": "28720365c5e7476a011e4f43ac003ee5f16247a263b9d623aa85ed311d73bf39"
+        }
+    ]
+}

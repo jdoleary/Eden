@@ -1,0 +1,19 @@
+{
+  "name": "deliberatestudy",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jdoleary/DeliberateStudy.git"
+  },
+  "author": "Jordan O'Leary",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jdoleary/DeliberateStudy/issues"
+  },
+  "homepage": "https://github.com/jdoleary/DeliberateStudy#readme"
+}
