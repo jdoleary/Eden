@@ -1,1 +1,3 @@
-top
+top template
+/* {{CONTENT}} */
+bottom template

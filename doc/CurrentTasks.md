@@ -6,8 +6,9 @@
 
 ## Breakdown
 - Iterate all files in directory
-    - If their hash has changed or is missing, process it
+    - DONE If their hash has changed or is missing, process it
     - Process:
         - Create auto backlinks within stream
-        - Convert to html
-        - Embed inside of template header
+        - DONE Convert to html
+        - DONE Embed inside of template header
+        - Remove missing or moved files from out/
