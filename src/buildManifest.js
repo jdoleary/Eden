@@ -31,7 +31,19 @@ async function* getFiles(dir) {
     }
 
     const files = {};
-    for await (const f of getFiles(path.join('.', directoryParse))) {
+    const allFilesPath = path.join('.', directoryParse);
+
+    // Get a list of all file names to support automatic back linking
+    const allFilesNames = [];
+    for await (const f of getFiles(allFilesPath)) {
+        const parsed = path.parse(f);
+        if (parsed.ext == '.md') {
+            allFilesNames.push({ name: parsed.name, kpath: path.relative(directoryParse, f) });
+        }
+    }
+    console.log('All markdown file names:', Array.from(allFilesNames));
+
+    for await (const f of getFiles(allFilesPath)) {
         if (path.parse(f).base == 'manifest.json') {
             // Do not process the manifest itself
             continue;
@@ -68,7 +80,7 @@ async function* getFiles(dir) {
         // TODO: not ready for hasChanged because a template changing will have to rerender all
         if (true || hasChanged) {
             console.log('File changed:', filePath);
-            await process(f);
+            await process(f, allFilesNames);
         }
         files[filePath] = { hash };
     }
@@ -80,15 +92,24 @@ async function* getFiles(dir) {
     ))
 })();
 
-async function process(filePath) {
+async function process(filePath, allFilesNames) {
     console.log('\nProcess', filePath)
-    const fileContents = await readFile(filePath);
+    let fileContents = (await readFile(filePath)).toString();
     if (path.parse(filePath).ext == '.md') {
-        let html = markdown.toHTML(fileContents.toString());
+        // Auto backlinking
+        for (let { name, kpath } of allFilesNames) {
+            if (name == path.parse(filePath).name) {
+                // Don't link to self
+                continue;
+            }
+            fileContents = fileContents.split(name).join(`[${name}](${kpath})`);
+        }
+
+
+        // Convert markdown to html
+        let html = markdown.toHTML(fileContents);
 
         // Get all nested templates and add to html
-
-
         const relativePath = path.relative(directoryParse, filePath);
         const relativeDirectories = path.parse(relativePath).dir;
         // Empty string is for directoryParse base dir
