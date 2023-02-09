@@ -1,4 +1,8 @@
 {
     "outDir": "out",
-    "parseDir": "sample"
+    "parseDir": "C:\\ObsidianJordanJiuJitsu\\JordanJiuJitsu",
+    "ignoreDirs": [
+        "node_modules",
+        ".obsidian"
+    ]
 }

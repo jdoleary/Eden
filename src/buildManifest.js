@@ -8,11 +8,21 @@ const { version } = require('../package.json');
 
 let parseDir = 'md2WebDefaultParseDir';
 let outDir = 'md2WebDefaultOutDir';
+let ignoreDirs = [];
 // from: https://stackoverflow.com/a/45130990/4418836
 async function* getFiles(dir) {
     const dirents = await readdir(dir, { withFileTypes: true });
     for (const dirent of dirents) {
-        const res = path.resolve(dir, dirent.name);
+        let res = path.resolve(dir, dirent.name);
+        if (path.parse(res).base == 'manifest.json') {
+            // Do not process the manifest itself
+            continue;
+        }
+        if(ignoreDirs.some(dir => res.includes(dir))){
+            // Do not process a file in an ignore directory
+            continue;
+        }
+
         if (dirent.isDirectory()) {
             yield* getFiles(res);
         } else {
@@ -31,6 +41,7 @@ async function* getFiles(dir) {
     console.log('Got config:', config);
     parseDir = config.parseDir;
     outDir = config.outDir;
+    ignoreDirs = config.ignoreDirs;
     if(!parseDir || !outDir){
         console.log('Config is invalid', config);
         return;
@@ -56,11 +67,8 @@ async function* getFiles(dir) {
     }
     console.log('All markdown file names:', Array.from(allFilesNames));
 
-    for await (const f of getFiles(allFilesPath)) {
-        if (path.parse(f).base == 'manifest.json') {
-            // Do not process the manifest itself
-            continue;
-        }
+    for await (let f of getFiles(allFilesPath)) {
+
         // Add file name path.relative to the domain
         // so, when I push to the `production` branch
         //(`git push production master`), all the file names
@@ -88,7 +96,8 @@ async function* getFiles(dir) {
                 }
             });
         });
-        const filePath = path.relative((__dirname, parseDir), f);
+        let filePath = path.relative((__dirname, parseDir), f);
+
         const hasChanged = previousManifest.files[filePath]?.hash !== hash;
         // TODO: not ready for hasChanged because a template changing will have to rerender all
         if (true || hasChanged) {
@@ -108,6 +117,7 @@ async function* getFiles(dir) {
 async function process(filePath, allFilesNames) {
     console.log('\nProcess', filePath)
     let fileContents = (await readFile(filePath)).toString();
+
     if (path.parse(filePath).ext == '.md') {
         // Auto backlinking
         for (let { name, kpath } of allFilesNames) {
@@ -115,7 +125,8 @@ async function process(filePath, allFilesNames) {
                 // Don't link to self
                 continue;
             }
-            fileContents = fileContents.split(name).join(`[${name}](/${kpath})`);
+            // .replaceAll: Replace all spaces with underscores, so they become valid html paths
+            fileContents = fileContents.replaceAll(name, `[${name}](/${kpath.replaceAll(' ', '_')})`);
         }
 
 
@@ -153,7 +164,8 @@ async function process(filePath, allFilesNames) {
             // Make the directory that the file will end up in
             await mkdir(path.parse(outPath).dir, { recursive: true });
             // Rename the file as .html
-            const htmlOutPath = path.join(path.dirname(outPath), path.basename(outPath, path.extname(outPath)) + '.html')
+            // .replaceAll: Replace all spaces with underscores, so they become valid html paths
+            const htmlOutPath = path.join(path.dirname(outPath), path.basename(outPath, path.extname(outPath)) + '.html').replaceAll(' ', '_');
             // Write the file
             await writeFile(htmlOutPath, html);
             console.log('Written', htmlOutPath);

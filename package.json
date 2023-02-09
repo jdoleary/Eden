@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node src/buildManifest.js",
-    "serve": "start http://localhost:9000 && python -m http.server 9000"
+    "serve": "start http://localhost:9000 && cd out/ && python -m http.server 9000"
   },
   "repository": {
     "type": "git",
