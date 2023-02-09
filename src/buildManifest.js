@@ -6,8 +6,8 @@ const markdown = require('markdown').markdown;
 
 const { version } = require('../package.json');
 
-const directoryParse = path.join('sample');
-const directoryOutput = path.join('out');
+let parseDir = 'md2WebDefaultParseDir';
+let outDir = 'md2WebDefaultOutDir';
 // from: https://stackoverflow.com/a/45130990/4418836
 async function* getFiles(dir) {
     const dirents = await readdir(dir, { withFileTypes: true });
@@ -21,24 +21,37 @@ async function* getFiles(dir) {
     }
 }
 ; (async () => {
+    let config = {};
+    try {
+        config = JSON.parse(await readFile(path.join('md2web.config.json'))) || {};
+    } catch (e) {
+        console.log('Caught: Manifest non-existant or corrupt', e);
+        return;
+    }
+    console.log('Got config:', config);
+    parseDir = config.parseDir;
+    outDir = config.outDir;
+    if(!parseDir || !outDir){
+        console.log('Config is invalid', config);
+        return;
+    }
     // Get previous manifest so it can only process the files that have changed
     let previousManifest = { files: {} };
     try {
-
-        previousManifest = JSON.parse(await readFile(path.join(directoryParse, 'manifest.json'))) || { files: {} };
+        previousManifest = JSON.parse(await readFile(path.join(parseDir, 'manifest.json'))) || { files: {} };
     } catch (e) {
         console.log('Caught: Manifest non-existant or corrupt', e);
     }
 
     const files = {};
-    const allFilesPath = path.join('.', directoryParse);
+    const allFilesPath = path.join('.', parseDir);
 
     // Get a list of all file names to support automatic back linking
     const allFilesNames = [];
     for await (const f of getFiles(allFilesPath)) {
         const parsed = path.parse(f);
         if (parsed.ext == '.md') {
-            allFilesNames.push({ name: parsed.name, kpath: path.relative(directoryParse, f) });
+            allFilesNames.push({ name: parsed.name, kpath: path.relative(parseDir, f.split('.md').join('.html')) });
         }
     }
     console.log('All markdown file names:', Array.from(allFilesNames));
@@ -75,7 +88,7 @@ async function* getFiles(dir) {
                 }
             });
         });
-        const filePath = path.relative((__dirname, directoryParse), f);
+        const filePath = path.relative((__dirname, parseDir), f);
         const hasChanged = previousManifest.files[filePath]?.hash !== hash;
         // TODO: not ready for hasChanged because a template changing will have to rerender all
         if (true || hasChanged) {
@@ -84,7 +97,7 @@ async function* getFiles(dir) {
         }
         files[filePath] = { hash };
     }
-    writeFile(path.join(directoryParse, 'manifest.json'), JSON.stringify(
+    writeFile(path.join(parseDir, 'manifest.json'), JSON.stringify(
         {
             version,
             files: files
@@ -102,7 +115,7 @@ async function process(filePath, allFilesNames) {
                 // Don't link to self
                 continue;
             }
-            fileContents = fileContents.split(name).join(`[${name}](${kpath})`);
+            fileContents = fileContents.split(name).join(`[${name}](/${kpath})`);
         }
 
 
@@ -110,7 +123,7 @@ async function process(filePath, allFilesNames) {
         let html = markdown.toHTML(fileContents);
 
         // Get all nested templates and add to html
-        const relativePath = path.relative(directoryParse, filePath);
+        const relativePath = path.relative(parseDir, filePath);
         const relativeDirectories = path.parse(relativePath).dir;
         // Empty string is for directoryParse base dir
         const eachDirectory = ['', ...relativeDirectories.split(path.sep)];
@@ -123,8 +136,8 @@ async function process(filePath, allFilesNames) {
         for (let dir of searchDirectories.reverse()) {
             let templateContents = templateReplacer;
             try {
-                templateContents = (await readFile(path.join(directoryParse, dir, 'template'))).toString();
-                console.log('Using template', path.join(directoryParse, dir, 'template'));
+                templateContents = (await readFile(path.join(parseDir, dir, 'template'))).toString();
+                console.log('Using template', path.join(parseDir, dir, 'template'));
             } catch (e) {
                 // ignore, if file not found
             }
@@ -136,7 +149,7 @@ async function process(filePath, allFilesNames) {
 
         try {
             // Get the new path
-            const outPath = path.join(directoryOutput, relativePath);
+            const outPath = path.join(outDir, relativePath);
             // Make the directory that the file will end up in
             await mkdir(path.parse(outPath).dir, { recursive: true });
             // Rename the file as .html
