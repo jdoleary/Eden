@@ -266,14 +266,14 @@ async function process(filePath: string, allFilesNames: FileName[]) {
         const title = filePath.split(path.sep).slice(-1)[0];
 
         htmlString = htmlString.replace('/* {{TITLE}} */', `<title>${title}</title>`);
-        const breadcrumbs = relativePath.split(path.sep).map(currentPathStep => {
+        const breadcrumbs = [`<a href="/"'>Home</a>`, ...relativePath.split(path.sep).map(currentPathStep => {
             const preUrl = relativePath.split(currentPathStep)[0];
             const url = path.join('/', preUrl, currentPathStep);
             if (currentPathStep == title) {
                 return `<span>${currentPathStep}</span>`;
             }
             return `<a href=${url}>${currentPathStep}</a>`;
-        }).join(' > ');
+        })].join(' > ');
         htmlString = htmlString.replace('/* {{BREADCRUMBS}} */', breadcrumbs);
 
         try {
