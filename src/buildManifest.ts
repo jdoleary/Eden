@@ -3,7 +3,7 @@ import * as path from "https://deno.land/std@0.177.0/path/mod.ts";
 import { html, tokens, Token } from "https://deno.land/x/rusty_markdown/mod.ts";
 // const VERSION = '0.1'
 
-let parseDir: string | undefined = 'md2WebDefaultParseDir';
+let parseDir = 'md2WebDefaultParseDir';
 let outDir: string | undefined = 'md2WebDefaultOutDir';
 let ignoreDirs: string[] = [];
 
@@ -52,7 +52,11 @@ async function main() {
         return;
     }
     console.log('Got config:', config);
-    parseDir = config.parseDir;
+    if (config.parseDir) {
+        parseDir = config.parseDir;
+    } else {
+        console.warn('WARN: no parseDir in config');
+    }
     outDir = config.outDir;
     ignoreDirs = config.ignoreDirs || [];
     if (!parseDir || !outDir) {
@@ -138,11 +142,11 @@ interface FileName {
     kpath: string;
 }
 async function process(filePath: string, allFilesNames: FileName[]) {
-    // // test
-    // if (filePath !== 'C:\\ObsidianJordanJiuJitsu\\JordanJiuJitsu\\Jiu Jitsu Journal.md') {
+    // test
+    // if (!filePath.includes('Darce')){
     //     return;
     // }
-    // // test 
+    // test 
 
     if (!parseDir) {
         console.error('parseDir is undefined');
@@ -259,8 +263,18 @@ async function process(filePath: string, allFilesNames: FileName[]) {
             const [templateStart, templateEnd] = templateContents.split(templateReplacer);
             htmlString = (templateStart || '') + htmlString + (templateEnd || '');
         }
+        const title = filePath.split(path.sep).slice(-1)[0];
 
-        htmlString = htmlString.replace('/* {{TITLE}} */', `<title>${filePath.split(path.sep).slice(-1)[0]}</title>`)
+        htmlString = htmlString.replace('/* {{TITLE}} */', `<title>${title}</title>`);
+        const breadcrumbs = relativePath.split(path.sep).map(currentPathStep => {
+            const preUrl = relativePath.split(currentPathStep)[0];
+            const url = path.join('/', preUrl, currentPathStep);
+            if (currentPathStep == title) {
+                return `<span>${currentPathStep}</span>`;
+            }
+            return `<a href=${url}>${currentPathStep}</a>`;
+        }).join(' > ');
+        htmlString = htmlString.replace('/* {{BREADCRUMBS}} */', breadcrumbs);
 
         try {
             // Get the new path
