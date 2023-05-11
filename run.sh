@@ -1,0 +1,1 @@
+deno run --allow-write --allow-read src/buildManifest.ts

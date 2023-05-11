@@ -4,3 +4,4 @@
 
 ## Tasks
 - Convert to Deno
+- Add EULA to executable output

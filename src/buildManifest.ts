@@ -1,7 +1,6 @@
 import * as path from "https://deno.land/std@0.177.0/path/mod.ts";
-import { mkdir } from "https://deno.land/std@0.177.0/fs/mod.ts";
 // import { createHash } from "https://deno.land/std@0.177.0/crypto/mod.ts";
-import { html, tokens } from "https://deno.land/x/rusty_markdown/mod.ts";
+import { html, tokens, Token } from "https://deno.land/x/rusty_markdown/mod.ts";
 // const VERSION = '0.1'
 
 let parseDir: string | undefined = 'md2WebDefaultParseDir';
@@ -82,58 +81,69 @@ async function main() {
     }
     console.log('All markdown file names:', Array.from(allFilesNames));
 
-    // for await (const f of getFiles(allFilesPath)) {
+    for await (const f of getFiles(allFilesPath)) {
 
-    //     // Add file name path.relative to the domain
-    //     // so, when I push to the `production` branch
-    //     //(`git push production master`), all the file names
-    //     // will be path.relative to where you can access them on the url
-    //     // and since the url hosts the `build` directory statically,
-    //     // this will list file names in the manifest as
-    //     // `images/explain/cast.gif` instead of `build/images/explain.cast.gif`
-    //     // WHEN YOU UPDATE MAKE SURE YOU ALSO UPDATE THE SERVER VERSION AND VERIFY THE VERSION NUMBER CHANGED.
+        // Add file name path.relative to the domain
+        // so, when I push to the `production` branch
+        //(`git push production master`), all the file names
+        // will be path.relative to where you can access them on the url
+        // and since the url hosts the `build` directory statically,
+        // this will list file names in the manifest as
+        // `images/explain/cast.gif` instead of `build/images/explain.cast.gif`
+        // WHEN YOU UPDATE MAKE SURE YOU ALSO UPDATE THE SERVER VERSION AND VERIFY THE VERSION NUMBER CHANGED.
 
-    //     // https://nodejs.org/api/crypto.html#cryptocreatehashalgorithm-options
-    //     // Create a hash of the file contents:
-    //     const hashAlg = createHash('sha256');
-    //     const hash: string = await new Promise<string>((resolve) => {
-    //         const input = createReadStream(f);
-    //         input.on('readable', () => {
-    //             // Only one element is going to be produced by the
-    //             // hash stream.
-    //             const data = input.read();
-    //             if (data)
-    //                 hashAlg.update(data);
-    //             else {
-    //                 const digest = hashAlg.digest('hex')
-    //                 console.log(`${digest} ${path.relative(__dirname, f)}`);
-    //                 resolve(digest);
-    //             }
-    //         });
-    //     });
-    //     const filePath = path.relative(path.join(__dirname, parseDir), f);
+        // https://nodejs.org/api/crypto.html#cryptocreatehashalgorithm-options
+        // Create a hash of the file contents:
+        // const hashAlg = createHash('sha256');
+        // const hash: string = await new Promise<string>((resolve) => {
+        //     const input = createReadStream(f);
+        //     input.on('readable', () => {
+        //         // Only one element is going to be produced by the
+        //         // hash stream.
+        //         const data = input.read();
+        //         if (data)
+        //             hashAlg.update(data);
+        //         else {
+        //             const digest = hashAlg.digest('hex')
+        //             console.log(`${digest} ${path.relative(__dirname, f)}`);
+        //             resolve(digest);
+        //         }
+        //     });
+        // });
+        // const filePath = path.relative(path.join(__dirname, parseDir), f);
 
-    //     // const hasChanged = previousManifest.files[filePath]?.hash !== hash;
-    //     // TODO: not ready for hasChanged because a template changing will have to rerender all
-    //     // if (hasChanged) {
-    //     console.log('File changed:', filePath);
-    //     await process(f, allFilesNames);
-    //     // }
-    //     files[filePath] = { hash };
-    // }
-    // writeFile(path.join(parseDir, 'manifest.json'), JSON.stringify(
+        // const hasChanged = previousManifest.files[filePath]?.hash !== hash;
+        // TODO: not ready for hasChanged because a template changing will have to rerender all
+        // if (hasChanged) {
+        // console.log('File changed:', f);
+        try {
+
+            await process(f, allFilesNames);
+        } catch (e) {
+            console.error('error in process', e);
+        }
+        // }
+        // files[filePath] = { hash };
+    }
+    // Deno.writeTextFile(path.join(parseDir, 'manifest.json'), JSON.stringify(
     //     {
     //         VERSION,
     //         files: files
     //     }
-    // ))
-};
+    // ));
+}
 main();
 interface FileName {
     name: string;
     kpath: string;
 }
 async function process(filePath: string, allFilesNames: FileName[]) {
+    // // test
+    // if (filePath !== 'C:\\ObsidianJordanJiuJitsu\\JordanJiuJitsu\\Jiu Jitsu Journal.md') {
+    //     return;
+    // }
+
+    // // test 
     if (!parseDir) {
         console.error('parseDir is undefined');
         return;
@@ -146,19 +156,83 @@ async function process(filePath: string, allFilesNames: FileName[]) {
     let fileContents = (await Deno.readTextFile(filePath)).toString();
 
     if (path.parse(filePath).ext == '.md') {
-        // Auto backlinking
-        for (const { name, kpath } of allFilesNames) {
-            if (name == path.parse(filePath).name) {
-                // Don't link to self
-                continue;
-            }
-            // .replaceAll: Replace all spaces with underscores, so they become valid html paths
-            fileContents = fileContents.replaceAll(name, `[${name}](/${kpath.replaceAll(' ', '_')})`);
-        }
 
 
+
+        // Since pages are auto back linked, remove all obsidian link syntax
+        fileContents = fileContents.replaceAll('[[', '');
+        fileContents = fileContents.replaceAll(']]', '');
         // Convert markdown to html
-        let htmlString = html(tokens(fileContents));
+        const mdTokens = tokens(fileContents);
+        const modifiedMdTokens: Token[] = [];
+        let lastToken = undefined;
+        for (const token of mdTokens) {
+            // Add external link svg to external links to show that they are external
+            if (lastToken && lastToken.type == 'start' && lastToken.tag == 'link' && lastToken.url.includes('http')) {
+                if (token.type == 'text') {
+                    token.content = 'EXTERNAL_LINK_SVG' + token.content;
+                }
+            }
+            // if true, prevents token from just being added, unchanged to modifiedMdTokens list
+            let isTokenModified = false;
+            // Add backlinks
+            if (token.type == 'text') {
+                for (const { name, kpath } of allFilesNames) {
+                    if (name == path.parse(filePath).name) {
+                        // Don't link to self
+                        continue;
+                    }
+                    if (token.content.includes(name)) {
+                        // Make backlink:
+                        // Set isTokenModified so the current token won't be added
+                        // since it must now be split
+                        isTokenModified = true;
+                        const splitToken = token.content.split(name);
+
+                        for (let i = 0; i < splitToken.length; i++) {
+                            const splitInstance = splitToken[i];
+                            // backlink between each split instance
+                            if (i > 0) {
+                                modifiedMdTokens.push({
+                                    type: 'start',
+                                    tag: 'link',
+                                    kind: 'inline',
+                                    url: kpath,
+                                    title: ''
+                                });
+                                modifiedMdTokens.push({
+                                    type: 'text',
+                                    content: name
+                                });
+                                modifiedMdTokens.push({
+                                    type: 'end',
+                                    tag: 'link',
+                                    kind: 'inline',
+                                    url: kpath,
+                                    title: ''
+                                });
+                            }
+
+                            // re-add the text that was around the keyword
+                            modifiedMdTokens.push({
+                                type: 'text',
+                                content: splitInstance
+                            });
+
+                        }
+
+                    }
+                }
+
+            }
+            if (!isTokenModified) {
+                modifiedMdTokens.push(token);
+            }
+            lastToken = token;
+
+        }
+        let htmlString = html(modifiedMdTokens);
+        htmlString = htmlString.replaceAll('EXTERNAL_LINK_SVG', externalLinkSVG);
 
         // Get all nested templates and add to html
         const relativePath = path.relative(parseDir, filePath);
@@ -189,7 +263,7 @@ async function process(filePath: string, allFilesNames: FileName[]) {
             // Get the new path
             const outPath = path.join(outDir, relativePath);
             // Make the directory that the file will end up in
-            await MAKE_DIR(path.parse(outPath).dir, { recursive: true });
+            await Deno.mkdir(path.parse(outPath).dir, { recursive: true });
             // Rename the file as .html
             // .replaceAll: Replace all spaces with underscores, so they become valid html paths
             const htmlOutPath = path.join(path.dirname(outPath), path.basename(outPath, path.extname(outPath)) + '.html').replaceAll(' ', '_');
@@ -206,3 +280,10 @@ async function process(filePath: string, allFilesNames: FileName[]) {
 
 
 }
+const externalLinkSVG = `<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1em" height="1em" version="1.1" viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg">
+ <g fill="black">
+  <path d="m345.6 997.2h432c79.199 0 144-64.801 144-144v-264c0-13.199-10.801-24-24-24-13.199 0-24 10.801-24 24v264c0 52.801-43.199 96-96 96h-432c-52.801 0-96-43.199-96-96v-432c0-52.801 43.199-96 96-96h264c13.199 0 24-10.801 24-24s-10.801-24-24-24h-264c-79.199 0-144 64.801-144 144v432c0 79.199 64.797 144 144 144z"/>
+  <path d="m998.4 446.4v-219.6-4.8008-1.1992c0-1.1992 0-2.3984-1.1992-3.6016l-1.1992-1.1992c0-1.1992-1.1992-2.3984-1.1992-2.3984-1.1992-2.3984-3.6016-4.8008-7.1992-7.1992-1.1992-1.1992-2.3984-1.1992-3.6016-1.1992v-0.003906l-3.6016-1.1992h-1.1992-4.8008-219.6c-13.199 0-24 10.801-24 24s10.801 24 24 24h162l-351.6 349.2c-9.6016 9.6016-9.6016 24 0 33.602 9.6016 9.6016 24 9.6016 33.602 0l351.6-350.4v162c0 13.199 10.801 24 24 24 13.199-0.003906 23.996-10.801 23.996-24.004z"/>
+ </g>
+</svg>`
