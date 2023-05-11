@@ -240,13 +240,13 @@ async function process(filePath: string, allFilesNames: FileName[]) {
         // Empty string is for directoryParse base dir
         const eachDirectory = ['', ...relativeDirectories.split(path.sep)];
         const templateReplacer = '/* {{CONTENT}} */';
-        const searchDirectories = [];
+        const searchDirectories: string[] = [];
         for (let i = 0; i < eachDirectory.length; i++) {
             const lookForTemplateFileInDir = eachDirectory.slice(0, i + 1).join(path.sep);
             searchDirectories.push(lookForTemplateFileInDir);
         }
         // .filter removes duplicate root
-        for (const dir of searchDirectories.filter(x => x !== "").reverse()) {
+        for (const dir of searchDirectories.filter(x => x !== path.sep).reverse()) {
             let templateContents = templateReplacer;
             try {
                 templateContents = (await Deno.readTextFile(path.join(parseDir, dir, 'template'))).toString();
