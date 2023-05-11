@@ -142,8 +142,8 @@ async function process(filePath: string, allFilesNames: FileName[]) {
     // if (filePath !== 'C:\\ObsidianJordanJiuJitsu\\JordanJiuJitsu\\Jiu Jitsu Journal.md') {
     //     return;
     // }
-
     // // test 
+
     if (!parseDir) {
         console.error('parseDir is undefined');
         return;
@@ -245,7 +245,8 @@ async function process(filePath: string, allFilesNames: FileName[]) {
             const lookForTemplateFileInDir = eachDirectory.slice(0, i + 1).join(path.sep);
             searchDirectories.push(lookForTemplateFileInDir);
         }
-        for (const dir of searchDirectories.reverse()) {
+        // .filter removes duplicate root
+        for (const dir of searchDirectories.filter(x => x !== "").reverse()) {
             let templateContents = templateReplacer;
             try {
                 templateContents = (await Deno.readTextFile(path.join(parseDir, dir, 'template'))).toString();
