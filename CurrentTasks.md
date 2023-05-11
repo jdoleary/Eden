@@ -1,7 +1,4 @@
-## bugs:
-- `don't` is turning into `donâ€™t`
-    - This is because I needed to wrap it in html boilerplate
-
 ## Tasks
-- Convert to Deno
 - Add EULA to executable output
+- Add <meta> description for SEO
+- https://dev.to/lukekyl/how-to-avoid-layout-shifts-when-using-web-fonts-3n7g

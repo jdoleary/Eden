@@ -260,6 +260,8 @@ async function process(filePath: string, allFilesNames: FileName[]) {
             htmlString = (templateStart || '') + htmlString + (templateEnd || '');
         }
 
+        htmlString = htmlString.replace('/* {{TITLE}} */', `<title>${filePath.split(path.sep).slice(-1)[0]}</title>`)
+
         try {
             // Get the new path
             const outPath = path.join(outDir, relativePath);
