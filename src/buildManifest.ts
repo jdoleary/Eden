@@ -143,9 +143,9 @@ interface FileName {
 }
 async function process(filePath: string, allFilesNames: FileName[]) {
     // test
-    // if (!filePath.includes('Darce')){
-    //     return;
-    // }
+    if (!filePath.includes('Jiu Jitsu Journal')) {
+        return;
+    }
     // test 
 
     if (!parseDir) {
@@ -201,7 +201,7 @@ async function process(filePath: string, allFilesNames: FileName[]) {
                                     type: 'start',
                                     tag: 'link',
                                     kind: 'inline',
-                                    url: kpath.replaceAll('\\', '/'),
+                                    url: kpath.replaceAll('\\', '/').replaceAll(' ', '_'),
                                     title: ''
                                 });
                                 modifiedMdTokens.push({
