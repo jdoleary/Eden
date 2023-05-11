@@ -197,7 +197,7 @@ async function process(filePath: string, allFilesNames: FileName[]) {
                                     type: 'start',
                                     tag: 'link',
                                     kind: 'inline',
-                                    url: kpath,
+                                    url: kpath.replaceAll('\\', '/'),
                                     title: ''
                                 });
                                 modifiedMdTokens.push({
