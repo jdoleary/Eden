@@ -142,11 +142,6 @@ interface FileName {
     kpath: string;
 }
 async function process(filePath: string, allFilesNames: FileName[]) {
-    // test
-    if (!filePath.includes('Jiu Jitsu Journal')) {
-        return;
-    }
-    // test 
 
     if (!parseDir) {
         console.error('parseDir is undefined');
