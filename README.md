@@ -4,6 +4,10 @@ Converts an entire directory of .md files to a static website.
 
 See CurrentTasks.md for up-to-date development tasks
 
+## Getting Started
+- `./run.sh` to generate the html from the sample/ directory
+- `./serve.sh` to view the generated html
+
 ## Special Features
 - Completed
     - Automatic links
