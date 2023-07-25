@@ -1,4 +1,5 @@
 import * as path from "https://deno.land/std@0.177.0/path/mod.ts";
+import { copy } from "https://deno.land/std@0.195.0/fs/copy.ts";
 // import { createHash } from "https://deno.land/std@0.177.0/crypto/mod.ts";
 import { html, tokens, Token } from "https://deno.land/x/rusty_markdown/mod.ts";
 // const VERSION = '0.1'
@@ -42,7 +43,10 @@ interface Config {
     parseDir?: string;
     outDir?: string;
     ignoreDirs?: string[];
+    // Where assets such as images are stored.
+    assetDir?: string;
 }
+const OUT_ASSETS_DIR_NAME = 'md2webAssets';
 async function main() {
     let config: Config = {};
     try {
@@ -58,10 +62,19 @@ async function main() {
         console.warn('WARN: no parseDir in config');
     }
     outDir = config.outDir;
+
     ignoreDirs = config.ignoreDirs || [];
     if (!parseDir || !outDir) {
         console.log('Config is invalid', config);
         return;
+    }
+
+    // Clean outDir
+    await Deno.remove(outDir, { recursive: true });
+
+    if (config.assetDir) {
+        // Copy assets such as images so they can be served
+        await copy(config.assetDir, path.join(outDir, OUT_ASSETS_DIR_NAME));
     }
     // Get previous manifest so it can only process the files that have changed
     // To be used later once I add support for a changed template causing a waterfall change
@@ -122,7 +135,7 @@ async function main() {
         // console.log('File changed:', f);
         try {
 
-            await process(f, allFilesNames);
+            await process(f, allFilesNames, config);
         } catch (e) {
             console.error('error in process', e);
         }
@@ -141,7 +154,7 @@ interface FileName {
     name: string;
     kpath: string;
 }
-async function process(filePath: string, allFilesNames: FileName[]) {
+async function process(filePath: string, allFilesNames: FileName[], config: Config) {
 
     if (!parseDir) {
         console.error('parseDir is undefined');
@@ -222,6 +235,33 @@ async function process(filePath: string, allFilesNames: FileName[]) {
 
                     }
                 }
+                // TODO: Fix hacky support for embedding pngs.  The lib doesn't parse image tags for
+                // some reason
+                if (token.content.startsWith('!') && token.content.endsWith('.png')) {
+                    isTokenModified = true;
+                    const imageUrl = `/${OUT_ASSETS_DIR_NAME}/${token.content.slice(1)}`;
+                    // Remove leading "!"
+                    modifiedMdTokens.push({
+                        type: 'start',
+                        tag: 'image',
+                        kind: 'inline',
+                        url: imageUrl,
+                        title: ''
+                    });
+                    modifiedMdTokens.push({
+                        type: 'text',
+                        content: '',
+                    });
+                    modifiedMdTokens.push({
+                        type: 'end',
+                        tag: 'image',
+                        kind: 'inline',
+                        url: imageUrl,
+                        title: ''
+                    });
+
+
+                }
 
             }
             if (!isTokenModified) {
@@ -231,7 +271,9 @@ async function process(filePath: string, allFilesNames: FileName[]) {
 
         }
         let htmlString = html(modifiedMdTokens);
-        htmlString = htmlString.replaceAll('EXTERNAL_LINK_SVG', externalLinkSVG);
+        htmlString = htmlString
+            .replaceAll('EXTERNAL_LINK_SVG', externalLinkSVG)
+            .replaceAll('%20', ' ');
 
         // Get all nested templates and add to html
         const relativePath = path.relative(parseDir, filePath);
