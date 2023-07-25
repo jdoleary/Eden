@@ -155,6 +155,10 @@ interface FileName {
     kpath: string;
 }
 async function process(filePath: string, allFilesNames: FileName[], config: Config) {
+    // Dev, test single file
+    // if (filePath !== 'C:\\ObsidianJordanJiuJitsu\\JordanJiuJitsu\\Submissions\\Strangles\\Triangle.md') {
+    //     return;
+    // }
 
     if (!parseDir) {
         console.error('parseDir is undefined');
@@ -189,7 +193,10 @@ async function process(filePath: string, allFilesNames: FileName[], config: Conf
             let isTokenModified = false;
             // Add backlinks
             if (token.type == 'text') {
-                for (const { name, kpath } of allFilesNames) {
+                for (let { name, kpath } of allFilesNames) {
+                    // Make absolute path so that deeply nested pages
+                    // can link out to non-relative paths
+                    kpath = '/' + kpath;
                     if (name == path.parse(filePath).name) {
                         // Don't link to self
                         continue;
@@ -235,6 +242,8 @@ async function process(filePath: string, allFilesNames: FileName[], config: Conf
 
                     }
                 }
+                // Embed images:
+                // ---
                 // TODO: Fix hacky support for embedding pngs.  The lib doesn't parse image tags for
                 // some reason
                 if (token.content.startsWith('!') && token.content.endsWith('.png')) {
