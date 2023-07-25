@@ -303,14 +303,14 @@ async function process(filePath: string, allFilesNames: FileName[], config: Conf
         const title = filePath.split(path.sep).slice(-1)[0];
 
         htmlString = htmlString.replace('/* {{TITLE}} */', `<title>${title}</title>`);
-        const breadcrumbs = [`<a href="/"'>Home</a>`, ...relativePath.split(path.sep).map(currentPathStep => {
+        const breadcrumbs = [`<div class="nav-item"><a href="/"' class="nav-item">Home</a></div>`, ...relativePath.split(path.sep).map(currentPathStep => {
             const preUrl = relativePath.split(currentPathStep)[0];
             const url = path.join('/', preUrl, currentPathStep);
             if (currentPathStep == title) {
-                return `<span>${currentPathStep}</span>`;
+                return `<div class="nav-item"><span>${currentPathStep}</span></div>`;
             }
-            return `<a href=${url}>${currentPathStep}</a>`;
-        })].join(' > ');
+            return `<div class="nav-item"><a href=${url}>${currentPathStep}</a></div>`;
+        })].join('');
         htmlString = htmlString.replace('/* {{BREADCRUMBS}} */', breadcrumbs);
 
         try {
