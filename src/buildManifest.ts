@@ -333,6 +333,9 @@ async function process(filePath: string, allFilesNames: FileName[], config: Conf
 
         // Get all nested templates and add to html
         const relativePath = path.relative(parseDir, filePath);
+        // Prepend page title to top of content
+        const pageTitle = (relativePath.split('\\').slice(-1)[0] || '').replaceAll('.md', '');
+        htmlString = `<h1>${pageTitle}</h1>` + htmlString
         const relativeDirectories = path.parse(relativePath).dir;
         // Empty string is for directoryParse base dir
         const eachDirectory = ['', ...relativeDirectories.split(path.sep)];
