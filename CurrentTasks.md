@@ -14,3 +14,7 @@
 
 ## Enhancements
 - Rework commented out Manifest code that allows it to only process files that have changed
+
+## Tech Debt
+- Fix hacky way of removing %20 from image urls
+-

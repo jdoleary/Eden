@@ -16,7 +16,7 @@
         article {
             max-width: 800px;
             background-color: #fff;
-            padding: 16px;
+            padding: 32px;
             border-radius: 2px;
         }
 
