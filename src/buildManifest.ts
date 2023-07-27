@@ -296,6 +296,7 @@ async function process(filePath: string, allFilesNames: FileName[], config: Conf
             searchDirectories.push(lookForTemplateFileInDir);
         }
         // .filter removes duplicate root
+        let isRoot = true;
         for (const dir of searchDirectories.filter(x => x !== path.sep).reverse()) {
             // Start templateContents as just the templateReplacer so that if there is no template it will still
             // include the page contents alone.  But there should always be a template even if it's `templateDefault`
@@ -306,8 +307,9 @@ async function process(filePath: string, allFilesNames: FileName[], config: Conf
                 console.log('Using template override', path.join(parseDir, dir, 'template'));
             } catch (e) {
                 // Use default demplate
-                templateContents = (await Deno.readTextFile(path.join('templateDefault'))).toString() || templateReplacer;
+                templateContents = isRoot ? (await Deno.readTextFile(path.join('templateDefault'))).toString() || templateReplacer : templateReplacer;
             }
+            isRoot = false;
             // Add the template to the front
             // TODO: Optimizable
             const [templateStart, templateEnd] = templateContents.split(templateReplacer);
