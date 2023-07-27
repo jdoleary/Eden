@@ -19,10 +19,8 @@ async function* getDirs(dir: string): AsyncGenerator<{ dir: string, contents: De
             continue;
         }
         if (dirent.isDirectory) {
-            // console.log('jtest getDirs 1 ', dir)
-            yield* getDirs(res);
-            // console.log('jtest getDirs 2 ', dir, res)
             yield { dir: res, contents: Array.from(Deno.readDirSync(res)) };
+            yield* getDirs(res);
         }
     }
 }
@@ -63,6 +61,7 @@ interface Config {
     // Where assets such as images are stored.
     assetDir?: string;
 }
+const logVerbose = false;
 async function createDirectoryIndexFile(d: { dir: string, contents: Deno.DirEntry[] }, outDir: string) {
     try {
         const relativePath = path.relative(parseDir, d.dir);
@@ -80,7 +79,9 @@ async function createDirectoryIndexFile(d: { dir: string, contents: Deno.DirEntr
             link = x.isDirectory ? link : link + '.html';
             return `<a href="${link}">${pageName}</a>`
         }).join('<br/>'));
-        console.log('Written index file:', htmlOutPath);
+        if (logVerbose) {
+            console.log('Written index file:', htmlOutPath);
+        }
     } catch (e) {
         console.error(e);
     }
@@ -126,14 +127,31 @@ async function main() {
     // }
 
     // const files: ManifestFiles = {};
+    const tableOfContents: { indent: number, pageName: string, relativePath: string }[] = [];
 
     const allFilesPath = path.join('.', parseDir);
     // Create base index file
     await createDirectoryIndexFile({ dir: allFilesPath, contents: Array.from(Deno.readDirSync(allFilesPath)) }, outDir);
     // Create index file for each directory
     for await (const d of getDirs(allFilesPath)) {
+        const relativePath = path.relative(parseDir, d.dir);
+        const pageNameSteps = relativePath.split('\\');
+        const indent = pageNameSteps.length;
+        const pageName = pageNameSteps.slice(-1)[0] || '';
+        tableOfContents.push({ indent, pageName, relativePath });
         createDirectoryIndexFile(d, outDir);
     }
+    if (logVerbose) {
+        console.log('Table of Contents:', tableOfContents);
+    }
+    // Create table of contents
+    const tocOutPath = path.join(outDir, 'table_of_contents.html');
+
+    await Deno.writeTextFile(tocOutPath, tableOfContents.map(x => {
+        // -1 sets the top level pages flush with the left hand side
+        const indentHTML: string[] = Array(x.indent - 1).fill('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
+        return `<div>${indentHTML.join('')}<a href="${x.relativePath}">${x.pageName}</a></div>`;
+    }).join(''));
 
     // Get a list of all file names to support automatic back linking
     const allFilesNames = [];
@@ -143,7 +161,9 @@ async function main() {
             allFilesNames.push({ name: parsed.name, kpath: path.relative(parseDir, f.split('.md').join('.html')) });
         }
     }
-    console.log('All markdown file names:', Array.from(allFilesNames));
+    if (logVerbose) {
+        console.log('All markdown file names:', Array.from(allFilesNames));
+    }
 
     for await (const f of getFiles(allFilesPath)) {
 
@@ -215,7 +235,9 @@ async function process(filePath: string, allFilesNames: FileName[], config: Conf
         console.error('parseDir is undefined');
         return;
     }
-    console.log('\nProcess', filePath)
+    if (logVerbose) {
+        console.log('\nProcess', filePath)
+    }
     let fileContents = (await Deno.readTextFile(filePath)).toString();
 
     if (path.parse(filePath).ext == '.md') {
@@ -388,14 +410,19 @@ async function process(filePath: string, allFilesNames: FileName[], config: Conf
             const htmlOutPath = path.join(path.dirname(outPath), path.basename(outPath, path.extname(outPath)) + '.html').replaceAll(' ', '_');
             // Write the file
             await Deno.writeTextFile(htmlOutPath, htmlString);
-            console.log('Written', htmlOutPath);
+
+            if (logVerbose) {
+                console.log('Written', htmlOutPath);
+            }
         } catch (e) {
             console.error(e);
         }
     } else {
         console.log('non .md file types not handled yet:', filePath);
     }
-    console.log('Done processing', filePath, '\n');
+    if (logVerbose) {
+        console.log('Done processing', filePath, '\n');
+    }
 
 
 }
