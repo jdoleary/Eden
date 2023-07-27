@@ -11,13 +11,15 @@
             background-color: #f7f7f7;
             font-family: 'Open Sans', sans-serif;
             font-display: optional;
+            margin: 0;
         }
 
         article {
-            max-width: 800px;
             background-color: #fff;
-            padding: 32px;
-            border-radius: 2px;
+            padding: 0 1em;
+            max-width: 100%;
+            width: 800px;
+            box-sizing: border-box;
         }
 
         img {
@@ -30,12 +32,25 @@
 
         main {
             display: grid;
-            grid-template-areas: "nav article aside";
+            grid-template-areas:
+                "nav"
+                "article"
+                "aside";
+            justify-content: center;
+            grid-template-columns: 100%;
         }
 
         nav {
             grid-area: nav;
+            display: flex;
+            flex-wrap: wrap;
         }
+
+        nav>.center-dot {
+            content: "·";
+            padding: 16px;
+        }
+
 
         article {
             grid-area: article;
@@ -45,8 +60,33 @@
             grid-area: aside;
         }
 
-        .nav-item a,
-        .nav-item span {
+        @media screen and (min-width: 1050px) {
+            main {
+                display: grid;
+                grid-template-areas: "nav article aside";
+                grid-template-columns: auto;
+            }
+
+            nav {
+                grid-area: nav;
+                max-width: 250px;
+                display: block;
+            }
+
+            article {
+                grid-area: article;
+            }
+
+            aside {
+                grid-area: aside;
+            }
+
+            nav>.center-dot {
+                display: none;
+            }
+        }
+
+        .nav-item {
             padding: 16px;
             /* allow the anchor tag to grow in size */
             display: block;
@@ -54,6 +94,10 @@
 
         .nav-item:hover {
             background-color: #eaeaea;
+        }
+
+        .nav-item.no-link:hover {
+            background-color: inherit;
         }
     </style>
 </head>
