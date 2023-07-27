@@ -9,6 +9,23 @@ let outDir: string | undefined = 'md2WebDefaultOutDir';
 let ignoreDirs: string[] = [];
 
 const __dirname = path.dirname(path.fromFileUrl(import.meta.url));
+async function* getDirs(dir: string): AsyncGenerator<{ dir: string, contents: Deno.DirEntry[] }, void, void> {
+    const dirents = Deno.readDir(dir);
+    // console.log('jtest dirents', Array.from(dirents));
+    for await (const dirent of dirents) {
+        const res = path.resolve(dir, dirent.name);
+        if (ignoreDirs.some(dir => res.includes(dir))) {
+            // Do not process a file in an ignore directory
+            continue;
+        }
+        if (dirent.isDirectory) {
+            // console.log('jtest getDirs 1 ', dir)
+            yield* getDirs(res);
+            // console.log('jtest getDirs 2 ', dir, res)
+            yield { dir: res, contents: Array.from(Deno.readDirSync(res)) };
+        }
+    }
+}
 // from: https://stackoverflow.com/a/45130990/4418836
 async function* getFiles(dir: string): AsyncGenerator<string, void, void> {
     const dirents = Deno.readDir(dir);
@@ -45,6 +62,29 @@ interface Config {
     ignoreDirs?: string[];
     // Where assets such as images are stored.
     assetDir?: string;
+}
+async function createDirectoryIndexFile(d: { dir: string, contents: Deno.DirEntry[] }, outDir: string) {
+    try {
+        const relativePath = path.relative(parseDir, d.dir);
+        // Get the new path
+        const outPath = path.join(outDir, relativePath);
+        // Make the directory that the file will end up in
+        await Deno.mkdir(outPath, { recursive: true });
+        // Rename the file as .html
+        // .replaceAll: Replace all spaces with underscores, so they become valid html paths
+        const htmlOutPath = path.join(outPath, 'index.html').replaceAll(' ', '_');
+        // Write the file
+        await Deno.writeTextFile(htmlOutPath, `<h1>${relativePath}</h1>` + d.contents.map(x => {
+            const pageName = x.name.split('.md').join('');
+            let link = pageName.split(' ').join('_');
+            link = x.isDirectory ? link : link + '.html';
+            return `<a href="${link}">${pageName}</a>`
+        }).join('<br/>'));
+        console.log('Written index file:', htmlOutPath);
+    } catch (e) {
+        console.error(e);
+    }
+
 }
 const OUT_ASSETS_DIR_NAME = 'md2webAssets';
 async function main() {
@@ -86,7 +126,14 @@ async function main() {
     // }
 
     // const files: ManifestFiles = {};
+
     const allFilesPath = path.join('.', parseDir);
+    // Create base index file
+    await createDirectoryIndexFile({ dir: allFilesPath, contents: Array.from(Deno.readDirSync(allFilesPath)) }, outDir);
+    // Create index file for each directory
+    for await (const d of getDirs(allFilesPath)) {
+        createDirectoryIndexFile(d, outDir);
+    }
 
     // Get a list of all file names to support automatic back linking
     const allFilesNames = [];
