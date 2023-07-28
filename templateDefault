@@ -16,10 +16,14 @@
 
         article {
             background-color: #fff;
-            padding: 0 1em;
+            padding: 1em 1em 1em 1em;
             max-width: 100%;
             width: 800px;
             box-sizing: border-box;
+        }
+
+        article h1 {
+            margin-top: 0;
         }
 
         img {
@@ -38,6 +42,7 @@
                 "aside";
             justify-content: center;
             grid-template-columns: 100%;
+            height: 100vh;
         }
 
         nav {
@@ -98,6 +103,23 @@
 
         .nav-item.no-link:hover {
             background-color: inherit;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .space-between {
+            justify-content: space-between;
+        }
+
+        .nextPrevButtons a {
+            display: block;
+            margin: 8px;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid black;
+
         }
     </style>
 </head>

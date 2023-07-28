@@ -3,7 +3,8 @@
     "parseDir": "C:\\ObsidianJordanJiuJitsu\\JordanJiuJitsu\\",
     "ignoreDirs": [
         "node_modules",
-        ".obsidian"
+        ".obsidian",
+        "Assets"
     ],
     "assetDir": "C:\\ObsidianJordanJiuJitsu\\JordanJiuJitsu\\Assets\\"
 }

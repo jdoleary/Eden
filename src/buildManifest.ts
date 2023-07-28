@@ -11,7 +11,8 @@ let ignoreDirs: string[] = [];
 const __dirname = path.dirname(path.fromFileUrl(import.meta.url));
 async function* getDirs(dir: string): AsyncGenerator<{ dir: string, contents: Deno.DirEntry[] }, void, void> {
     const dirents = Deno.readDir(dir);
-    // console.log('jtest dirents', Array.from(dirents));
+    // Yield top level directory first so its own contents will be included
+    yield { dir: dir, contents: Array.from(Deno.readDirSync(dir)) };
     for await (const dirent of dirents) {
         const res = path.resolve(dir, dirent.name);
         if (ignoreDirs.some(dir => res.includes(dir))) {
@@ -19,7 +20,6 @@ async function* getDirs(dir: string): AsyncGenerator<{ dir: string, contents: De
             continue;
         }
         if (dirent.isDirectory) {
-            yield { dir: res, contents: Array.from(Deno.readDirSync(res)) };
             yield* getDirs(res);
         }
     }
@@ -61,6 +61,7 @@ interface Config {
     // Where assets such as images are stored.
     assetDir?: string;
 }
+type TableOfContents = { indent: number, pageName: string, relativePath: string, isDir: boolean }[];
 const logVerbose = false;
 async function createDirectoryIndexFile(d: { dir: string, contents: Deno.DirEntry[] }, outDir: string) {
     try {
@@ -127,7 +128,7 @@ async function main() {
     // }
 
     // const files: ManifestFiles = {};
-    const tableOfContents: { indent: number, pageName: string, relativePath: string }[] = [];
+    const tableOfContents: TableOfContents = [];
 
     const allFilesPath = path.join('.', parseDir);
     // Create base index file
@@ -138,7 +139,13 @@ async function main() {
         const pageNameSteps = relativePath.split('\\');
         const indent = pageNameSteps.length;
         const pageName = pageNameSteps.slice(-1)[0] || '';
-        tableOfContents.push({ indent, pageName, relativePath });
+        tableOfContents.push({ indent, pageName, relativePath, isDir: true });
+        // Add files to table of contents for use later for "next" and "prev" buttons to know order of pages
+        for (const content of d.contents) {
+            if (content.isFile) {
+                tableOfContents.push({ indent: indent + 1, pageName: content.name.replace('.md', ''), relativePath: path.relative(parseDir, path.resolve(parseDir, relativePath, './' + pageNameToPagePath(content.name))), isDir: false });
+            }
+        }
         createDirectoryIndexFile(d, outDir);
     }
     if (logVerbose) {
@@ -161,6 +168,8 @@ async function main() {
             allFilesNames.push({ name: parsed.name, kpath: path.relative(parseDir, f.split('.md').join('.html')) });
         }
     }
+    // console.log('jtest allfilenames', allFilesNames, allFilesNames.length);
+    // console.log('jtest table', tableOfContents.map(x => `${x.pageName}, ${x.isDir}`), tableOfContents.length);
     if (logVerbose) {
         console.log('All markdown file names:', Array.from(allFilesNames));
     }
@@ -202,7 +211,7 @@ async function main() {
         // console.log('File changed:', f);
         try {
 
-            await process(f, allFilesNames, config);
+            await process(f, allFilesNames, tableOfContents);
         } catch (e) {
             console.error('error in process', e);
         }
@@ -221,7 +230,7 @@ interface FileName {
     name: string;
     kpath: string;
 }
-async function process(filePath: string, allFilesNames: FileName[], config: Config) {
+async function process(filePath: string, allFilesNames: FileName[], tableOfContents: TableOfContents) {
     // Dev, test single file
     // if (filePath !== 'C:\\ObsidianJordanJiuJitsu\\JordanJiuJitsu\\Submissions\\Strangles\\Triangle.md') {
     //     return;
@@ -357,7 +366,21 @@ async function process(filePath: string, allFilesNames: FileName[], config: Conf
         const relativePath = path.relative(parseDir, filePath);
         // Prepend page title to top of content
         const pageTitle = (relativePath.split('\\').slice(-1)[0] || '').replaceAll('.md', '');
-        htmlString = `<h1>${pageTitle}</h1>` + htmlString
+        htmlString = `<h1>${pageTitle}</h1>` + htmlString;
+        // Add footer "next" and "prev" buttons
+        const tableOfContentsPages = tableOfContents.filter(x => !x.isDir);
+        const currentPage = tableOfContentsPages.find(x => x.pageName == pageTitle);
+        const currentIndex = currentPage ? tableOfContentsPages.indexOf(currentPage) : -1;
+        if (currentIndex !== -1) {
+            const previous = tableOfContentsPages[currentIndex - 1];
+            htmlString += `<div class="nextPrevButtons flex space-between">`;
+            htmlString += `${previous ? `<a href="\\${previous.relativePath}">Previous: ${previous.pageName}</a>` : ''}`;
+            const next = tableOfContentsPages[currentIndex + 1];
+            htmlString += `${next ? `<a href="\\${next.relativePath}">Next: ${next.pageName}</a>` : ''}`;
+            htmlString += `</div>`;
+
+        }
+
         const relativeDirectories = path.parse(relativePath).dir;
         // Empty string is for directoryParse base dir
         const eachDirectory = ['', ...relativeDirectories.split(path.sep)];
@@ -407,7 +430,7 @@ async function process(filePath: string, allFilesNames: FileName[], config: Conf
             await Deno.mkdir(path.parse(outPath).dir, { recursive: true });
             // Rename the file as .html
             // .replaceAll: Replace all spaces with underscores, so they become valid html paths
-            const htmlOutPath = path.join(path.dirname(outPath), path.basename(outPath, path.extname(outPath)) + '.html').replaceAll(' ', '_');
+            const htmlOutPath = path.join(path.dirname(outPath), pageNameToPagePath(outPath));
             // Write the file
             await Deno.writeTextFile(htmlOutPath, htmlString);
 
@@ -425,6 +448,9 @@ async function process(filePath: string, allFilesNames: FileName[], config: Conf
     }
 
 
+}
+function pageNameToPagePath(name: string) {
+    return (path.basename(name, path.extname(name)) + '.html').replaceAll(' ', '_')
 }
 const externalLinkSVG = `<?xml version="1.0" encoding="UTF-8"?>
 <svg width="1em" height="1em" version="1.1" viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg">
