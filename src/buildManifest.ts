@@ -61,7 +61,7 @@ interface Config {
     // Where assets such as images are stored.
     assetDir?: string;
 }
-type TableOfContents = { indent: number, pageName: string, relativePath: string, isDir: boolean }[];
+type TableOfContents = { indent: number, pageName: string, relativePath: string, isDir: boolean, parentDir?: string }[];
 const logVerbose = false;
 async function createDirectoryIndexFile(d: { dir: string, contents: Deno.DirEntry[] }, outDir: string) {
     try {
@@ -143,7 +143,7 @@ async function main() {
         // Add files to table of contents for use later for "next" and "prev" buttons to know order of pages
         for (const content of d.contents) {
             if (content.isFile) {
-                tableOfContents.push({ indent: indent + 1, pageName: content.name.replace('.md', ''), relativePath: path.relative(parseDir, path.resolve(parseDir, relativePath, './' + pageNameToPagePath(content.name))), isDir: false });
+                tableOfContents.push({ indent: indent + 1, parentDir: d.dir, pageName: content.name.replace('.md', ''), relativePath: path.relative(parseDir, path.resolve(parseDir, relativePath, './' + pageNameToPagePath(content.name))), isDir: false });
             }
         }
         createDirectoryIndexFile(d, outDir);
@@ -374,9 +374,11 @@ async function process(filePath: string, allFilesNames: FileName[], tableOfConte
         if (currentIndex !== -1) {
             const previous = tableOfContentsPages[currentIndex - 1];
             htmlString += `<div class="nextPrevButtons flex space-between">`;
-            htmlString += `${previous ? `<a href="\\${previous.relativePath}">Previous: ${previous.pageName}</a>` : ''}`;
+            // Add next and previous buttons to page
+            // If other page is in a different chapter, show the chapter before a ":"
+            htmlString += `${previous ? `<a href="\\${previous.relativePath}">${previous.parentDir !== currentPage?.parentDir ? path.parse(previous.parentDir || '').name + ':' : ''} ${previous.pageName}</a>` : ''}`;
             const next = tableOfContentsPages[currentIndex + 1];
-            htmlString += `${next ? `<a href="\\${next.relativePath}">Next: ${next.pageName}</a>` : ''}`;
+            htmlString += `${next ? `<a href="\\${next.relativePath}">${next.parentDir !== currentPage?.parentDir ? path.parse(next.parentDir || '').name + ':' : ''} ${next.pageName}</a>` : ''}`;
             htmlString += `</div>`;
 
         }
