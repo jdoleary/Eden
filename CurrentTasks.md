@@ -1,6 +1,6 @@
 ## Tasks
 - Style index pages
-- Add 'next' and 'prev' buttons
+- Refactor and test
 
 ## Enhancements
 - Rework commented out Manifest code that allows it to only process files that have changed

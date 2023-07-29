@@ -1,49 +1,12 @@
 import * as path from "https://deno.land/std@0.177.0/path/mod.ts";
 import { copy } from "https://deno.land/std@0.195.0/fs/copy.ts";
-// import { createHash } from "https://deno.land/std@0.177.0/crypto/mod.ts";
 import { html, tokens, Token } from "https://deno.land/x/rusty_markdown/mod.ts";
+import { createDirectoryIndexFile } from "./htmlGenerators/indexFile.ts";
+import { getDirs, getFiles } from "./os.ts";
+import { Config } from "./sharedTypes.ts";
 // const VERSION = '0.1'
 
-let parseDir = 'md2WebDefaultParseDir';
-let outDir: string | undefined = 'md2WebDefaultOutDir';
-let ignoreDirs: string[] = [];
 
-const __dirname = path.dirname(path.fromFileUrl(import.meta.url));
-async function* getDirs(dir: string): AsyncGenerator<{ dir: string, contents: Deno.DirEntry[] }, void, void> {
-    const dirents = Deno.readDir(dir);
-    // Yield top level directory first so its own contents will be included
-    yield { dir: dir, contents: Array.from(Deno.readDirSync(dir)) };
-    for await (const dirent of dirents) {
-        const res = path.resolve(dir, dirent.name);
-        if (ignoreDirs.some(dir => res.includes(dir))) {
-            // Do not process a file in an ignore directory
-            continue;
-        }
-        if (dirent.isDirectory) {
-            yield* getDirs(res);
-        }
-    }
-}
-// from: https://stackoverflow.com/a/45130990/4418836
-async function* getFiles(dir: string): AsyncGenerator<string, void, void> {
-    const dirents = Deno.readDir(dir);
-    for await (const dirent of dirents) {
-        const res = path.resolve(dir, dirent.name);
-        if (path.parse(res).base == 'manifest.json') {
-            // Do not process the manifest itself
-            continue;
-        }
-        if (ignoreDirs.some(dir => res.includes(dir))) {
-            // Do not process a file in an ignore directory
-            continue;
-        }
-        if (dirent.isDirectory) {
-            yield* getFiles(res);
-        } else {
-            yield res;
-        }
-    }
-}
 interface ManifestFiles {
     [filePath: string]: {
         hash: string
@@ -54,43 +17,14 @@ interface Manifest {
     version: string;
     files: ManifestFiles;
 }
-interface Config {
-    parseDir?: string;
-    outDir?: string;
-    ignoreDirs?: string[];
-    // Where assets such as images are stored.
-    assetDir?: string;
-}
 type TableOfContents = { indent: number, pageName: string, relativePath: string, isDir: boolean, parentDir?: string }[];
-const logVerbose = false;
-async function createDirectoryIndexFile(d: { dir: string, contents: Deno.DirEntry[] }, outDir: string) {
-    try {
-        const relativePath = path.relative(parseDir, d.dir);
-        // Get the new path
-        const outPath = path.join(outDir, relativePath);
-        // Make the directory that the file will end up in
-        await Deno.mkdir(outPath, { recursive: true });
-        // Rename the file as .html
-        // .replaceAll: Replace all spaces with underscores, so they become valid html paths
-        const htmlOutPath = path.join(outPath, 'index.html').replaceAll(' ', '_');
-        // Write the file
-        await Deno.writeTextFile(htmlOutPath, `<h1>${relativePath}</h1>` + d.contents.map(x => {
-            const pageName = x.name.split('.md').join('');
-            let link = pageName.split(' ').join('_');
-            link = x.isDirectory ? link : link + '.html';
-            return `<a href="${link}">${pageName}</a>`
-        }).join('<br/>'));
-        if (logVerbose) {
-            console.log('Written index file:', htmlOutPath);
-        }
-    } catch (e) {
-        console.error(e);
-    }
-
-}
 const OUT_ASSETS_DIR_NAME = 'md2webAssets';
 async function main() {
-    let config: Config = {};
+    let config: Config = {
+        parseDir: 'md2WebDefaultParseDir',
+        outDir: 'md2WebDefaultOutDir',
+        ignoreDirs: []
+    };
     try {
         config = JSON.parse(await Deno.readTextFile(path.join('md2web.config.json'))) || {};
     } catch (e) {
@@ -98,31 +32,23 @@ async function main() {
         return;
     }
     console.log('Got config:', config);
-    if (config.parseDir) {
-        parseDir = config.parseDir;
-    } else {
-        console.warn('WARN: no parseDir in config');
-    }
-    outDir = config.outDir;
-
-    ignoreDirs = config.ignoreDirs || [];
-    if (!parseDir || !outDir) {
+    if (!config.parseDir || !config.outDir) {
         console.log('Config is invalid', config);
         return;
     }
 
     // Clean outDir
-    await Deno.remove(outDir, { recursive: true });
+    await Deno.remove(config.outDir, { recursive: true });
 
     if (config.assetDir) {
         // Copy assets such as images so they can be served
-        await copy(config.assetDir, path.join(outDir, OUT_ASSETS_DIR_NAME));
+        await copy(config.assetDir, path.join(config.outDir, OUT_ASSETS_DIR_NAME));
     }
     // Get previous manifest so it can only process the files that have changed
     // To be used later once I add support for a changed template causing a waterfall change
     // let previousManifest: Manifest = { version: "0.0.0", files: {} };
     // try {
-    //     previousManifest = JSON.parse(await Deno.readTextFile(path.join(parseDir, 'manifest.json'))) || { files: {} };
+    //     previousManifest = JSON.parse(await Deno.readTextFile(path.join(config.parseDir, 'manifest.json'))) || { files: {} };
     // } catch (e) {
     //     console.log('Caught: Manifest non-existant or corrupt', e);
     // }
@@ -130,12 +56,10 @@ async function main() {
     // const files: ManifestFiles = {};
     const tableOfContents: TableOfContents = [];
 
-    const allFilesPath = path.join('.', parseDir);
-    // Create base index file
-    await createDirectoryIndexFile({ dir: allFilesPath, contents: Array.from(Deno.readDirSync(allFilesPath)) }, outDir);
+    const allFilesPath = path.join('.', config.parseDir);
     // Create index file for each directory
-    for await (const d of getDirs(allFilesPath)) {
-        const relativePath = path.relative(parseDir, d.dir);
+    for await (const d of getDirs(allFilesPath, config)) {
+        const relativePath = path.relative(config.parseDir, d.dir);
         const pageNameSteps = relativePath.split('\\');
         const indent = pageNameSteps.length;
         const pageName = pageNameSteps.slice(-1)[0] || '';
@@ -143,16 +67,16 @@ async function main() {
         // Add files to table of contents for use later for "next" and "prev" buttons to know order of pages
         for (const content of d.contents) {
             if (content.isFile) {
-                tableOfContents.push({ indent: indent + 1, parentDir: d.dir, pageName: content.name.replace('.md', ''), relativePath: path.relative(parseDir, path.resolve(parseDir, relativePath, './' + pageNameToPagePath(content.name))), isDir: false });
+                tableOfContents.push({ indent: indent + 1, parentDir: d.dir, pageName: content.name.replace('.md', ''), relativePath: path.relative(config.parseDir, path.resolve(config.parseDir, relativePath, './' + pageNameToPagePath(content.name))), isDir: false });
             }
         }
-        createDirectoryIndexFile(d, outDir);
+        createDirectoryIndexFile(d, config.outDir, config);
     }
-    if (logVerbose) {
+    if (config.logVerbose) {
         console.log('Table of Contents:', tableOfContents);
     }
     // Create table of contents
-    const tocOutPath = path.join(outDir, 'table_of_contents.html');
+    const tocOutPath = path.join(config.outDir, 'table_of_contents.html');
 
     await Deno.writeTextFile(tocOutPath, tableOfContents.map(x => {
         // -1 sets the top level pages flush with the left hand side
@@ -162,19 +86,19 @@ async function main() {
 
     // Get a list of all file names to support automatic back linking
     const allFilesNames = [];
-    for await (const f of getFiles(allFilesPath)) {
+    for await (const f of getFiles(allFilesPath, config)) {
         const parsed = path.parse(f);
         if (parsed.ext == '.md') {
-            allFilesNames.push({ name: parsed.name, kpath: path.relative(parseDir, f.split('.md').join('.html')) });
+            allFilesNames.push({ name: parsed.name, kpath: path.relative(config.parseDir, f.split('.md').join('.html')) });
         }
     }
     // console.log('jtest allfilenames', allFilesNames, allFilesNames.length);
     // console.log('jtest table', tableOfContents.map(x => `${x.pageName}, ${x.isDir}`), tableOfContents.length);
-    if (logVerbose) {
+    if (config.logVerbose) {
         console.log('All markdown file names:', Array.from(allFilesNames));
     }
 
-    for await (const f of getFiles(allFilesPath)) {
+    for await (const f of getFiles(allFilesPath, config)) {
 
         // Add file name path.relative to the domain
         // so, when I push to the `production` branch
@@ -203,7 +127,7 @@ async function main() {
         //         }
         //     });
         // });
-        // const filePath = path.relative(path.join(__dirname, parseDir), f);
+        // const filePath = path.relative(path.join(__dirname, config.parseDir), f);
 
         // const hasChanged = previousManifest.files[filePath]?.hash !== hash;
         // TODO: not ready for hasChanged because a template changing will have to rerender all
@@ -211,14 +135,14 @@ async function main() {
         // console.log('File changed:', f);
         try {
 
-            await process(f, allFilesNames, tableOfContents);
+            await process(f, allFilesNames, tableOfContents, config);
         } catch (e) {
             console.error('error in process', e);
         }
         // }
         // files[filePath] = { hash };
     }
-    // Deno.writeTextFile(path.join(parseDir, 'manifest.json'), JSON.stringify(
+    // Deno.writeTextFile(path.join(config.parseDir, 'manifest.json'), JSON.stringify(
     //     {
     //         VERSION,
     //         files: files
@@ -230,21 +154,21 @@ interface FileName {
     name: string;
     kpath: string;
 }
-async function process(filePath: string, allFilesNames: FileName[], tableOfContents: TableOfContents) {
+async function process(filePath: string, allFilesNames: FileName[], tableOfContents: TableOfContents, config: Config) {
     // Dev, test single file
     // if (filePath !== 'C:\\ObsidianJordanJiuJitsu\\JordanJiuJitsu\\Submissions\\Strangles\\Triangle.md') {
     //     return;
     // }
 
-    if (!parseDir) {
+    if (!config.parseDir) {
         console.error('parseDir is undefined');
         return;
     }
-    if (!outDir) {
-        console.error('parseDir is undefined');
+    if (!config.outDir) {
+        console.error('outDir is undefined');
         return;
     }
-    if (logVerbose) {
+    if (config.logVerbose) {
         console.log('\nProcess', filePath)
     }
     let fileContents = (await Deno.readTextFile(filePath)).toString();
@@ -363,7 +287,7 @@ async function process(filePath: string, allFilesNames: FileName[], tableOfConte
             .replaceAll('%20', ' ');
 
         // Get all nested templates and add to html
-        const relativePath = path.relative(parseDir, filePath);
+        const relativePath = path.relative(config.parseDir, filePath);
         // Prepend page title to top of content
         const pageTitle = (relativePath.split('\\').slice(-1)[0] || '').replaceAll('.md', '');
         htmlString = `<h1>${pageTitle}</h1>` + htmlString;
@@ -400,8 +324,8 @@ async function process(filePath: string, allFilesNames: FileName[], tableOfConte
             // which is included in this project
             let templateContents = templateReplacer;
             try {
-                templateContents = (await Deno.readTextFile(path.join(parseDir, dir, 'template'))).toString();
-                console.log('Using template override', path.join(parseDir, dir, 'template'));
+                templateContents = (await Deno.readTextFile(path.join(config.parseDir, dir, 'template'))).toString();
+                console.log('Using template override', path.join(config.parseDir, dir, 'template'));
             } catch (e) {
                 // Use default demplate
                 templateContents = isRoot ? (await Deno.readTextFile(path.join('templateDefault'))).toString() || templateReplacer : templateReplacer;
@@ -427,7 +351,7 @@ async function process(filePath: string, allFilesNames: FileName[], tableOfConte
 
         try {
             // Get the new path
-            const outPath = path.join(outDir, relativePath);
+            const outPath = path.join(config.outDir, relativePath);
             // Make the directory that the file will end up in
             await Deno.mkdir(path.parse(outPath).dir, { recursive: true });
             // Rename the file as .html
@@ -436,7 +360,7 @@ async function process(filePath: string, allFilesNames: FileName[], tableOfConte
             // Write the file
             await Deno.writeTextFile(htmlOutPath, htmlString);
 
-            if (logVerbose) {
+            if (config.logVerbose) {
                 console.log('Written', htmlOutPath);
             }
         } catch (e) {
@@ -445,7 +369,7 @@ async function process(filePath: string, allFilesNames: FileName[], tableOfConte
     } else {
         console.log('non .md file types not handled yet:', filePath);
     }
-    if (logVerbose) {
+    if (config.logVerbose) {
         console.log('Done processing', filePath, '\n');
     }
 
