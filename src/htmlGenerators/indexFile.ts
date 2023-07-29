@@ -1,4 +1,5 @@
 import * as path from "https://deno.land/std@0.177.0/path/mod.ts";
+import { pageNameToPagePath, pathToPageName } from "../path.ts";
 import { Config } from "../sharedTypes.ts";
 
 export async function createDirectoryIndexFile(d: { dir: string, contents: Deno.DirEntry[] }, outDir: string, config: Config) {
@@ -15,10 +16,8 @@ export async function createDirectoryIndexFile(d: { dir: string, contents: Deno.
         const htmlOutPath = path.join(outPath, 'index.html').replaceAll(' ', '_');
         // Write the file
         await Deno.writeTextFile(htmlOutPath, `<h1>${relativePath}</h1>` + d.contents.map(x => {
-            const pageName = x.name.split('.md').join('');
-            let link = pageName.split(' ').join('_');
-            link = x.isDirectory ? link : link + '.html';
-            return `<a href="${link}">${pageName}</a>`
+            const link = pageNameToPagePath('', x.name, x.isDirectory ? '' : '.html');
+            return `<a href="${link}">${pathToPageName(link)}</a>`
         }).join('<br/>'));
         if (config.logVerbose) {
             console.log('Written index file:', htmlOutPath);

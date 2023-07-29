@@ -1,13 +1,11 @@
 ## Tasks
 - Style index pages
-- Refactor and test
 
 ## Enhancements
 - Rework commented out Manifest code that allows it to only process files that have changed
 
 ## Tech Debt
 - Fix hacky way of removing %20 from image urls
-- Handle Directories with spaces in them in Table of Contents links
 
 ## Backlog
 - Add EULA to executable output

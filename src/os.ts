@@ -4,6 +4,7 @@ import { Config } from "./sharedTypes.ts";
 export async function* getDirs(dir: string, config: Config): AsyncGenerator<{ dir: string, contents: Deno.DirEntry[] }, void, void> {
     const dirents = Deno.readDir(dir);
     // Yield top level directory first so its own contents will be included
+    // ex: content.name: 'Butterfly Sweep.md'
     yield { dir: dir, contents: Array.from(Deno.readDirSync(dir)) };
     for await (const dirent of dirents) {
         const res = path.resolve(dir, dirent.name);

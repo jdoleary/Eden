@@ -3,6 +3,7 @@ import { copy } from "https://deno.land/std@0.195.0/fs/copy.ts";
 import { html, tokens, Token } from "https://deno.land/x/rusty_markdown/mod.ts";
 import { createDirectoryIndexFile } from "./htmlGenerators/indexFile.ts";
 import { getDirs, getFiles } from "./os.ts";
+import { pageNameToPagePath, pathToPageName } from "./path.ts";
 import { Config } from "./sharedTypes.ts";
 // const VERSION = '0.1'
 
@@ -59,15 +60,20 @@ async function main() {
     const allFilesPath = path.join('.', config.parseDir);
     // Create index file for each directory
     for await (const d of getDirs(allFilesPath, config)) {
-        const relativePath = path.relative(config.parseDir, d.dir);
+        const relativePath = path.relative(config.parseDir, d.dir).replaceAll(' ', '_');
         const pageNameSteps = relativePath.split('\\');
         const indent = pageNameSteps.length;
-        const pageName = pageNameSteps.slice(-1)[0] || '';
+        const pageName = pathToPageName(relativePath);
         tableOfContents.push({ indent, pageName, relativePath, isDir: true });
         // Add files to table of contents for use later for "next" and "prev" buttons to know order of pages
         for (const content of d.contents) {
             if (content.isFile) {
-                tableOfContents.push({ indent: indent + 1, parentDir: d.dir, pageName: content.name.replace('.md', ''), relativePath: path.relative(config.parseDir, path.resolve(config.parseDir, relativePath, './' + pageNameToPagePath(content.name))), isDir: false });
+                tableOfContents.push({
+                    indent: indent + 1,
+                    parentDir: d.dir,
+                    pageName: content.name.replace('.md', ''),
+                    relativePath: path.relative(config.parseDir, path.resolve(config.parseDir, pageNameToPagePath(relativePath, content.name))), isDir: false
+                });
             }
         }
         createDirectoryIndexFile(d, config.outDir, config);
@@ -174,9 +180,6 @@ async function process(filePath: string, allFilesNames: FileName[], tableOfConte
     let fileContents = (await Deno.readTextFile(filePath)).toString();
 
     if (path.parse(filePath).ext == '.md') {
-
-
-
         // Since pages are auto back linked, remove all obsidian link syntax
         fileContents = fileContents.replaceAll('[[', '');
         fileContents = fileContents.replaceAll(']]', '');
@@ -356,7 +359,7 @@ async function process(filePath: string, allFilesNames: FileName[], tableOfConte
             await Deno.mkdir(path.parse(outPath).dir, { recursive: true });
             // Rename the file as .html
             // .replaceAll: Replace all spaces with underscores, so they become valid html paths
-            const htmlOutPath = path.join(path.dirname(outPath), pageNameToPagePath(outPath));
+            const htmlOutPath = pageNameToPagePath(path.dirname(outPath), outPath);
             // Write the file
             await Deno.writeTextFile(htmlOutPath, htmlString);
 
@@ -374,9 +377,6 @@ async function process(filePath: string, allFilesNames: FileName[], tableOfConte
     }
 
 
-}
-function pageNameToPagePath(name: string) {
-    return (path.basename(name, path.extname(name)) + '.html').replaceAll(' ', '_')
 }
 const externalLinkSVG = `<?xml version="1.0" encoding="UTF-8"?>
 <svg width="1em" height="1em" version="1.1" viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg">
