@@ -16,7 +16,7 @@
         }
 
         article {
-            background-color: #fff;
+            background-color: #fffefe;
             padding: 3em;
             max-width: 100%;
             width: 800px;
@@ -46,6 +46,8 @@
             grid-area: nav;
             display: flex;
             flex-wrap: wrap;
+            color: white;
+            text-decoration: none;
         }
 
         nav>.center-dot {
@@ -97,6 +99,8 @@
             padding: 16px;
             /* allow the anchor tag to grow in size */
             display: block;
+            text-decoration: none;
+            color: white;
         }
 
         .nav-item:hover {
@@ -115,7 +119,18 @@
             justify-content: space-between;
         }
 
+        .nextPrevButtons a:hover {
+            transform: translateY(-2px);
+            box-shadow: 1px 1px 1px;
+        }
+
+        .nextPrevButtons a:active {
+            transform: translateY(1px);
+            box-shadow: inset 1px 1px 1px;
+        }
+
         .nextPrevButtons a {
+            transition: 0.05s;
             display: block;
             margin: 8px;
             padding: 8px;
