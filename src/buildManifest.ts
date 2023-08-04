@@ -303,14 +303,14 @@ async function process(filePath: string, allFilesNames: FileName[], tableOfConte
         const currentIndex = currentPage ? tableOfContentsPages.indexOf(currentPage) : -1;
         if (currentIndex !== -1) {
             const previous = tableOfContentsPages[currentIndex - 1];
-            htmlString += `<div class="nextPrevButtons flex space-between">`;
+            htmlString += `<div class="footer flex space-between">`;
             // Add next and previous buttons to page
             // If other page is in a different chapter, show the chapter before a ":"
-            htmlString += `${previous ? `<a href="\\${previous.relativePath}">← ${previous.parentDir !== currentPage?.parentDir ? path.parse(previous.parentDir || '').name + ':' : ''} ${previous.pageName}</a>` : `<a href="${tableOfContentsURL}">Table of Contents</a>`}`;
+            htmlString += `${previous ? `<a class="nextPrevButtons" href="\\${previous.relativePath}">← ${previous.parentDir !== currentPage?.parentDir ? path.parse(previous.parentDir || '').name + ':' : ''} ${previous.pageName}</a>` : `<a class="nextPrevButtons" href="${tableOfContentsURL}">Table of Contents</a>`}`;
             // Add pageNumber
-            htmlString += `<div class="pageNumber">${currentIndex + 1}</div>`;
+            htmlString += `<div class="pageNumber"><a href="${tableOfContentsURL}">${currentIndex + 1}</a></div>`;
             const next = tableOfContentsPages[currentIndex + 1];
-            htmlString += `${next ? `<a href="\\${next.relativePath}">${next.parentDir !== currentPage?.parentDir ? path.parse(next.parentDir || '').name + ':' : ''} ${next.pageName} →</a>` : ''}`;
+            htmlString += `${next ? `<a class="nextPrevButtons" href="\\${next.relativePath}">${next.parentDir !== currentPage?.parentDir ? path.parse(next.parentDir || '').name + ':' : ''} ${next.pageName} →</a>` : ''}`;
             htmlString += `</div>`;
 
         }
