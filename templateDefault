@@ -28,6 +28,15 @@
             flex: 1;
         }
 
+        /* Only show underline on hover like how google does it */
+        a:hover {
+            text-decoration: underline;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
         article h1 {
             margin-top: 0;
             border-bottom: 1px solid black;
