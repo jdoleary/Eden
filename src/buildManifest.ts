@@ -67,7 +67,7 @@ async function main() {
         tableOfContents.push({ indent, pageName, relativePath, isDir: true });
         // Add files to table of contents for use later for "next" and "prev" buttons to know order of pages
         for (const content of d.contents) {
-            if (content.isFile) {
+            if (content.isFile && content.name.endsWith('.md')) {
                 tableOfContents.push({
                     indent: indent + 1,
                     parentDir: d.dir,

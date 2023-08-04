@@ -1,6 +1,5 @@
 ## Tasks
 - Style index pages
-- bug: Manifest.json is a link in the table of contents after Injury Prevention and it is a non existant page
 
 ## Enhancements
 - Rework commented out Manifest code that allows it to only process files that have changed
