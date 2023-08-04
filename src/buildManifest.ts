@@ -305,7 +305,7 @@ async function process(filePath: string, allFilesNames: FileName[], tableOfConte
             htmlString += `<div class="nextPrevButtons flex space-between">`;
             // Add next and previous buttons to page
             // If other page is in a different chapter, show the chapter before a ":"
-            htmlString += `${previous ? `<a href="\\${previous.relativePath}">← ${previous.parentDir !== currentPage?.parentDir ? path.parse(previous.parentDir || '').name + ':' : ''} ${previous.pageName}</a>` : ''}`;
+            htmlString += `${previous ? `<a href="\\${previous.relativePath}">← ${previous.parentDir !== currentPage?.parentDir ? path.parse(previous.parentDir || '').name + ':' : ''} ${previous.pageName}</a>` : '<a href="/table_of_contents.html">Table of Contents</a>'}`;
             const next = tableOfContentsPages[currentIndex + 1];
             htmlString += `${next ? `<a href="\\${next.relativePath}">${next.parentDir !== currentPage?.parentDir ? path.parse(next.parentDir || '').name + ':' : ''} ${next.pageName} →</a>` : ''}`;
             htmlString += `</div>`;
