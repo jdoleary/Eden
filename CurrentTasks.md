@@ -1,6 +1,5 @@
 ## Tasks
-- Style index pages
-- Fix layout shift when scrollbar appears
+- Exclude 'Assets' and '.Obsidian' from home page
 
 ## Enhancements
 - Rework commented out Manifest code that allows it to only process files that have changed
