@@ -68,14 +68,19 @@ async function main() {
         tableOfContents.push({ indent, pageName, relativePath, isDir: true });
         // Add files to table of contents for use later for "next" and "prev" buttons to know order of pages
         for (const content of d.contents) {
-            if (content.isFile && content.name.endsWith('.md')) {
-                tableOfContents.push({
-                    indent: indent + 1,
-                    parentDir: d.dir,
-                    pageName: content.name.replace('.md', ''),
-                    relativePath: path.relative(config.parseDir, path.resolve(config.parseDir, pageNameToPagePath(relativePath, content.name))), isDir: false
-                });
+            if (content.isFile) {
+                if (content.name.endsWith('.md')) {
+                    tableOfContents.push({
+                        indent: indent + 1,
+                        parentDir: d.dir,
+                        pageName: content.name.replace('.md', ''),
+                        relativePath: path.relative(config.parseDir, path.resolve(config.parseDir, pageNameToPagePath(relativePath, content.name))), isDir: false
+                    });
+                } else {
+                    console.log('table of contents: skipping', content.name);
+                }
             }
+
         }
         createDirectoryIndexFile(d, config.outDir, config);
     }
@@ -298,19 +303,18 @@ async function process(filePath: string, allFilesNames: FileName[], tableOfConte
         // at the bottom of the page
         htmlString = `<div><h1>${pageTitle}</h1>${htmlString}</div>`;
         // Add footer "next" and "prev" buttons
-        const tableOfContentsPages = tableOfContents.filter(x => !x.isDir);
-        const currentPage = tableOfContentsPages.find(x => x.pageName == pageTitle);
-        const currentIndex = currentPage ? tableOfContentsPages.indexOf(currentPage) : -1;
+        const currentPage = tableOfContents.find(x => x.pageName == pageTitle);
+        const currentIndex = currentPage ? tableOfContents.indexOf(currentPage) : -1;
         if (currentIndex !== -1) {
-            const previous = tableOfContentsPages[currentIndex - 1];
+            const previous = tableOfContents[currentIndex - 1];
             htmlString += `<div class="footer flex space-between">`;
             // Add next and previous buttons to page
             // If other page is in a different chapter, show the chapter before a ":"
             htmlString += `${previous ? `<a class="nextPrevButtons" href="\\${previous.relativePath}">← ${previous.parentDir !== currentPage?.parentDir ? path.parse(previous.parentDir || '').name + ':' : ''} ${previous.pageName}</a>` : `<a class="nextPrevButtons" href="${tableOfContentsURL}">Table of Contents</a>`}`;
             // Add pageNumber
             htmlString += `<div class="pageNumber"><a href="${tableOfContentsURL}">${currentIndex + 1}</a></div>`;
-            const next = tableOfContentsPages[currentIndex + 1];
-            htmlString += `${next ? `<a class="nextPrevButtons" href="\\${next.relativePath}">${next.parentDir !== currentPage?.parentDir ? path.parse(next.parentDir || '').name + ':' : ''} ${next.pageName} →</a>` : ''}`;
+            const next = tableOfContents[currentIndex + 1];
+            htmlString += `${next ? `<a class="nextPrevButtons" href="\\${next.relativePath}">${next.pageName} →</a>` : ''}`;
             htmlString += `</div>`;
 
         }
