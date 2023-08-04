@@ -307,6 +307,8 @@ async function process(filePath: string, allFilesNames: FileName[], tableOfConte
             // Add next and previous buttons to page
             // If other page is in a different chapter, show the chapter before a ":"
             htmlString += `${previous ? `<a href="\\${previous.relativePath}">← ${previous.parentDir !== currentPage?.parentDir ? path.parse(previous.parentDir || '').name + ':' : ''} ${previous.pageName}</a>` : `<a href="${tableOfContentsURL}">Table of Contents</a>`}`;
+            // Add pageNumber
+            htmlString += `<div class="pageNumber">${currentIndex + 1}</div>`;
             const next = tableOfContentsPages[currentIndex + 1];
             htmlString += `${next ? `<a href="\\${next.relativePath}">${next.parentDir !== currentPage?.parentDir ? path.parse(next.parentDir || '').name + ':' : ''} ${next.pageName} →</a>` : ''}`;
             htmlString += `</div>`;
@@ -351,10 +353,9 @@ async function process(filePath: string, allFilesNames: FileName[], tableOfConte
             if (currentPathStep == title) {
                 // No breadcrumb for current title
                 return '';
-                // return `<div class="nav-item no-link"><span>${currentPathStep}</span></div>`;
             }
             return `<a class="nav-item" href=${url}>${currentPathStep}</a>`;
-        })].join('<span class="center-dot">·</span>');
+        })].filter(x => !!x).join('<span class="center-dot">·</span>');
         htmlString = htmlString.replace('/* {{BREADCRUMBS}} */', breadcrumbs);
 
         try {

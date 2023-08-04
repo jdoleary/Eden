@@ -1,5 +1,6 @@
 ## Tasks
 - Style index pages
+- Fix layout shift when scrollbar appears
 
 ## Enhancements
 - Rework commented out Manifest code that allows it to only process files that have changed
