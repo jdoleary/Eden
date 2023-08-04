@@ -18,6 +18,7 @@ interface Manifest {
     version: string;
     files: ManifestFiles;
 }
+const tableOfContentsURL = '/table_of_contents.html';
 type TableOfContents = { indent: number, pageName: string, relativePath: string, isDir: boolean, parentDir?: string }[];
 const OUT_ASSETS_DIR_NAME = 'md2webAssets';
 async function main() {
@@ -82,7 +83,7 @@ async function main() {
         console.log('Table of Contents:', tableOfContents);
     }
     // Create table of contents
-    const tocOutPath = path.join(config.outDir, 'table_of_contents.html');
+    const tocOutPath = path.join(config.outDir, tableOfContentsURL);
 
     await Deno.writeTextFile(tocOutPath, tableOfContents.map(x => {
         // -1 sets the top level pages flush with the left hand side
@@ -305,7 +306,7 @@ async function process(filePath: string, allFilesNames: FileName[], tableOfConte
             htmlString += `<div class="nextPrevButtons flex space-between">`;
             // Add next and previous buttons to page
             // If other page is in a different chapter, show the chapter before a ":"
-            htmlString += `${previous ? `<a href="\\${previous.relativePath}">← ${previous.parentDir !== currentPage?.parentDir ? path.parse(previous.parentDir || '').name + ':' : ''} ${previous.pageName}</a>` : '<a href="/table_of_contents.html">Table of Contents</a>'}`;
+            htmlString += `${previous ? `<a href="\\${previous.relativePath}">← ${previous.parentDir !== currentPage?.parentDir ? path.parse(previous.parentDir || '').name + ':' : ''} ${previous.pageName}</a>` : `<a href="${tableOfContentsURL}">Table of Contents</a>`}`;
             const next = tableOfContentsPages[currentIndex + 1];
             htmlString += `${next ? `<a href="\\${next.relativePath}">${next.parentDir !== currentPage?.parentDir ? path.parse(next.parentDir || '').name + ':' : ''} ${next.pageName} →</a>` : ''}`;
             htmlString += `</div>`;
@@ -344,11 +345,13 @@ async function process(filePath: string, allFilesNames: FileName[], tableOfConte
         const title = filePath.split(path.sep).slice(-1)[0];
 
         htmlString = htmlString.replace('/* {{TITLE}} */', `<title>${title}</title>`);
-        const breadcrumbs = [`<a href="/"' class="nav-item">Home</a>`, ...relativePath.split(path.sep).map(currentPathStep => {
+        const breadcrumbs = [`<a href="${tableOfContentsURL}"' class="nav-item">Home</a>`, ...relativePath.split(path.sep).map(currentPathStep => {
             const preUrl = relativePath.split(currentPathStep)[0];
             const url = path.join('/', preUrl, currentPathStep);
             if (currentPathStep == title) {
-                return `<div class="nav-item no-link"><span>${currentPathStep}</span></div>`;
+                // No breadcrumb for current title
+                return '';
+                // return `<div class="nav-item no-link"><span>${currentPathStep}</span></div>`;
             }
             return `<a class="nav-item" href=${url}>${currentPathStep}</a>`;
         })].join('<span class="center-dot">·</span>');
