@@ -2,9 +2,10 @@ import * as path from "https://deno.land/std@0.177.0/path/mod.ts";
 import { copy } from "https://deno.land/std@0.195.0/fs/copy.ts";
 import { html, tokens, Token } from "https://deno.land/x/rusty_markdown/mod.ts";
 import { createDirectoryIndexFile } from "./htmlGenerators/indexFile.ts";
+import { addContentsToTemplate } from "./htmlGenerators/useTemplate.ts";
 import { getDirs, getFiles } from "./os.ts";
 import { pageNameToPagePath, pathToPageName } from "./path.ts";
-import { Config } from "./sharedTypes.ts";
+import { Config, TableOfContents, tableOfContentsURL } from "./sharedTypes.ts";
 // const VERSION = '0.1'
 
 
@@ -18,8 +19,6 @@ interface Manifest {
     version: string;
     files: ManifestFiles;
 }
-const tableOfContentsURL = '/table_of_contents.html';
-type TableOfContents = { indent: number, pageName: string, relativePath: string, isDir: boolean, parentDir?: string }[];
 const OUT_ASSETS_DIR_NAME = 'md2webAssets';
 async function main() {
     let config: Config = {
@@ -82,7 +81,7 @@ async function main() {
             }
 
         }
-        createDirectoryIndexFile(d, config.outDir, config);
+        createDirectoryIndexFile(d, config.outDir, tableOfContents, config);
     }
     if (config.logVerbose) {
         console.log('Table of Contents:', tableOfContents);
@@ -295,72 +294,8 @@ async function process(filePath: string, allFilesNames: FileName[], tableOfConte
             .replaceAll('EXTERNAL_LINK_SVG', externalLinkSVG)
             .replaceAll('%20', ' ');
 
-        // Get all nested templates and add to html
         const relativePath = path.relative(config.parseDir, filePath);
-        // Prepend page title to top of content
-        const pageTitle = (relativePath.split('\\').slice(-1)[0] || '').replaceAll('.md', '');
-        // The wrapping div separates the text from the nextPrev buttons so the buttons can be
-        // at the bottom of the page
-        htmlString = `<div><h1>${pageTitle}</h1>${htmlString}</div>`;
-        // Add footer "next" and "prev" buttons
-        const currentPage = tableOfContents.find(x => x.pageName == pageTitle);
-        const currentIndex = currentPage ? tableOfContents.indexOf(currentPage) : -1;
-        if (currentIndex !== -1) {
-            const previous = tableOfContents[currentIndex - 1];
-            htmlString += `<div class="footer flex space-between">`;
-            // Add next and previous buttons to page
-            // If other page is in a different chapter, show the chapter before a ":"
-            htmlString += `${previous ? `<a class="nextPrevButtons" href="\\${previous.relativePath}">← ${previous.parentDir !== currentPage?.parentDir ? path.parse(previous.parentDir || '').name + ':' : ''} ${previous.pageName}</a>` : `<a class="nextPrevButtons" href="${tableOfContentsURL}">Table of Contents</a>`}`;
-            // Add pageNumber
-            htmlString += `<div class="pageNumber"><a href="${tableOfContentsURL}">${currentIndex + 1}</a></div>`;
-            const next = tableOfContents[currentIndex + 1];
-            htmlString += `${next ? `<a class="nextPrevButtons" href="\\${next.relativePath}">${next.pageName} →</a>` : ''}`;
-            htmlString += `</div>`;
-
-        }
-
-        const relativeDirectories = path.parse(relativePath).dir;
-        // Empty string is for directoryParse base dir
-        const eachDirectory = ['', ...relativeDirectories.split(path.sep)];
-        const templateReplacer = '/* {{CONTENT}} */';
-        const searchDirectories: string[] = [];
-        for (let i = 0; i < eachDirectory.length; i++) {
-            const lookForTemplateFileInDir = eachDirectory.slice(0, i + 1).join(path.sep);
-            searchDirectories.push(lookForTemplateFileInDir);
-        }
-        // .filter removes duplicate root
-        let isRoot = true;
-        for (const dir of searchDirectories.filter(x => x !== path.sep).reverse()) {
-            // Start templateContents as just the templateReplacer so that if there is no template it will still
-            // include the page contents alone.  But there should always be a template even if it's `templateDefault`
-            // which is included in this project
-            let templateContents = templateReplacer;
-            try {
-                templateContents = (await Deno.readTextFile(path.join(config.parseDir, dir, 'template'))).toString();
-                console.log('Using template override', path.join(config.parseDir, dir, 'template'));
-            } catch (e) {
-                // Use default demplate
-                templateContents = isRoot ? (await Deno.readTextFile(path.join('templateDefault'))).toString() || templateReplacer : templateReplacer;
-            }
-            isRoot = false;
-            // Add the template to the front
-            // TODO: Optimizable
-            const [templateStart, templateEnd] = templateContents.split(templateReplacer);
-            htmlString = (templateStart || '') + htmlString + (templateEnd || '');
-        }
-        const title = filePath.split(path.sep).slice(-1)[0];
-
-        htmlString = htmlString.replace('/* {{TITLE}} */', `<title>${title}</title>`);
-        const breadcrumbs = [`<a href="${tableOfContentsURL}"' class="nav-item">Home</a>`, ...relativePath.split(path.sep).map(currentPathStep => {
-            const preUrl = relativePath.split(currentPathStep)[0];
-            const url = path.join('/', preUrl, currentPathStep);
-            if (currentPathStep == title) {
-                // No breadcrumb for current title
-                return '';
-            }
-            return `<a class="nav-item" href=${url}>${currentPathStep}</a>`;
-        })].filter(x => !!x).join('<span class="center-dot">·</span>');
-        htmlString = htmlString.replace('/* {{BREADCRUMBS}} */', breadcrumbs);
+        htmlString = await addContentsToTemplate(htmlString, config, tableOfContents, filePath, relativePath);
 
         try {
             // Get the new path
@@ -385,8 +320,6 @@ async function process(filePath: string, allFilesNames: FileName[], tableOfConte
     if (config.logVerbose) {
         console.log('Done processing', filePath, '\n');
     }
-
-
 }
 const externalLinkSVG = `<?xml version="1.0" encoding="UTF-8"?>
 <svg width="1em" height="1em" version="1.1" viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg">
