@@ -293,7 +293,9 @@ async function process(filePath: string, allFilesNames: FileName[], tableOfConte
         const relativePath = path.relative(config.parseDir, filePath);
         // Prepend page title to top of content
         const pageTitle = (relativePath.split('\\').slice(-1)[0] || '').replaceAll('.md', '');
-        htmlString = `<h1>${pageTitle}</h1>` + htmlString;
+        // The wrapping div separates the text from the nextPrev buttons so the buttons can be
+        // at the bottom of the page
+        htmlString = `<div><h1>${pageTitle}</h1>${htmlString}</div>`;
         // Add footer "next" and "prev" buttons
         const tableOfContentsPages = tableOfContents.filter(x => !x.isDir);
         const currentPage = tableOfContentsPages.find(x => x.pageName == pageTitle);
@@ -303,9 +305,9 @@ async function process(filePath: string, allFilesNames: FileName[], tableOfConte
             htmlString += `<div class="nextPrevButtons flex space-between">`;
             // Add next and previous buttons to page
             // If other page is in a different chapter, show the chapter before a ":"
-            htmlString += `${previous ? `<a href="\\${previous.relativePath}">${previous.parentDir !== currentPage?.parentDir ? path.parse(previous.parentDir || '').name + ':' : ''} ${previous.pageName}</a>` : ''}`;
+            htmlString += `${previous ? `<a href="\\${previous.relativePath}">← ${previous.parentDir !== currentPage?.parentDir ? path.parse(previous.parentDir || '').name + ':' : ''} ${previous.pageName}</a>` : ''}`;
             const next = tableOfContentsPages[currentIndex + 1];
-            htmlString += `${next ? `<a href="\\${next.relativePath}">${next.parentDir !== currentPage?.parentDir ? path.parse(next.parentDir || '').name + ':' : ''} ${next.pageName}</a>` : ''}`;
+            htmlString += `${next ? `<a href="\\${next.relativePath}">${next.parentDir !== currentPage?.parentDir ? path.parse(next.parentDir || '').name + ':' : ''} ${next.pageName} →</a>` : ''}`;
             htmlString += `</div>`;
 
         }
