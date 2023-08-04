@@ -18,6 +18,8 @@
         article {
             background-color: #fffefe;
             padding: 3em;
+            /* For nextPrevButtons so text doesn't show below them */
+            padding-bottom: 0;
             max-width: 100%;
             width: 800px;
             box-sizing: border-box;
@@ -117,6 +119,19 @@
 
         .space-between {
             justify-content: space-between;
+        }
+
+        .nextPrevButtons {
+            box-shadow: 1px -1px 1px;
+            position: sticky;
+            width: 100%;
+            bottom: 0;
+            /* Same as article */
+            padding-bottom: 2em;
+            /* Same as article */
+            background-color: #fffefe;
+            max-width: 800px;
+            box-shadow: 0 -1px 0.9px;
         }
 
         .nextPrevButtons a:hover {
