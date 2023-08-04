@@ -89,11 +89,13 @@ async function main() {
     // Create table of contents
     const tocOutPath = path.join(config.outDir, tableOfContentsURL);
 
-    await Deno.writeTextFile(tocOutPath, tableOfContents.map(x => {
+    const tableOfContentsHtml = await addContentsToTemplate(tableOfContents.map(x => {
         // -1 sets the top level pages flush with the left hand side
         const indentHTML: string[] = Array(x.indent - 1).fill('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
         return `<div>${indentHTML.join('')}<a href="${x.relativePath}">${x.pageName}</a></div>`;
-    }).join(''));
+    }).join(''), config, undefined, tocOutPath, '', 'Table of Contents');
+
+    await Deno.writeTextFile(tocOutPath, tableOfContentsHtml);
 
     // Get a list of all file names to support automatic back linking
     const allFilesNames = [];

@@ -1,29 +1,29 @@
 import * as path from "https://deno.land/std@0.177.0/path/mod.ts";
 import { Config, TableOfContents, tableOfContentsURL } from "../sharedTypes.ts";
 
-export async function addContentsToTemplate(htmlString: string, config: Config, tableOfContents: TableOfContents, filePath: string, relativePath: string): Promise<string> {
-
+export async function addContentsToTemplate(htmlString: string, config: Config, tableOfContents: TableOfContents | undefined, filePath: string, relativePath: string, titleOverride: string = ''): Promise<string> {
     // Get all nested templates and add to html
     // Prepend page title to top of content
     const pageTitle = (relativePath.split('\\').slice(-1)[0] || '').replaceAll('.md', '');
     // The wrapping div separates the text from the nextPrev buttons so the buttons can be
     // at the bottom of the page
-    htmlString = `<div><h1>${pageTitle}</h1>${htmlString}</div>`;
-    // Add footer "next" and "prev" buttons
-    const currentPage = tableOfContents.find(x => x.pageName == pageTitle);
-    const currentIndex = currentPage ? tableOfContents.indexOf(currentPage) : -1;
-    if (currentIndex !== -1) {
-        const previous = tableOfContents[currentIndex - 1];
-        htmlString += `<div class="footer flex space-between">`;
-        // Add next and previous buttons to page
-        // If other page is in a different chapter, show the chapter before a ":"
-        htmlString += `${previous ? `<a class="nextPrevButtons" href="\\${previous.relativePath}">← ${previous.parentDir !== currentPage?.parentDir ? path.parse(previous.parentDir || '').name + ':' : ''} ${previous.pageName}</a>` : `<a class="nextPrevButtons" href="${tableOfContentsURL}">Table of Contents</a>`}`;
-        // Add pageNumber
-        htmlString += `<div class="pageNumber"><a href="${tableOfContentsURL}">${currentIndex + 1}</a></div>`;
-        const next = tableOfContents[currentIndex + 1];
-        htmlString += `${next ? `<a class="nextPrevButtons" href="\\${next.relativePath}">${next.pageName} →</a>` : ''}`;
-        htmlString += `</div>`;
-
+    htmlString = `<div><h1>${titleOverride || pageTitle}</h1>${htmlString}</div>`;
+    if (tableOfContents) {
+        // Add footer "next" and "prev" buttons
+        const currentPage = tableOfContents.find(x => x.pageName == pageTitle);
+        const currentIndex = currentPage ? tableOfContents.indexOf(currentPage) : -1;
+        if (currentIndex !== -1) {
+            const previous = tableOfContents[currentIndex - 1];
+            htmlString += `<div class="footer flex space-between">`;
+            // Add next and previous buttons to page
+            // If other page is in a different chapter, show the chapter before a ":"
+            htmlString += `${previous ? `<a class="nextPrevButtons" href="\\${previous.relativePath}">← ${previous.parentDir !== currentPage?.parentDir ? path.parse(previous.parentDir || '').name + ':' : ''} ${previous.pageName}</a>` : `<a class="nextPrevButtons" href="${tableOfContentsURL}">Table of Contents</a>`}`;
+            // Add pageNumber
+            htmlString += `<div class="pageNumber"><a href="${tableOfContentsURL}">${currentIndex + 1}</a></div>`;
+            const next = tableOfContents[currentIndex + 1];
+            htmlString += `${next ? `<a class="nextPrevButtons" href="\\${next.relativePath}">${next.pageName} →</a>` : ''}`;
+            htmlString += `</div>`;
+        }
     }
 
     const relativeDirectories = path.parse(relativePath).dir;
