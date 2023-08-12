@@ -93,7 +93,7 @@ async function main() {
         // -1 sets the top level pages flush with the left hand side
         const indentHTML: string[] = Array(x.indent - 1).fill('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
         return `<div>${indentHTML.join('')}<a href="${x.relativePath}">${x.pageName}</a></div>`;
-    }).join(''), config, undefined, tocOutPath, '', 'Table of Contents');
+    }).join(''), config, tableOfContents, tocOutPath, '', 'Table of Contents');
 
     await Deno.writeTextFile(tocOutPath, tableOfContentsHtml);
 
