@@ -16,7 +16,11 @@ export async function addContentsToTemplate(htmlString: string, config: Config, 
         htmlString += `<div class="footer flex space-between">`;
         // Add next and previous buttons to page
         // If other page is in a different chapter, show the chapter before a ":"
-        htmlString += `${previous ? `<a class="nextPrevButtons" href="\\${previous.relativePath}">← ${previous.parentDir !== currentPage?.parentDir ? path.parse(previous.parentDir || '').name + ':' : ''} ${previous.pageName}</a>` : `<a class="nextPrevButtons" href="${tableOfContentsURL}">Table of Contents</a>`}`;
+        htmlString += `${previous
+            ? `<a class="nextPrevButtons" href="\\${previous.relativePath}">← ${previous.parentDir !== currentPage?.parentDir
+                ? path.parse(previous.parentDir || '').name + ':'
+                : ''} ${previous.pageName}</a>`
+            : `<a class="nextPrevButtons ${titleOverride == 'Table of Contents' ? 'hidden' : ''}" href="${tableOfContentsURL}">Table of Contents</a>`}`;
         // Add pageNumber
         htmlString += `<div class="pageNumber"><a href="${tableOfContentsURL}">${currentIndex + 1}</a></div>`;
         const next = tableOfContents[currentIndex + 1];

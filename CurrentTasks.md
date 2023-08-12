@@ -1,5 +1,4 @@
 ## Tasks
-- Fix weird paging buttons on first / toc page
 - Make into cli that generates template and config file in ParseDir on first run
 - CLI should only overwrite, never delete the outDir contents
 
