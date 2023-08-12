@@ -81,7 +81,10 @@ async function main() {
             }
 
         }
-        createDirectoryIndexFile(d, config.outDir, tableOfContents, config);
+        // Create an index page for every directory except for the parse dir (the table of contents better serves this)
+        if (d.dir != config.parseDir) {
+            createDirectoryIndexFile(d, config.outDir, tableOfContents, config);
+        }
     }
     if (config.logVerbose) {
         console.log('Table of Contents:', tableOfContents);

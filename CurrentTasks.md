@@ -1,11 +1,14 @@
 ## Tasks
-- Exclude 'Assets' and '.Obsidian' from home page
+- Fix weird paging buttons on first / toc page
+- Make into cli that generates template and config file in ParseDir on first run
+- CLI should only overwrite, never delete the outDir contents
 
 ## Enhancements
 - Rework commented out Manifest code that allows it to only process files that have changed
 
 ## Tech Debt
 - Fix hacky way of removing %20 from image urls
+- Handle page titles with parenthesis
 
 ## Backlog
 - Add EULA to executable output
