@@ -1,11 +1,12 @@
 import * as path from "https://deno.land/std@0.177.0/path/mod.ts";
 import { copy } from "https://deno.land/std@0.195.0/fs/copy.ts";
+import { exists } from "https://deno.land/std@0.198.0/fs/exists.ts";
 import { html, tokens, Token } from "https://deno.land/x/rusty_markdown/mod.ts";
 import { createDirectoryIndexFile } from "./htmlGenerators/indexFile.ts";
 import { addContentsToTemplate } from "./htmlGenerators/useTemplate.ts";
 import { getDirs, getFiles } from "./os.ts";
 import { pageNameToPagePath, pathToPageName } from "./path.ts";
-import { Config, TableOfContents, tableOfContentsURL } from "./sharedTypes.ts";
+import { Config, configName, TableOfContents, tableOfContentsURL, templateName } from "./sharedTypes.ts";
 // const VERSION = '0.1'
 
 
@@ -21,13 +22,26 @@ interface Manifest {
 }
 const OUT_ASSETS_DIR_NAME = 'md2webAssets';
 async function main() {
+    // This will eventually be supplied via CLI
+    const parseDir = "C:\\ObsidianJordanJiuJitsu\\JordanJiuJitsu\\";
     let config: Config = {
-        parseDir: 'md2WebDefaultParseDir',
-        outDir: 'md2WebDefaultOutDir',
-        ignoreDirs: []
+        "outDir": "out",
+        parseDir,
+        "ignoreDirs": [
+            "node_modules",
+            ".obsidian",
+            "Assets"
+        ],
+        "assetDir": path.join(parseDir, 'Assets'),
     };
+    // If there is no config file in parseDir, create one from the default
+    const configPath = path.join(config.parseDir, configName)
+    if (!await exists(configPath)) {
+        console.log('Creating config in ', configPath);
+        await Deno.writeTextFile(configPath, JSON.stringify(config, null, 2));
+    }
     try {
-        config = JSON.parse(await Deno.readTextFile(path.join('md2web.config.json'))) || {};
+        config = JSON.parse(await Deno.readTextFile(path.join(config.parseDir, configName))) || config;
     } catch (e) {
         console.log('Caught: Manifest non-existant or corrupt', e);
         return;
@@ -108,6 +122,14 @@ async function main() {
             allFilesNames.push({ name: parsed.name, kpath: path.relative(config.parseDir, f.split('.md').join('.html')) });
         }
     }
+
+    // Create the template files from defaults unless they already exist in the parseDir:
+    const templatePath = path.join(config.parseDir, templateName)
+    if (!await exists(templatePath)) {
+        console.log('Creating template in ', templatePath);
+        await copy('templateDefault', templatePath);
+    }
+
     // console.log('jtest allfilenames', allFilesNames, allFilesNames.length);
     // console.log('jtest table', tableOfContents.map(x => `${x.pageName}, ${x.isDir}`), tableOfContents.length);
     if (config.logVerbose) {

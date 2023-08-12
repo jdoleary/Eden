@@ -1,5 +1,5 @@
 ## Tasks
-- Make into cli that generates template and config file in ParseDir on first run
+- Make into cli
 - CLI should only overwrite, never delete the outDir contents
 
 ## Enhancements

@@ -1,5 +1,5 @@
 import * as path from "https://deno.land/std@0.177.0/path/mod.ts";
-import { Config, TableOfContents, tableOfContentsURL } from "../sharedTypes.ts";
+import { Config, TableOfContents, tableOfContentsURL, templateName } from "../sharedTypes.ts";
 
 export async function addContentsToTemplate(htmlString: string, config: Config, tableOfContents: TableOfContents, filePath: string, relativePath: string, titleOverride = ''): Promise<string> {
     // Get all nested templates and add to html
@@ -44,12 +44,13 @@ export async function addContentsToTemplate(htmlString: string, config: Config, 
         // which is included in this project
         let templateContents = templateReplacer;
         try {
-            templateContents = (await Deno.readTextFile(path.join(config.parseDir, dir, 'template'))).toString();
-            console.log('Using template override', path.join(config.parseDir, dir, 'template'));
-        } catch (e) {
+            templateContents = (await Deno.readTextFile(path.join(config.parseDir, dir, templateName))).toString();
+        } catch (_) {
             // Use default demplate
             const isRoot = dir == '';
-            templateContents = isRoot ? (await Deno.readTextFile(path.join('templateDefault'))).toString() || templateReplacer : templateReplacer;
+            if (isRoot) {
+                console.log('Template not found at ', dir)
+            }
         }
         // Add the template to the front
         // TODO: Optimizable
