@@ -1,1 +1,1 @@
-deno run --allow-write --allow-read src/buildManifest.ts
+deno run --allow-write --allow-read src/buildManifest.ts --parseDir C:/ObsidianJordanJiuJitsu/JordanJiuJitsu/

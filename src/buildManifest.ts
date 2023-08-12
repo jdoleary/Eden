@@ -2,6 +2,7 @@ import * as path from "https://deno.land/std@0.177.0/path/mod.ts";
 import { copy } from "https://deno.land/std@0.195.0/fs/copy.ts";
 import { exists } from "https://deno.land/std@0.198.0/fs/exists.ts";
 import { html, tokens, Token } from "https://deno.land/x/rusty_markdown/mod.ts";
+import { parse } from "https://deno.land/std@0.194.0/flags/mod.ts";
 import { createDirectoryIndexFile } from "./htmlGenerators/indexFile.ts";
 import { addContentsToTemplate } from "./htmlGenerators/useTemplate.ts";
 import { getDirs, getFiles } from "./os.ts";
@@ -22,8 +23,12 @@ interface Manifest {
 }
 const OUT_ASSETS_DIR_NAME = 'md2webAssets';
 async function main() {
+    const cliFlags = parse(Deno.args, {
+        string: ["parseDir"]
+    })
     // This will eventually be supplied via CLI
-    const parseDir = "C:\\ObsidianJordanJiuJitsu\\JordanJiuJitsu\\";
+    const parseDir = cliFlags.parseDir || Deno.cwd();
+    console.log('Parsing:', parseDir);
     let config: Config = {
         "outDir": "out",
         parseDir,

@@ -1,6 +1,6 @@
 ## Tasks
-- Make into cli
 - CLI should only overwrite, never delete the outDir contents
+- youtu.be links are not being parsed correctly (see page "Chris Paines")
 
 ## Enhancements
 - Rework commented out Manifest code that allows it to only process files that have changed
