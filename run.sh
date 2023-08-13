@@ -1,1 +1,1 @@
-deno run --allow-write --allow-read src/buildManifest.ts --parseDir C:/ObsidianJordanJiuJitsu/JordanJiuJitsu/
+deno run --allow-net --allow-write --allow-read src/buildManifest.ts --parseDir C:/ObsidianJordanJiuJitsu/JordanJiuJitsu/ --preview && start http://localhost:8000/Table_of_Contents.html
