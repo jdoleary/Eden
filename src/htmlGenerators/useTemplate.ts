@@ -31,7 +31,7 @@ export async function addContentsToTemplate(htmlString: string, config: Config, 
     const relativeDirectories = path.parse(relativePath).dir;
     // Empty string is for directoryParse base dir
     const eachDirectory = ['', ...relativeDirectories.split(path.sep)];
-    const templateReplacer = '/* {{CONTENT}} */';
+    const templateReplacer = '{{content}}';
     const searchDirectories: string[] = [];
     for (let i = 0; i < eachDirectory.length; i++) {
         const lookForTemplateFileInDir = eachDirectory.slice(0, i + 1).join(path.sep);
@@ -59,7 +59,7 @@ export async function addContentsToTemplate(htmlString: string, config: Config, 
     }
     const title = filePath.split(path.sep).slice(-1)[0];
 
-    htmlString = htmlString.replace('/* {{TITLE}} */', `<title>${title}</title>`);
+    htmlString = htmlString.replace('{{title}}', `<title>${title}</title>`);
     let breadcrumbs = '';
     if (relativePath) {
         breadcrumbs = [`<a href="${tableOfContentsURL}"' class="nav-item">Home</a>`, ...relativePath.split(path.sep).map(currentPathStep => {
@@ -72,7 +72,16 @@ export async function addContentsToTemplate(htmlString: string, config: Config, 
             return `<a class="nav-item" href=${url}>${currentPathStep}</a>`;
         })].filter(x => !!x).join('<span class="center-dot">·</span>');
     }
-    htmlString = htmlString.replace('/* {{BREADCRUMBS}} */', breadcrumbs);
+    htmlString = htmlString.replace('{{breadcrumbs}}', breadcrumbs);
+
+    // Get file meta data
+    try {
+        const metadata = await Deno.stat(path.join(config.parseDir, relativePath));
+        htmlString = htmlString.replace('{{created}}', metadata.birthtime?.toLocaleDateString() || '');
+        htmlString = htmlString.replace('{{modified}}', metadata.mtime?.toLocaleDateString() || '');
+    } catch (e) {
+        console.error('Err: Failed to get metadata for ', filePath);
+    }
 
     return htmlString;
 

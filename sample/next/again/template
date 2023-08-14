@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    /* {{TITLE}} */
+    /* {{title}} */
     <style>
         body {
             background-color: #f77;
@@ -18,7 +18,7 @@
 <body>
     <main>
         TEMPLATE OVERRIDE
-        /* {{CONTENT}} */
+        /* {{content}} */
     </main>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
