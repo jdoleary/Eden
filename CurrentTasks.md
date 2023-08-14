@@ -1,5 +1,4 @@
 ## Tasks
-- Separate css into it's own file so you can change it without regenerating all the files in order to change the css
 - Integrate `publish` feature with vercel
     - send files array to publish function
 

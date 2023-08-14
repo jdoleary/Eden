@@ -7,7 +7,7 @@ import { createDirectoryIndexFile } from "./htmlGenerators/indexFile.ts";
 import { addContentsToTemplate } from "./htmlGenerators/useTemplate.ts";
 import { getDirs, getFiles } from "./os.ts";
 import { pageNameToPagePath, pathToPageName } from "./path.ts";
-import { Config, configName, TableOfContents, tableOfContentsURL, templateName } from "./sharedTypes.ts";
+import { Config, configName, stylesName, TableOfContents, tableOfContentsURL, templateName } from "./sharedTypes.ts";
 import { host } from "./tool/httpServer.ts";
 import { deploy } from "./tool/publish.ts";
 // const VERSION = '0.1'
@@ -145,6 +145,20 @@ async function main() {
     if (!await exists(templatePath)) {
         console.log('Creating template in ', templatePath);
         await copy('templateDefault', templatePath);
+    }
+    // Copy  the default styles unless they already exist 
+    // (which means they could be changed by the user in which case do not overwrite)
+    const stylesPath = path.join(config.parseDir, stylesName)
+    if (!await exists(stylesPath)) {
+        console.log('Creating default styles file in ', stylesPath);
+        await copy(stylesName, stylesPath);
+    }
+    // Copy styles to outDir so it will be statically served
+    if (await exists(stylesPath)) {
+        console.log('Copying styles in parseDir to outDir.');
+        await copy(stylesName, path.join(config.outDir, stylesName));
+    } else {
+        console.error('Warning: styles.css is missing.  Output html will be without styles.');
     }
 
     // console.log('jtest allfilenames', allFilesNames, allFilesNames.length);
