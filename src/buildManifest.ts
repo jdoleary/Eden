@@ -10,6 +10,7 @@ import { pageNameToPagePath, pathToPageName } from "./path.ts";
 import { Config, configName, stylesName, TableOfContents, tableOfContentsURL, templateName } from "./sharedTypes.ts";
 import { host } from "./tool/httpServer.ts";
 import { deploy } from "./tool/publish.ts";
+import { extractMetadata } from "./tool/metadataParser.ts";
 // const VERSION = '0.1'
 
 
@@ -127,7 +128,7 @@ async function main() {
         // -1 sets the top level pages flush with the left hand side
         const indentHTML: string[] = Array(x.indent - 1).fill('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
         return `<div>${indentHTML.join('')}<a href="${x.relativePath}">${x.pageName}</a></div>`;
-    }).join(''), config, tableOfContents, tocOutPath, '', 'Table of Contents');
+    }).join(''), { config, tableOfContents, filePath: tocOutPath, relativePath: '', titleOverride: 'Table of Contents', metaData: null });
 
     await Deno.writeTextFile(tocOutPath, tableOfContentsHtml);
 
@@ -258,6 +259,9 @@ async function process(filePath: string, allFilesNames: FileName[], tableOfConte
         // TODO make backlinks work
         fileContents = fileContents.replaceAll('[[', '');
         fileContents = fileContents.replaceAll(']]', '');
+
+        const metaData = extractMetadata(fileContents);
+
         // Convert markdown to html
         const mdTokens = tokens(fileContents);
         const modifiedMdTokens: Token[] = [];
@@ -365,7 +369,7 @@ async function process(filePath: string, allFilesNames: FileName[], tableOfConte
             .replaceAll('%20', ' ');
 
         const relativePath = path.relative(config.parseDir, filePath);
-        htmlString = await addContentsToTemplate(htmlString, config, tableOfContents, filePath, relativePath);
+        htmlString = await addContentsToTemplate(htmlString, { config, tableOfContents, filePath, relativePath, metaData, titleOverride: '' });
 
         try {
             // Get the new path

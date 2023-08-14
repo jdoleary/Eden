@@ -1,7 +1,9 @@
 import * as path from "https://deno.land/std@0.177.0/path/mod.ts";
 import { Config, TableOfContents, tableOfContentsURL, templateName } from "../sharedTypes.ts";
 
-export async function addContentsToTemplate(htmlString: string, config: Config, tableOfContents: TableOfContents, filePath: string, relativePath: string, titleOverride = ''): Promise<string> {
+export async function addContentsToTemplate(htmlString: string, { config, tableOfContents, filePath, relativePath, titleOverride, metaData }: {
+    config: Config, tableOfContents: TableOfContents, filePath: string, relativePath: string, titleOverride: string, metaData: any
+}): Promise<string> {
     // Get all nested templates and add to html
     // Prepend page title to top of content
     const pageTitle = (relativePath.split('\\').slice(-1)[0] || '').replaceAll('.md', '');
@@ -73,6 +75,11 @@ export async function addContentsToTemplate(htmlString: string, config: Config, 
         })].filter(x => !!x).join('<span class="center-dot">·</span>');
     }
     htmlString = htmlString.replace('{{breadcrumbs}}', breadcrumbs);
+
+    // {{ metadata  }} has spaces due to formatter changing it
+    // TODO find a better way to add this to the head rather than replace
+    htmlString = htmlString.replace('{{ metadata }}', JSON.stringify(metaData) || '{}');
+
 
     // Get file meta data
     try {
