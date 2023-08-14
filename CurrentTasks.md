@@ -1,5 +1,4 @@
 ## Tasks
-- Change config.assetsDir to be staticallyServerDirs, a list of directories to serve statically so if you go to their path it will just return whatever file is there.  Useful for images, json, etc
 - Separate css into it's own file so you can change it without regenerating all the files in order to change the css
 - Integrate `publish` feature with vercel
     - send files array to publish function

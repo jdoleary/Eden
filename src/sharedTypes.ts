@@ -7,7 +7,8 @@ export interface Config {
     parseDir: string;
     outDir: string;
     ignoreDirs: string[];
-    // Where assets such as images are stored.
-    assetDir?: string;
+    // These directories will be statically served so that their files are accessible from
+    // the website root.  Useful for serving images or json for example.
+    staticServeDirs: string[];
     logVerbose?: boolean;
 }

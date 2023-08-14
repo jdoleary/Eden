@@ -41,7 +41,7 @@ async function main() {
             ".obsidian",
             "Assets"
         ],
-        "assetDir": path.join(parseDir, 'Assets'),
+        "staticServeDirs": [],
     };
     // If there is no config file in parseDir, create one from the default
     const configPath = path.join(config.parseDir, configName)
@@ -62,11 +62,19 @@ async function main() {
     }
 
     // Clean outDir
-    await Deno.remove(config.outDir, { recursive: true });
+    try {
+        await Deno.remove(config.outDir, { recursive: true });
+    } catch (e) {
+        console.log('Could not clean outDir:', e);
+    }
 
-    if (config.assetDir) {
+    if (config.staticServeDirs.length) {
         // Copy assets such as images so they can be served
-        await copy(config.assetDir, path.join(config.outDir, OUT_ASSETS_DIR_NAME));
+        for (const staticDir of config.staticServeDirs) {
+            const relativeStaticDir = path.relative(config.parseDir, staticDir);
+            await copy(staticDir, path.join(config.outDir, relativeStaticDir));
+            console.log('Statically serving contents of', `${staticDir} at /${relativeStaticDir}`);
+        }
     }
     // Get previous manifest so it can only process the files that have changed
     // To be used later once I add support for a changed template causing a waterfall change
