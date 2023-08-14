@@ -1,5 +1,4 @@
 ## Tasks
-- File 404 File not found from closing dev http server
 - Integrate `publish` feature with vercel
     - send files array to publish function
 

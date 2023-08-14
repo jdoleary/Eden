@@ -9,7 +9,11 @@ export async function host(publicDir: string) {
     const server = Deno.listen({ port });
 
     for await (const conn of server) {
-        handleRequest(conn);
+        try {
+            handleRequest(conn);
+        } catch (_) {
+            // Prevent any single request from crashing the server
+        }
     }
     async function handleRequest(conn: Deno.Conn) {
         const httpConn = Deno.serveHttp(conn);
