@@ -11,7 +11,9 @@ import { Config, configName, stylesName, TableOfContents, tableOfContentsURL, te
 import { host } from "./tool/httpServer.ts";
 import { deploy } from "./tool/publish.ts";
 import { extractMetadata } from "./tool/metadataParser.ts";
-// const VERSION = '0.1'
+const VERSION = '0.1.0'
+const PROGRAM_NAME = 'md2Web';
+
 
 
 interface ManifestFiles {
@@ -26,11 +28,22 @@ interface Manifest {
 }
 const OUT_ASSETS_DIR_NAME = 'md2webAssets';
 async function main() {
-    const cliFlags = parse(Deno.args, {
+    const cliFlagOptions = {
         // "preview" hosts a local http server for the out dir in config
-        boolean: ["preview", "deploy"],
+        boolean: ["preview", "deploy", "v", "version", "h", "help"],
         string: ["parseDir", "vercelToken"]
-    })
+    };
+    const cliFlags = parse(Deno.args, cliFlagOptions);
+    if (cliFlags.v || cliFlags.version) {
+        console.log(VERSION);
+        return;
+    } else {
+        console.log(`${PROGRAM_NAME} v${VERSION}`);
+    }
+    if (cliFlags.h || cliFlags.help) {
+        console.log('Flags:\n', cliFlagOptions);
+        return;
+    }
     // This will eventually be supplied via CLI
     const parseDir = cliFlags.parseDir || Deno.cwd();
     console.log('Parsing:', parseDir);
@@ -224,12 +237,11 @@ async function main() {
     if (cliFlags.preview) {
         host(config.outDir);
     }
+    console.log('Processed parseDir in', performance.now(), 'milliseconds.');
 }
 main().catch(e => {
     console.error(e);
     prompt("An error occurred... Press any key and enter to exit.");
-}).then(() => {
-    console.log('Processed parseDir in', performance.now(), 'milliseconds.');
 });
 interface FileName {
     name: string;

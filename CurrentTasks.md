@@ -15,6 +15,8 @@
 - Fix hacky way of removing %20 from image urls
 - Handle page titles with parenthesis
 - CLI should only overwrite, never delete the outDir contents
+- Improve CLI -h flag output
+
 
 ## Backlog
 - Add EULA to executable output
