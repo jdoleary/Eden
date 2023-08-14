@@ -4,7 +4,7 @@ import { readAll } from "https://deno.land/std/streams/read_all.ts"; // Import r
 
 export async function host(publicDir: string) {
     const port = 8000;
-    console.log(`Server is running at http://localhost:${port}/ for directory`, publicDir);
+    console.log(`\nFlag --preview: http server running at http://localhost:${port}/ for directory "${publicDir}"...`);
 
     const server = Deno.listen({ port });
 

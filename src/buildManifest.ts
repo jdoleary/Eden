@@ -1,3 +1,11 @@
+// no-var allows setting global variables
+// deno-lint-ignore-file no-var
+declare global {
+    var useLogVerbose: boolean;
+}
+// Initialize to false, will be set from cli flags
+window.useLogVerbose = false;
+
 import * as path from "https://deno.land/std@0.177.0/path/mod.ts";
 import { copy } from "https://deno.land/std@0.195.0/fs/copy.ts";
 import { exists } from "https://deno.land/std@0.198.0/fs/exists.ts";
@@ -11,10 +19,10 @@ import { Config, configName, stylesName, TableOfContents, tableOfContentsURL, te
 import { host } from "./tool/httpServer.ts";
 import { deploy } from "./tool/publish.ts";
 import { extractMetadata } from "./tool/metadataParser.ts";
+import { logVerbose } from "./tool/console.ts";
+
 const VERSION = '0.1.0'
 const PROGRAM_NAME = 'md2Web';
-
-
 
 interface ManifestFiles {
     [filePath: string]: {
@@ -39,6 +47,7 @@ async function main() {
         return;
     } else {
         console.log(`${PROGRAM_NAME} v${VERSION}`);
+        console.log('Please send feedback, questions, or bug reports to jdoleary@gmail.com or Twitter:@nestfall\n');
     }
     if (cliFlags.h || cliFlags.help) {
         console.log('Flags:\n', cliFlagOptions);
@@ -46,17 +55,18 @@ async function main() {
     }
     // This will eventually be supplied via CLI
     const parseDir = cliFlags.parseDir || Deno.cwd();
-    console.log('Parsing:', parseDir);
     let config: Config = {
-        "outDir": "out",
+        outDir: "out",
         parseDir,
-        "ignoreDirs": [
+        ignoreDirs: [
             "node_modules",
             ".obsidian",
             "Assets"
         ],
-        "staticServeDirs": [],
+        staticServeDirs: [],
+        logVerbose: false
     };
+    console.log(`Converting files in "${path.resolve(parseDir)}" to html files at "${path.resolve(config.outDir)}"`);
     // If there is no config file in parseDir, create one from the default
     const configPath = path.join(config.parseDir, configName)
     if (!await exists(configPath)) {
@@ -69,9 +79,13 @@ async function main() {
         console.log('Caught: Manifest non-existant or corrupt', e);
         return;
     }
-    console.log('Got config:', config);
+    logVerbose('Got config:', config);
+
+    // set logVerbose so the console.ts will work
+    globalThis.useLogVerbose = config.logVerbose || false;
+
     if (!config.parseDir || !config.outDir) {
-        console.log('Config is invalid', config);
+        console.error('Config is invalid', config);
         return;
     }
 
@@ -87,7 +101,7 @@ async function main() {
         for (const staticDir of config.staticServeDirs) {
             const relativeStaticDir = path.relative(config.parseDir, staticDir);
             await copy(staticDir, path.join(config.outDir, relativeStaticDir));
-            console.log('Statically serving contents of', `${staticDir} at /${relativeStaticDir}`);
+            logVerbose('Statically serving contents of', `${staticDir} at /${relativeStaticDir}`);
         }
     }
     // Get previous manifest so it can only process the files that have changed
@@ -121,7 +135,7 @@ async function main() {
                         relativePath: path.relative(config.parseDir, path.resolve(config.parseDir, pageNameToPagePath(relativePath, content.name))), isDir: false
                     });
                 } else {
-                    console.log('table of contents: skipping', content.name);
+                    logVerbose('table of contents: skipping', content.name);
                 }
             }
 
@@ -131,9 +145,7 @@ async function main() {
             createDirectoryIndexFile(d, config.outDir, tableOfContents, config);
         }
     }
-    if (config.logVerbose) {
-        console.log('Table of Contents:', tableOfContents);
-    }
+    logVerbose('Table of Contents:', tableOfContents);
     // Create table of contents
     const tocOutPath = path.join(config.outDir, tableOfContentsURL);
 
@@ -169,7 +181,7 @@ async function main() {
     }
     // Copy styles to outDir so it will be statically served
     if (await exists(stylesPath)) {
-        console.log('Copying styles in parseDir to outDir.');
+        logVerbose('Copying styles in parseDir to outDir.');
         await copy(stylesName, path.join(config.outDir, stylesName));
     } else {
         console.error('Warning: styles.css is missing.  Output html will be without styles.');
@@ -177,9 +189,7 @@ async function main() {
 
     // console.log('jtest allfilenames', allFilesNames, allFilesNames.length);
     // console.log('jtest table', tableOfContents.map(x => `${x.pageName}, ${x.isDir}`), tableOfContents.length);
-    if (config.logVerbose) {
-        console.log('All markdown file names:', Array.from(allFilesNames));
-    }
+    logVerbose('All markdown file names:', Array.from(allFilesNames));
 
     for await (const f of getFiles(allFilesPath, config)) {
 
@@ -234,10 +244,12 @@ async function main() {
     if (cliFlags.deploy && cliFlags.vercelToken) {
         deploy('test-project', cliFlags.vercelToken)
     }
+
+    console.log('\nFinished in', performance.now(), 'milliseconds.');
+
     if (cliFlags.preview) {
         host(config.outDir);
     }
-    console.log('Processed parseDir in', performance.now(), 'milliseconds.');
 }
 main().catch(e => {
     console.error(e);
@@ -261,9 +273,7 @@ async function process(filePath: string, allFilesNames: FileName[], tableOfConte
         console.error('outDir is undefined');
         return;
     }
-    if (config.logVerbose) {
-        console.log('\nProcess', filePath)
-    }
+    logVerbose('\nProcess', filePath)
     let fileContents = (await Deno.readTextFile(filePath)).toString();
 
     if (path.parse(filePath).ext == '.md') {
@@ -394,18 +404,14 @@ async function process(filePath: string, allFilesNames: FileName[], tableOfConte
             // Write the file
             await Deno.writeTextFile(htmlOutPath, htmlString);
 
-            if (config.logVerbose) {
-                console.log('Written', htmlOutPath);
-            }
+            logVerbose('Written', htmlOutPath);
         } catch (e) {
             console.error(e);
         }
     } else {
-        console.log('non .md file types not handled yet:', filePath);
+        logVerbose('non .md file types not handled yet:', filePath);
     }
-    if (config.logVerbose) {
-        console.log('Done processing', filePath, '\n');
-    }
+    logVerbose('Done processing', filePath, '\n');
 }
 const externalLinkSVG = `<?xml version="1.0" encoding="UTF-8"?>
 <svg width="1em" height="1em" version="1.1" viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg">
