@@ -227,6 +227,8 @@ async function main() {
 main().catch(e => {
     console.error(e);
     prompt("An error occurred... Press any key and enter to exit.");
+}).then(() => {
+    console.log('Processed parseDir in', performance.now(), 'milliseconds.');
 });
 interface FileName {
     name: string;
@@ -253,6 +255,7 @@ async function process(filePath: string, allFilesNames: FileName[], tableOfConte
 
     if (path.parse(filePath).ext == '.md') {
         // Since pages are auto back linked, remove all obsidian link syntax
+        // TODO make backlinks work
         fileContents = fileContents.replaceAll('[[', '');
         fileContents = fileContents.replaceAll(']]', '');
         // Convert markdown to html
