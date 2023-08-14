@@ -1,4 +1,5 @@
 ## Tasks
+- File 404 File not found from closing dev http server
 - Integrate `publish` feature with vercel
     - send files array to publish function
 
@@ -28,23 +29,25 @@
 
 ## Features
 ### Easy
-- Make file metadata (such as Created On Date) accessible to the template
-    - https://deno.land/api@v1.36.1?s=Deno.FileInfo
 - Custom URL
-- Customizable via CSS, HTML, and JS
-- Customizable header (like https://maggieappleton.com/) that works with transclusion.
 - Index pages based on tags (ex: https://maggieappleton.com/essays)
 - Ability to create different object types, ontologies, and tags
     - Example: https://www.gwern.net/About#confidence-tags
     - Example: Maggie Appleton's site, which has "Notes", "Essays", and "Patterns", among other collections of different objects
+    - Support [markdown metadata](https://help.obsidian.md/Editing+and+formatting/Properties) 
+        - ex test page is http://localhost:8000/My_Own_Curriculum.html
+        - Make use of metadataParser
 - Ability to support interactive and animation embeds
 - Bi-directional linking
+    - see: `// TODO make backlinks work`
 - Expandible/collapsible blocks (like Roam or Gamma)
 - Navigation: Support for vertical and horizontal nav, primary and secondary, floating navbar, nested or expanded megamenu navigation
 - Sidenotes, in margin
     - https://www.gwern.net/Sidenotes
 - Site search
+    - make entire garden available in json like [Maggie Appleton's Garden.json](https://maggieappleton.com/_next/data/yUhDOUNEYA1W3PsJNBhvU/garden.json)
 ### Medium
+- Support syntax highlighting
 - Block-based, content as data, so the same piece of content can easily be transcluded in multiple places
     - Adding in dynamically updated bits of content into other bits of content
     - https://subpixel.space/entries/open-transclude/
@@ -52,11 +55,14 @@
 - Inflation-adjusted currency plugin (like Gwern)
 - Live link previews, infoboxes, and hover popups
 - Print-ready, capable of being exported to EPUB or PDF
+- Customizable header (like https://maggieappleton.com/) that works with transclusion.
 ### Unkown
 - Annotation support (or compatible with social annotation plugins)
 ### Done
 - Breadcrumbs
 - Future-proof: Exportable data, portable, control and own your data, no lock-in
+- Make file metadata (such as Created On Date) accessible to the template
+- Customizable via CSS, HTML, and JS
 
 ## Critical Path
 - Finish MVP Features
