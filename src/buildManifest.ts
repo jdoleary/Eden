@@ -46,7 +46,8 @@ async function main() {
         console.log(VERSION);
         return;
     } else {
-        console.log(`${PROGRAM_NAME} v${VERSION}`);
+        const [MAJOR, _MINOR, _PATCH] = VERSION.split('.');
+        console.log(`${PROGRAM_NAME} v${VERSION} ${MAJOR == '0' ? 'Beta' : ''}`);
         console.log('Please send feedback, questions, or bug reports to jdoleary@gmail.com or Twitter:@nestfall\n');
     }
     if (cliFlags.h || cliFlags.help) {
