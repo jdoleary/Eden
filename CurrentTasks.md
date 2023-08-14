@@ -1,4 +1,6 @@
 ## Tasks
+- Change config.assetsDir to be staticallyServerDirs, a list of directories to serve statically so if you go to their path it will just return whatever file is there.  Useful for images, json, etc
+- Separate css into it's own file so you can change it without regenerating all the files in order to change the css
 - Integrate `publish` feature with vercel
     - send files array to publish function
 
@@ -8,9 +10,12 @@
 
 ## Tech Debt
 - Add Sentry for error reporting
+- Replace markdown parser as it is imperfect and misses thinks like youtube links
+    - youtu.be links are not being parsed correctly (see page "Chris Paines")
+        - It looks like they are so long as they are surrounded with `[]` as links should be in markdown
+    - Alternate parser possibility: https://github.com/ubersl0th/markdown/
 - Fix hacky way of removing %20 from image urls
 - Handle page titles with parenthesis
-- youtu.be links are not being parsed correctly (see page "Chris Paines")
 - CLI should only overwrite, never delete the outDir contents
 
 ## Backlog
@@ -23,6 +28,38 @@
 <iframe width="560" height="315" src="https://www.youtube.com/embed/VA6zjDN690s" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 ```
 
+## Features
+### Easy
+- Make file metadata (such as Created On Date) accessible to the template
+    - https://deno.land/api@v1.36.1?s=Deno.FileInfo
+- Custom URL
+- Customizable via CSS, HTML, and JS
+- Customizable header (like https://maggieappleton.com/) that works with transclusion.
+- Index pages based on tags (ex: https://maggieappleton.com/essays)
+- Ability to create different object types, ontologies, and tags
+    - Example: https://www.gwern.net/About#confidence-tags
+    - Example: Maggie Appleton's site, which has "Notes", "Essays", and "Patterns", among other collections of different objects
+- Ability to support interactive and animation embeds
+- Bi-directional linking
+- Expandible/collapsible blocks (like Roam or Gamma)
+- Navigation: Support for vertical and horizontal nav, primary and secondary, floating navbar, nested or expanded megamenu navigation
+- Sidenotes, in margin
+    - https://www.gwern.net/Sidenotes
+- Site search
+### Medium
+- Block-based, content as data, so the same piece of content can easily be transcluded in multiple places
+    - Adding in dynamically updated bits of content into other bits of content
+    - https://subpixel.space/entries/open-transclude/
+- Serve as or integrate with a headless or component content management system
+- Inflation-adjusted currency plugin (like Gwern)
+- Live link previews, infoboxes, and hover popups
+- Print-ready, capable of being exported to EPUB or PDF
+### Unkown
+- Annotation support (or compatible with social annotation plugins)
+### Done
+- Breadcrumbs
+- Future-proof: Exportable data, portable, control and own your data, no lock-in
+
 ## Critical Path
 - Finish MVP Features
     - User should be able to move the exe to the directory that they want to parse, run it once and have it make a website (if they provide a vercel token).  Vercel token could be saved to config (optionally)
@@ -32,3 +69,6 @@
 - Sell MVP
     - Landing Page / Accept Payment
     - Advertise
+
+## Relevant Links
+- [.md meta data](https://help.obsidian.md/Editing+and+formatting/Properties)
