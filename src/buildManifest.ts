@@ -198,7 +198,10 @@ async function main() {
         host(config.outDir);
     }
 }
-main();
+main().catch(e => {
+    console.error(e);
+    prompt("An error occurred... Press any key and enter to exit.");
+});
 interface FileName {
     name: string;
     kpath: string;
