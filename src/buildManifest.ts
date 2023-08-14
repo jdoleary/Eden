@@ -9,6 +9,7 @@ import { getDirs, getFiles } from "./os.ts";
 import { pageNameToPagePath, pathToPageName } from "./path.ts";
 import { Config, configName, TableOfContents, tableOfContentsURL, templateName } from "./sharedTypes.ts";
 import { host } from "./tool/httpServer.ts";
+import { deploy } from "./tool/publish.ts";
 // const VERSION = '0.1'
 
 
@@ -26,8 +27,8 @@ const OUT_ASSETS_DIR_NAME = 'md2webAssets';
 async function main() {
     const cliFlags = parse(Deno.args, {
         // "preview" hosts a local http server for the out dir in config
-        boolean: ["preview"],
-        string: ["parseDir"]
+        boolean: ["preview", "deploy"],
+        string: ["parseDir", "vercelToken"]
     })
     // This will eventually be supplied via CLI
     const parseDir = cliFlags.parseDir || Deno.cwd();
@@ -194,6 +195,9 @@ async function main() {
     //         files: files
     //     }
     // ));
+    if (cliFlags.deploy && cliFlags.vercelToken) {
+        deploy('test-project', cliFlags.vercelToken)
+    }
     if (cliFlags.preview) {
         host(config.outDir);
     }
