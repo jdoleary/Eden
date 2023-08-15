@@ -1,9 +1,6 @@
 ## Tasks
-- outDirectory should account for multiple projects
-- Integrate `publish` feature with vercel
-    - send files array to publish function
-- Static serve dirs in config should always be relative to parseDir
 - publish should check all files in outDir and add the missing ones to the files array rather than doing it manually with toc and styles
+- Static serve dirs in config should always be relative to parseDir
 
 ## Bugs
 - Bug: Nested directories mess up in the Previous Button (see page "Armbar". Previous button says ": Locks")
@@ -12,6 +9,7 @@
 - Possible Bug: Does static assets with spaces in their name get published properly (their filepath?)
 
 ## Tech Debt
+- outDirectory should consider multiple projects and not clobber
 - // TODO: Clean up forbidden files, they ruin the JSON
 - Add Sentry for error reporting
 - Replace markdown parser as it is imperfect and misses thinks like youtube links
