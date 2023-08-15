@@ -13,6 +13,7 @@ export async function deploy(projectId: string, files: DeployableFile[], vercelT
         console.error('Vercel Token required to publish');
         return;
     }
+    const perfStart = performance.now();
 
     logVerbose(`Publishing to project ${projectId} with token.`);
 
@@ -59,4 +60,5 @@ export async function deploy(projectId: string, files: DeployableFile[], vercelT
         const responseBody = await response.json();
         console.error("Publish failed. Status:", response.status, responseBody);
     }
+    console.log('\nFinished publishing to Vercel in', performance.now() - perfStart, 'milliseconds.');
 }

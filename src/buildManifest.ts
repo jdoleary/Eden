@@ -249,6 +249,8 @@ async function main() {
     //         files: files
     //     }
     // ));
+    console.log('\nFinished converting .md to .html in', performance.now(), 'milliseconds.');
+
     if (cliFlags.publish && cliFlags.vercelToken) {
         const deployableFiles: DeployableFile[] = [];
         // Get all contents of files in outDir to send to Vercel to publish
@@ -273,7 +275,6 @@ async function main() {
         deploy(config.projectName, deployableFiles, cliFlags.vercelToken)
     }
 
-    console.log('\nFinished in', performance.now(), 'milliseconds.');
 
     if (cliFlags.preview) {
         host(config.outDir);
