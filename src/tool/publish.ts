@@ -1,28 +1,41 @@
-const apiUrl = "https://api.vercel.com/v12/now/deployments";
+import { logVerbose } from "./console.ts";
+import * as path from "https://deno.land/std@0.177.0/path/mod.ts";
+import * as base64 from "https://deno.land/std@0.198.0/encoding/base64.ts";
 
-export async function deploy(projectId: string, vercelToken?: string) {
+const apiUrl = "https://api.vercel.com/v13/deployments";
+export interface DeployableFile {
+    filePath: string;
+    fileContent: string | ArrayBuffer;
+}
+
+export async function deploy(projectId: string, files: DeployableFile[], vercelToken?: string) {
     if (!vercelToken) {
         console.error('Vercel Token required to publish');
         return;
     }
 
-    console.log(`Deploying to project ${projectId} with token.`);
-    const newFilePath = "index.html";
-    const newFileContent = "<!DOCTYPE html><html><head><title>My Static HTML Site</title></head><body><h1>2Welcome to My Site</h1></body></html>";
+    logVerbose(`Publishing to project ${projectId} with token.`);
 
     const headers = new Headers({
         "Authorization": `Bearer ${vercelToken}`,
         "Content-Type": "application/json",
     });
-
     const data = {
         name: projectId,
-        files: [
-            {
-                file: newFilePath,
-                data: newFileContent,
-            },
-        ],
+        // .replaceAll is necessary for the filePath due to Vercel's API requiring forward slashes in the filepath
+        files: files.map(f => ({ file: f.filePath.replaceAll(path.sep, '/'), encoding: 'base64', data: base64.encode(f.fileContent) })),
+        // files: [
+        //     {
+        //         "data": base64.encode("<!DOCTYPE html><html><head><title>My Static HTML Site</title></head><body><h1>4Welcome to My Site</h1></body></html>"),
+        //         "encoding": "base64",
+        //         "file": "index.html"
+        //     },
+        //     {
+        //         "data": base64.encode(await Deno.readFile('C:\\ObsidianJordanJiuJitsu\\JordanJiuJitsu\\TestAssets\\test-image.png')),
+        //         "encoding": "base64",
+        //         "file": "test/image.png"
+        //     }
+        // ],
         projectSettings: {
             framework: null
         }
@@ -33,16 +46,18 @@ export async function deploy(projectId: string, vercelToken?: string) {
         headers,
         body: JSON.stringify(data),
     };
+    console.log(`Publishing site with ${data.files.length} files`);
+    logVerbose('Files', data.files.map(f => f.file));
+    // console.log('jtest Files', data.files.map(f => f.file));
 
     const response = await fetch(apiUrl, options);
 
     if (response.status === 200) {
         const responseBody = await response.json();
-        console.log("Deployment successful:", responseBody);
-        console.log("See your site at", responseBody.alias);
-        console.log("DEV MESSAGE: TODO: fill `files` with real files")
+        logVerbose("Publish successful:", responseBody);
+        console.log("Publish request succeeded.  It may take a couple minutes for the website to update.  See your site at", responseBody.alias);
     } else {
         const responseBody = await response.json();
-        console.error("Deployment failed. Status:", response.status, responseBody);
+        console.error("Publish failed. Status:", response.status, responseBody);
     }
 }

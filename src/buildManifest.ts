@@ -17,7 +17,7 @@ import { getDirs, getFiles } from "./os.ts";
 import { pageNameToPagePath, pathToPageName } from "./path.ts";
 import { Config, configName, stylesName, TableOfContents, tableOfContentsURL, templateName } from "./sharedTypes.ts";
 import { host } from "./tool/httpServer.ts";
-import { deploy } from "./tool/publish.ts";
+import { deploy, DeployableFile } from "./tool/publish.ts";
 import { extractMetadata } from "./tool/metadataParser.ts";
 import { logVerbose } from "./tool/console.ts";
 
@@ -38,7 +38,7 @@ const OUT_ASSETS_DIR_NAME = 'md2webAssets';
 async function main() {
     const cliFlagOptions = {
         // "preview" hosts a local http server for the out dir in config
-        boolean: ["preview", "deploy", "v", "version", "h", "help"],
+        boolean: ["preview", "publish", "v", "version", "h", "help"],
         string: ["parseDir", "vercelToken"]
     };
     const cliFlags = parse(Deno.args, cliFlagOptions);
@@ -56,13 +56,13 @@ async function main() {
     }
     // This will eventually be supplied via CLI
     const parseDir = cliFlags.parseDir || Deno.cwd();
-    let config: Config = {
+    const config: Config = {
+        projectName: 'my-md2web-site',
         outDir: "out",
         parseDir,
         ignoreDirs: [
             "node_modules",
             ".obsidian",
-            "Assets"
         ],
         staticServeDirs: [],
         logVerbose: false
@@ -75,7 +75,7 @@ async function main() {
         await Deno.writeTextFile(configPath, JSON.stringify(config, null, 2));
     }
     try {
-        config = JSON.parse(await Deno.readTextFile(path.join(config.parseDir, configName))) || config;
+        Object.assign(config, JSON.parse(await Deno.readTextFile(path.join(config.parseDir, configName))) || {});
     } catch (e) {
         console.log('Caught: Manifest non-existant or corrupt', e);
         return;
@@ -96,12 +96,20 @@ async function main() {
     } catch (e) {
         console.log('Could not clean outDir:', e);
     }
+    if (!await exists(config.outDir)) {
+        await Deno.mkdir(config.outDir, { recursive: true });
+    }
 
     if (config.staticServeDirs.length) {
         // Copy assets such as images so they can be served
         for (const staticDir of config.staticServeDirs) {
             const relativeStaticDir = path.relative(config.parseDir, staticDir);
-            await copy(staticDir, path.join(config.outDir, relativeStaticDir));
+            try {
+                await copy(staticDir, path.join(config.outDir, relativeStaticDir));
+            } catch (e) {
+                console.error('Err: Could not find static dir', relativeStaticDir);
+
+            }
             logVerbose('Statically serving contents of', `${staticDir} at /${relativeStaticDir}`);
         }
     }
@@ -113,6 +121,10 @@ async function main() {
     // } catch (e) {
     //     console.log('Caught: Manifest non-existant or corrupt', e);
     // }
+
+    // Only needed when using --publish
+    // This line is super memory intensive because it loads the entire out directory into memory
+    const files: DeployableFile[] = [];
 
     // const files: ManifestFiles = {};
     const tableOfContents: TableOfContents = [];
@@ -146,6 +158,7 @@ async function main() {
             createDirectoryIndexFile(d, config.outDir, tableOfContents, config);
         }
     }
+
     logVerbose('Table of Contents:', tableOfContents);
     // Create table of contents
     const tocOutPath = path.join(config.outDir, tableOfContentsURL);
@@ -157,6 +170,7 @@ async function main() {
     }).join(''), { config, tableOfContents, filePath: tocOutPath, relativePath: '', titleOverride: 'Table of Contents', metaData: null });
 
     await Deno.writeTextFile(tocOutPath, tableOfContentsHtml);
+    files.push({ filePath: path.relative(config.outDir, tocOutPath), fileContent: tableOfContentsHtml })
 
     // Get a list of all file names to support automatic back linking
     const allFilesNames = [];
@@ -173,7 +187,7 @@ async function main() {
         console.log('Creating template in ', templatePath);
         await copy('templateDefault', templatePath);
     }
-    // Copy  the default styles unless they already exist 
+    // Copy the default styles unless they already exist 
     // (which means they could be changed by the user in which case do not overwrite)
     const stylesPath = path.join(config.parseDir, stylesName)
     if (!await exists(stylesPath)) {
@@ -193,7 +207,6 @@ async function main() {
     logVerbose('All markdown file names:', Array.from(allFilesNames));
 
     for await (const f of getFiles(allFilesPath, config)) {
-
         // Add file name path.relative to the domain
         // so, when I push to the `production` branch
         //(`git push production master`), all the file names
@@ -229,7 +242,11 @@ async function main() {
         // console.log('File changed:', f);
         try {
 
-            await process(f, allFilesNames, tableOfContents, config);
+            const deployableFile = await process(f, allFilesNames, tableOfContents, config);
+            // Only needed when using --publish
+            if (deployableFile) {
+                files.push(deployableFile);
+            }
         } catch (e) {
             console.error('error in process', e);
         }
@@ -242,8 +259,8 @@ async function main() {
     //         files: files
     //     }
     // ));
-    if (cliFlags.deploy && cliFlags.vercelToken) {
-        deploy('test-project', cliFlags.vercelToken)
+    if (cliFlags.publish && cliFlags.vercelToken) {
+        deploy(config.projectName, files, cliFlags.vercelToken)
     }
 
     console.log('\nFinished in', performance.now(), 'milliseconds.');
@@ -260,7 +277,7 @@ interface FileName {
     name: string;
     kpath: string;
 }
-async function process(filePath: string, allFilesNames: FileName[], tableOfContents: TableOfContents, config: Config) {
+async function process(filePath: string, allFilesNames: FileName[], tableOfContents: TableOfContents, config: Config): Promise<DeployableFile | undefined> {
     // Dev, test single file
     // if (filePath !== 'C:\\ObsidianJordanJiuJitsu\\JordanJiuJitsu\\Submissions\\Strangles\\Triangle.md') {
     //     return;
@@ -275,9 +292,15 @@ async function process(filePath: string, allFilesNames: FileName[], tableOfConte
         return;
     }
     logVerbose('\nProcess', filePath)
-    let fileContents = (await Deno.readTextFile(filePath)).toString();
 
-    if (path.parse(filePath).ext == '.md') {
+    if (config.staticServeDirs.some(staticDirPath => filePath.startsWith(staticDirPath))) {
+        // This whole block is only necessary to support --publish
+
+        const relativePath = path.relative(config.parseDir, filePath);
+        const fileContent = await Deno.readFile(filePath);
+        return { filePath: relativePath, fileContent };
+    } else if (path.parse(filePath).ext == '.md') {
+        let fileContents = await Deno.readTextFile(filePath);
         // Since pages are auto back linked, remove all obsidian link syntax
         // TODO make backlinks work
         fileContents = fileContents.replaceAll('[[', '');
@@ -406,6 +429,7 @@ async function process(filePath: string, allFilesNames: FileName[], tableOfConte
             await Deno.writeTextFile(htmlOutPath, htmlString);
 
             logVerbose('Written', htmlOutPath);
+            return { filePath: path.relative(config.outDir, htmlOutPath), fileContent: htmlString };
         } catch (e) {
             console.error(e);
         }

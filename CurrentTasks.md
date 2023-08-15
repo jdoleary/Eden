@@ -1,10 +1,15 @@
 ## Tasks
+- outDirectory should account for multiple projects
 - Integrate `publish` feature with vercel
     - send files array to publish function
+- Static serve dirs in config should always be relative to parseDir
+- publish should check all files in outDir and add the missing ones to the files array rather than doing it manually with toc and styles
 
 ## Bugs
 - Bug: Nested directories mess up in the Previous Button (see page "Armbar". Previous button says ": Locks")
 - Bug: "Submissions" page is empty, it should container "Locks" and "Strangles"
+- Bug: ignoreDirs does fuzzy matching but should be exact, see tests in os.ts
+- Possible Bug: Does static assets with spaces in their name get published properly (their filepath?)
 
 ## Tech Debt
 - Add Sentry for error reporting
@@ -30,7 +35,7 @@
 
 ## Features
 ### Easy
-- Custom URL
+- (MVP) Custom URL
 - Index pages based on tags (ex: https://maggieappleton.com/essays)
 - Ability to create different object types, ontologies, and tags
     - Example: https://www.gwern.net/About#confidence-tags
@@ -39,7 +44,7 @@
         - ex test page is http://localhost:8000/My_Own_Curriculum.html
         - Make use of metadataParser
 - Ability to support interactive and animation embeds
-- Bi-directional linking
+- (MVP) Bi-directional linking
     - see: `// TODO make backlinks work`
 - Expandible/collapsible blocks (like Roam or Gamma)
 - Navigation: Support for vertical and horizontal nav, primary and secondary, floating navbar, nested or expanded megamenu navigation
@@ -59,6 +64,7 @@
 - Customizable header (like https://maggieappleton.com/) that works with transclusion.
 ### Unkown
 - Annotation support (or compatible with social annotation plugins)
+- Notable: https://gwern.net/design
 ### Done
 - Breadcrumbs
 - Future-proof: Exportable data, portable, control and own your data, no lock-in

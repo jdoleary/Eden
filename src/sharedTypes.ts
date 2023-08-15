@@ -5,6 +5,7 @@ export const configName = 'md2web.config.json';
 export const tableOfContentsURL = '/Table_of_Contents.html';
 export type TableOfContents = { indent: number, pageName: string, relativePath: string, isDir: boolean, parentDir?: string }[];
 export interface Config {
+    projectName: string;
     parseDir: string;
     outDir: string;
     ignoreDirs: string[];

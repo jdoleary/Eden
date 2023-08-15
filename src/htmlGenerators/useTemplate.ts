@@ -46,7 +46,7 @@ export async function addContentsToTemplate(htmlString: string, { config, tableO
         // which is included in this project
         let templateContents = templateReplacer;
         try {
-            templateContents = (await Deno.readTextFile(path.join(config.parseDir, dir, templateName))).toString();
+            templateContents = await Deno.readTextFile(path.join(config.parseDir, dir, templateName));
         } catch (_) {
             // Use default demplate
             const isRoot = dir == '';

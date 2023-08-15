@@ -8,7 +8,7 @@ export async function* getDirs(dir: string, config: Config): AsyncGenerator<{ di
     yield { dir: dir, contents: Array.from(Deno.readDirSync(dir)) };
     for await (const dirent of dirents) {
         const res = path.resolve(dir, dirent.name);
-        if (config.ignoreDirs.some(dir => res.includes(dir))) {
+        if (isDirectoryIgnored(res, config.parseDir, config.ignoreDirs)) {
             // Do not process a file in an ignore directory
             continue;
         }
@@ -26,7 +26,7 @@ export async function* getFiles(dir: string, config: Config): AsyncGenerator<str
             // Do not process the manifest itself
             continue;
         }
-        if (config.ignoreDirs.some(dir => res.includes(dir))) {
+        if (isDirectoryIgnored(res, config.parseDir, config.ignoreDirs)) {
             // Do not process a file in an ignore directory
             continue;
         }
@@ -37,3 +37,21 @@ export async function* getFiles(dir: string, config: Config): AsyncGenerator<str
         }
     }
 }
+
+import { assertEquals } from "https://deno.land/std@0.196.0/testing/asserts.ts";
+function isDirectoryIgnored(dir: string, parseDir: string, ignoreDirs: string[]): boolean {
+    return ignoreDirs.some(ignore => {
+        return path.relative(parseDir, dir).startsWith(ignore);
+    });
+
+}
+const testBaseDir = 'C:\\base';
+[
+    { dir: `${testBaseDir}\\Assets`, ignoreDirs: ['Assets'], expected: true },
+    { dir: `${testBaseDir}\\Assets2`, ignoreDirs: ['Assets'], expected: false },
+].map(({ dir, ignoreDirs, expected }) => {
+    Deno.test(`pathToPageName: ${dir} `, () => {
+        const actual = isDirectoryIgnored(dir, testBaseDir, ignoreDirs);
+        assertEquals(actual, expected);
+    });
+});
