@@ -48,14 +48,13 @@ export async function deploy(projectId: string, files: DeployableFile[], vercelT
     };
     console.log(`Publishing site with ${data.files.length} files`);
     logVerbose('Files', data.files.map(f => f.file));
-    // console.log('jtest Files', data.files.map(f => f.file));
 
     const response = await fetch(apiUrl, options);
 
     if (response.status === 200) {
         const responseBody = await response.json();
         logVerbose("Publish successful:", responseBody);
-        console.log("Publish request succeeded.  It may take a couple minutes for the website to update.  See your site at", responseBody.alias);
+        console.log("Publish request succeeded.  It may take a couple minutes for the website to update.  See your site at", responseBody.alias.map(url => `https://${url}`));
     } else {
         const responseBody = await response.json();
         console.error("Publish failed. Status:", response.status, responseBody);

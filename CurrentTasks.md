@@ -1,6 +1,6 @@
 ## Tasks
-- publish should check all files in outDir and add the missing ones to the files array rather than doing it manually with toc and styles
 - Static serve dirs in config should always be relative to parseDir
+- --preview is broken, getting `Http: connection closed before message completed`
 
 ## Bugs
 - Bug: Nested directories mess up in the Previous Button (see page "Armbar". Previous button says ": Locks")
@@ -9,6 +9,7 @@
 - Possible Bug: Does static assets with spaces in their name get published properly (their filepath?)
 
 ## Tech Debt
+- Warn if a directory is both ignored and included as a static serve directory in config
 - outDirectory should consider multiple projects and not clobber
 - // TODO: Clean up forbidden files, they ruin the JSON
 - Add Sentry for error reporting

@@ -122,11 +122,6 @@ async function main() {
     //     console.log('Caught: Manifest non-existant or corrupt', e);
     // }
 
-    // Only needed when using --publish
-    // This line is super memory intensive because it loads the entire out directory into memory
-    const files: DeployableFile[] = [];
-
-    // const files: ManifestFiles = {};
     const tableOfContents: TableOfContents = [];
 
     const allFilesPath = path.join('.', config.parseDir);
@@ -170,7 +165,6 @@ async function main() {
     }).join(''), { config, tableOfContents, filePath: tocOutPath, relativePath: '', titleOverride: 'Table of Contents', metaData: null });
 
     await Deno.writeTextFile(tocOutPath, tableOfContentsHtml);
-    files.push({ filePath: path.relative(config.outDir, tocOutPath), fileContent: tableOfContentsHtml })
 
     // Get a list of all file names to support automatic back linking
     const allFilesNames = [];
@@ -242,11 +236,7 @@ async function main() {
         // console.log('File changed:', f);
         try {
 
-            const deployableFile = await process(f, allFilesNames, tableOfContents, config);
-            // Only needed when using --publish
-            if (deployableFile) {
-                files.push(deployableFile);
-            }
+            await process(f, allFilesNames, tableOfContents, config);
         } catch (e) {
             console.error('error in process', e);
         }
@@ -260,7 +250,27 @@ async function main() {
     //     }
     // ));
     if (cliFlags.publish && cliFlags.vercelToken) {
-        deploy(config.projectName, files, cliFlags.vercelToken)
+        const deployableFiles: DeployableFile[] = [];
+        // Get all contents of files in outDir to send to Vercel to publish
+        for await (const absoluteFilePath of getFiles(config.outDir, config)) {
+            const relativepath = path.relative(config.outDir, absoluteFilePath);
+            // Tech Debt:These extensions corrupt the json currently
+            const disallowedExtensions = ['.ai', '.psd'];
+            const ext = path.parse(relativepath).ext;
+            if (!disallowedExtensions.includes(ext)) {
+                const isTextFile = ['.txt', '.md', '.html', '.css', '.js', '.ts', '.jsx', '.tsx'].includes(ext);
+                if (isTextFile) {
+                    const fileContent = await Deno.readTextFile(absoluteFilePath)
+                    deployableFiles.push({ filePath: relativepath, fileContent });
+                } else {
+                    const fileContent = await Deno.readFile(absoluteFilePath)
+                    deployableFiles.push({ filePath: relativepath, fileContent });
+                }
+            }
+        }
+
+        // Publish to Vercel
+        deploy(config.projectName, deployableFiles, cliFlags.vercelToken)
     }
 
     console.log('\nFinished in', performance.now(), 'milliseconds.');
@@ -277,7 +287,7 @@ interface FileName {
     name: string;
     kpath: string;
 }
-async function process(filePath: string, allFilesNames: FileName[], tableOfContents: TableOfContents, config: Config): Promise<DeployableFile | undefined> {
+async function process(filePath: string, allFilesNames: FileName[], tableOfContents: TableOfContents, config: Config) {
     // Dev, test single file
     // if (filePath !== 'C:\\ObsidianJordanJiuJitsu\\JordanJiuJitsu\\Submissions\\Strangles\\Triangle.md') {
     //     return;
@@ -293,21 +303,7 @@ async function process(filePath: string, allFilesNames: FileName[], tableOfConte
     }
     logVerbose('\nProcess', filePath)
 
-    if (config.staticServeDirs.some(staticDirPath => filePath.startsWith(staticDirPath))) {
-        // This whole block is only necessary to support --publish
-
-        if (path.parse(filePath).ext == '.ai') {
-            // TODO: Clean up forbidden files, they ruin the JSON
-            return;
-        }
-        if (path.parse(filePath).ext == '.psd') {
-            // TODO: Clean up forbidden files, they ruin the JSON
-            return;
-        }
-        const relativePath = path.relative(config.parseDir, filePath);
-        const fileContent = await Deno.readFile(filePath);
-        return { filePath: relativePath, fileContent };
-    } else if (path.parse(filePath).ext == '.md') {
+    if (path.parse(filePath).ext == '.md') {
         let fileContents = await Deno.readTextFile(filePath);
         // Since pages are auto back linked, remove all obsidian link syntax
         // TODO make backlinks work
@@ -437,7 +433,6 @@ async function process(filePath: string, allFilesNames: FileName[], tableOfConte
             await Deno.writeTextFile(htmlOutPath, htmlString);
 
             logVerbose('Written', htmlOutPath);
-            return { filePath: path.relative(config.outDir, htmlOutPath), fileContent: htmlString };
         } catch (e) {
             console.error(e);
         }
