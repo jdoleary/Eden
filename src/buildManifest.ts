@@ -58,14 +58,14 @@ async function main() {
             description: 'Starts a http server to preview the generated html and associated files locally.  Press Ctrl+c to close the http server.'
         },
         {
+            names: ['parseDir'],
+            type: 'string',
+            description: 'Specifies which directory should have its files converted into a website.  This can also be defined in the config file.'
+        },
+        {
             names: ['publish'],
             type: 'boolean',
             description: 'Publishes the generated files to the web via Vercel.  Note: vercelToken is required to use --publish.'
-        },
-        {
-            names: ['parseDir'],
-            type: 'string',
-            description: 'Specifies which directory should have its files converted into a website.'
         },
         {
             names: ['vercelToken'],
