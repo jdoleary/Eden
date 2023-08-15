@@ -296,6 +296,14 @@ async function process(filePath: string, allFilesNames: FileName[], tableOfConte
     if (config.staticServeDirs.some(staticDirPath => filePath.startsWith(staticDirPath))) {
         // This whole block is only necessary to support --publish
 
+        if (path.parse(filePath).ext == '.ai') {
+            // TODO: Clean up forbidden files, they ruin the JSON
+            return;
+        }
+        if (path.parse(filePath).ext == '.psd') {
+            // TODO: Clean up forbidden files, they ruin the JSON
+            return;
+        }
         const relativePath = path.relative(config.parseDir, filePath);
         const fileContent = await Deno.readFile(filePath);
         return { filePath: relativePath, fileContent };

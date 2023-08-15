@@ -12,6 +12,7 @@
 - Possible Bug: Does static assets with spaces in their name get published properly (their filepath?)
 
 ## Tech Debt
+- // TODO: Clean up forbidden files, they ruin the JSON
 - Add Sentry for error reporting
 - Replace markdown parser as it is imperfect and misses thinks like youtube links
     - youtu.be links are not being parsed correctly (see page "Chris Paines")
