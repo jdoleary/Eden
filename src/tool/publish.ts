@@ -8,11 +8,7 @@ export interface DeployableFile {
     fileContent: string | ArrayBuffer;
 }
 
-export async function deploy(projectId: string, files: DeployableFile[], vercelToken?: string) {
-    if (!vercelToken) {
-        console.error('Vercel Token required to publish');
-        return;
-    }
+export async function deploy(projectId: string, files: DeployableFile[], vercelToken: string) {
     const perfStart = performance.now();
 
     logVerbose(`Publishing to project ${projectId} with token.`);

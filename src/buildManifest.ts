@@ -251,28 +251,32 @@ async function main() {
     // ));
     console.log('\nFinished converting .md to .html in', performance.now(), 'milliseconds.');
 
-    if (cliFlags.publish && cliFlags.vercelToken) {
-        const deployableFiles: DeployableFile[] = [];
-        // Get all contents of files in outDir to send to Vercel to publish
-        for await (const absoluteFilePath of getFiles(config.outDir, config)) {
-            const relativepath = path.relative(config.outDir, absoluteFilePath);
-            // Tech Debt:These extensions corrupt the json currently
-            const disallowedExtensions = ['.ai', '.psd'];
-            const ext = path.parse(relativepath).ext;
-            if (!disallowedExtensions.includes(ext)) {
-                const isTextFile = ['.txt', '.md', '.html', '.css', '.js', '.ts', '.jsx', '.tsx'].includes(ext);
-                if (isTextFile) {
-                    const fileContent = await Deno.readTextFile(absoluteFilePath)
-                    deployableFiles.push({ filePath: relativepath, fileContent });
-                } else {
-                    const fileContent = await Deno.readFile(absoluteFilePath)
-                    deployableFiles.push({ filePath: relativepath, fileContent });
+    if (cliFlags.publish) {
+        if (!cliFlags.vercelToken) {
+            console.error('Failed to publish: Vercel Token required to publish');
+        } else {
+            const deployableFiles: DeployableFile[] = [];
+            // Get all contents of files in outDir to send to Vercel to publish
+            for await (const absoluteFilePath of getFiles(config.outDir, config)) {
+                const relativepath = path.relative(config.outDir, absoluteFilePath);
+                // Tech Debt:These extensions corrupt the json currently
+                const disallowedExtensions = ['.ai', '.psd'];
+                const ext = path.parse(relativepath).ext;
+                if (!disallowedExtensions.includes(ext)) {
+                    const isTextFile = ['.txt', '.md', '.html', '.css', '.js', '.ts', '.jsx', '.tsx'].includes(ext);
+                    if (isTextFile) {
+                        const fileContent = await Deno.readTextFile(absoluteFilePath)
+                        deployableFiles.push({ filePath: relativepath, fileContent });
+                    } else {
+                        const fileContent = await Deno.readFile(absoluteFilePath)
+                        deployableFiles.push({ filePath: relativepath, fileContent });
+                    }
                 }
             }
-        }
 
-        // Publish to Vercel
-        deploy(config.projectName, deployableFiles, cliFlags.vercelToken)
+            // Publish to Vercel
+            deploy(config.projectName, deployableFiles, cliFlags.vercelToken)
+        }
     }
 
 
