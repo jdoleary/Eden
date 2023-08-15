@@ -2,7 +2,6 @@
 
 ## Bugs
 - Bug: Nested directories mess up in the Previous Button (see page "Armbar". Previous button says ": Locks")
-- Bug: "Submissions" page is empty, it should container "Locks" and "Strangles"
 - Bug: ignoreDirs does fuzzy matching but should be exact, see tests in os.ts
 - Possible Bug: Does static assets with spaces in their name get published properly (their filepath?)
 

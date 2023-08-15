@@ -15,7 +15,7 @@ export async function createDirectoryIndexFile(d: { dir: string, contents: Deno.
         // .replaceAll: Replace all spaces with underscores, so they become valid html paths
         // ex: 'out\index.html'
         const htmlOutPath = path.join(outPath, 'index.html').replaceAll(' ', '_');
-        const htmlString = await addContentsToTemplate(d.contents.filter(x => x.name.endsWith('.md')).map(x => {
+        const htmlString = await addContentsToTemplate(d.contents.filter(x => x.name.endsWith('.md') || x.isDirectory).map(x => {
             const link = pageNameToPagePath('', x.name, x.isDirectory ? '' : '.html');
             return `<a href="${link}">${pathToPageName(link)}</a>`
         }).join('<br/>'), { config, tableOfContents, filePath: htmlOutPath, relativePath, titleOverride: '', metaData: null })
