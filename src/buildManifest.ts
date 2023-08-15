@@ -34,24 +34,66 @@ interface Manifest {
     version: string;
     files: ManifestFiles;
 }
+interface CLIFlag {
+    type: 'string' | 'boolean';
+    names: string[];
+    description: string;
+}
 const OUT_ASSETS_DIR_NAME = 'md2webAssets';
 async function main() {
-    const cliFlagOptions = {
-        // "preview" hosts a local http server for the out dir in config
-        boolean: ["preview", "publish", "v", "version", "h", "help"],
-        string: ["parseDir", "vercelToken"]
+    const rawCLIFlagOptions: CLIFlag[] = [
+        {
+            names: ['v', 'version'],
+            type: 'boolean',
+            description: 'Prints the version number of this program to stdout'
+        },
+        {
+            names: ['h', 'help'],
+            type: 'boolean',
+            description: 'Prints help information to stdout'
+        },
+        {
+            names: ['preview'],
+            type: 'boolean',
+            description: 'Starts a http server to preview the generated html and associated files locally.  Press Ctrl+c to close the http server.'
+        },
+        {
+            names: ['publish'],
+            type: 'boolean',
+            description: 'Publishes the generated files to the web via Vercel.  Note: vercelToken is required to use --publish.'
+        },
+        {
+            names: ['parseDir'],
+            type: 'string',
+            description: 'Specifies which directory should have its files converted into a website.'
+        },
+        {
+            names: ['vercelToken'],
+            type: 'string',
+            description: 'Used in concert with --publish in order to publish the generated files to the web via Vercel.'
+        },
+    ]
+    const cliFlagOptions: { boolean: string[], string: string[] } = {
+        boolean: [],
+        string: []
     };
+    // Assemble cliFlagOptions
+    for (const flag of rawCLIFlagOptions) {
+        for (const name of flag.names) {
+            cliFlagOptions[flag.type].push(name);
+        }
+    }
     const cliFlags = parse(Deno.args, cliFlagOptions);
     if (cliFlags.v || cliFlags.version) {
         console.log(VERSION);
         return;
     } else {
         const [MAJOR, _MINOR, _PATCH] = VERSION.split('.');
-        console.log(`${PROGRAM_NAME} v${VERSION} ${MAJOR == '0' ? 'Beta' : ''}`);
+        console.log(`\n${PROGRAM_NAME} v${VERSION} ${MAJOR == '0' ? 'Beta' : ''}`);
         console.log('Please send feedback, questions, or bug reports to jdoleary@gmail.com or Twitter:@nestfall\n');
     }
     if (cliFlags.h || cliFlags.help) {
-        console.log('Flags:\n', cliFlagOptions);
+        console.log('Usage:\n' + rawCLIFlagOptions.map(flag => `${flag.names.map(name => name.length == 1 ? `-${name}` : `--${name}${flag.type == 'string' ? ' VALUE' : ''}`).join(', ')}: ${flag.description}`).join('\n'));
         return;
     }
     // This will eventually be supplied via CLI
