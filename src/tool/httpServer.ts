@@ -27,7 +27,7 @@ export async function host(publicDir: string) {
             return new Response(fileContent, { status: 200, headers });
 
         } catch (error) {
-            console.warn('⚠️ Http Server Error:', error);
+            console.warn('⚠️  Http Server Error:', error);
             return new Response("File not found", { status: 404 });
         }
     });
