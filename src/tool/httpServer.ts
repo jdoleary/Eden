@@ -10,22 +10,21 @@ export async function host(publicDir: string) {
 
         const url = new URL(req.url);
         console.log("Path:", url.pathname);
-        const filePath = join(publicDir, url.pathname);
+        let filePath = join(publicDir, url.pathname);
         try {
-            const file = await Deno.open(filePath);
             const fileInfo = await Deno.stat(filePath);
 
+            // If directory, serve up directory index page
             if (fileInfo.isDirectory) {
-                file.close();
-                return new Response("Forbidden", { status: 403 });
-            } else {
-                const contentType = getContentType(filePath);
-                const headers = new Headers();
-                headers.set("Content-Type", contentType);
-                const fileContent = await readAll(file);
-                file.close();
-                return new Response(fileContent, { status: 200, headers });
+                filePath = join(filePath, 'index.html');
             }
+            const file = await Deno.open(filePath);
+            const contentType = getContentType(filePath);
+            const headers = new Headers();
+            headers.set("Content-Type", contentType);
+            const fileContent = await readAll(file);
+            file.close();
+            return new Response(fileContent, { status: 200, headers });
 
         } catch (error) {
             console.warn('⚠️ Http Server Error:', error);
