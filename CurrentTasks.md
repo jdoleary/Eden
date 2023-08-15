@@ -2,7 +2,6 @@
 - (MVP) Bi-directional linking
     - see: `// TODO make backlinks work`
 - Generate an index.html if none is provided so that going to the url shown in --preview doesn't return a 404
-- (MVP) Bug: `Assets` page is included in toc and you can get to it's 404 via next buttons
 - (MVP) Custom URL
 - (MVP) Example site and source that demos all working features
 
