@@ -67,7 +67,7 @@ async function main() {
         staticServeDirs: [],
         logVerbose: false
     };
-    console.log(`Converting files in "${path.resolve(parseDir)}" to html files at "${path.resolve(config.outDir)}"`);
+    console.log(`Converting files in "${path.resolve(parseDir)}" to website files at "${path.resolve(config.outDir)}"`);
     // If there is no config file in parseDir, create one from the default
     const configPath = path.join(config.parseDir, configName)
     if (!await exists(configPath)) {
@@ -86,7 +86,7 @@ async function main() {
     globalThis.useLogVerbose = config.logVerbose || false;
 
     if (!config.parseDir || !config.outDir) {
-        console.error('Config is invalid', config);
+        console.error('❌ Config is invalid', config);
         return;
     }
 
@@ -107,7 +107,7 @@ async function main() {
             try {
                 await copy(absoluteStaticDir, path.join(config.outDir, staticDir));
             } catch (e) {
-                console.error('Err: Could not find static dir', absoluteStaticDir);
+                console.error('❌ Err: Could not find static dir', absoluteStaticDir);
 
             }
             logVerbose('Statically serving contents of', `${staticDir} at /${staticDir}`);
@@ -249,11 +249,11 @@ async function main() {
     //         files: files
     //     }
     // ));
-    console.log('\nFinished converting .md to .html in', performance.now(), 'milliseconds.');
+    console.log('\n✅ Finished converting .md to .html in', performance.now(), 'milliseconds.');
 
     if (cliFlags.publish) {
         if (!cliFlags.vercelToken) {
-            console.error('Failed to publish: Vercel Token required to publish');
+            console.error('❌ Failed to publish: Vercel Token required to publish');
         } else {
             const deployableFiles: DeployableFile[] = [];
             // Get all contents of files in outDir to send to Vercel to publish

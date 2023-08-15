@@ -87,7 +87,7 @@ export async function addContentsToTemplate(htmlString: string, { config, tableO
         htmlString = htmlString.replace('{{created}}', metadata.birthtime?.toLocaleDateString() || '');
         htmlString = htmlString.replace('{{modified}}', metadata.mtime?.toLocaleDateString() || '');
     } catch (e) {
-        console.error('Err: Failed to get metadata for ', filePath);
+        console.error('❌ Err: Failed to get metadata for ', filePath);
     }
 
     return htmlString;

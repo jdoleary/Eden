@@ -37,7 +37,7 @@ export function extractMetadata(fileContents: string) {
                     try {
                         return parse(yaml);
                     } catch (e) {
-                        console.error('Error parsing metadata', e);
+                        console.error('❌ Error parsing metadata', e);
                     }
                 }
             } else {
