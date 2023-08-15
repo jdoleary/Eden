@@ -1,5 +1,4 @@
 ## Tasks
-- Static serve dirs in config should always be relative to parseDir
 - --preview is broken, getting `Http: connection closed before message completed`
 
 ## Bugs

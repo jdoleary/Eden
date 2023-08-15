@@ -11,6 +11,7 @@ export interface Config {
     ignoreDirs: string[];
     // These directories will be statically served so that their files are accessible from
     // the website root.  Useful for serving images or json for example.
+    // These paths are relative to the parseDir
     staticServeDirs: string[];
     logVerbose?: boolean;
 }

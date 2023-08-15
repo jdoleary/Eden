@@ -103,14 +103,14 @@ async function main() {
     if (config.staticServeDirs.length) {
         // Copy assets such as images so they can be served
         for (const staticDir of config.staticServeDirs) {
-            const relativeStaticDir = path.relative(config.parseDir, staticDir);
+            const absoluteStaticDir = path.join(config.parseDir, staticDir);
             try {
-                await copy(staticDir, path.join(config.outDir, relativeStaticDir));
+                await copy(absoluteStaticDir, path.join(config.outDir, staticDir));
             } catch (e) {
-                console.error('Err: Could not find static dir', relativeStaticDir);
+                console.error('Err: Could not find static dir', absoluteStaticDir);
 
             }
-            logVerbose('Statically serving contents of', `${staticDir} at /${relativeStaticDir}`);
+            logVerbose('Statically serving contents of', `${staticDir} at /${staticDir}`);
         }
     }
     // Get previous manifest so it can only process the files that have changed
