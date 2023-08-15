@@ -39,7 +39,6 @@ interface CLIFlag {
     names: string[];
     description: string;
 }
-const OUT_ASSETS_DIR_NAME = 'md2webAssets';
 async function main() {
     const rawCLIFlagOptions: CLIFlag[] = [
         {
@@ -106,6 +105,8 @@ async function main() {
             "node_modules",
             ".obsidian",
         ],
+        // TODO: Make config help text visible to users
+        // If you are using an .obsidian/app.json 'attachmentFolderPath', that path should go in staticServeDirs
         staticServeDirs: [],
         logVerbose: false
     };
@@ -429,7 +430,27 @@ async function process(filePath: string, allFilesNames: FileName[], tableOfConte
                 // some reason
                 if (token.content.startsWith('!') && token.content.endsWith('.png')) {
                     isTokenModified = true;
-                    const imageUrl = `/${OUT_ASSETS_DIR_NAME}/${token.content.slice(1)}`;
+                    // .slice(1) removes leading ! in markdown
+                    const imageRelativePath = token.content.slice(1);
+                    let imageUrl = `/${token.content.slice(1)}`;
+                    // !imageRelativePath.startsWith('http') ensures that links to online images are served as is
+                    // otherwise, ensure that images exist locally. This is needed because some .md editors such as Obsidian
+                    // have an Assets directory (stored in .obsidian/app.json `attachmentFolderPath`) that provide an implicit
+                    // path, so if the markdown is just converted to html as is, the path will be broken
+                    if (!imageRelativePath.startsWith('http') && !await exists(path.join(config.parseDir, imageRelativePath))) {
+                        let foundMissingImage = false;
+                        for (const staticPath of config.staticServeDirs) {
+                            const testPath = path.join(config.parseDir, staticPath, imageRelativePath);
+                            if (await exists(testPath)) {
+                                imageUrl = `/${path.posix.join(staticPath, imageRelativePath)}`;
+                                foundMissingImage = true;
+                                break;
+                            }
+                        }
+                        if (!foundMissingImage) {
+                            console.error('⚠️ Missing image', imageUrl);
+                        }
+                    }
                     // Remove leading "!"
                     modifiedMdTokens.push({
                         type: 'start',

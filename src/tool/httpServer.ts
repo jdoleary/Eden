@@ -6,41 +6,32 @@ export async function host(publicDir: string) {
     const port = 8000;
     console.log(`\nFlag --preview: http server running at http://localhost:${port}/ for directory "${publicDir}"...`);
 
-    const server = Deno.listen({ port });
+    Deno.serve(async (req) => {
 
-    for await (const conn of server) {
+        const url = new URL(req.url);
+        console.log("Path:", url.pathname);
+        const filePath = join(publicDir, url.pathname);
         try {
-            handleRequest(conn);
-        } catch (_) {
-            // Prevent any single request from crashing the server
-        }
-    }
-    async function handleRequest(conn: Deno.Conn) {
-        const httpConn = Deno.serveHttp(conn);
-        for await (const reqEvent of httpConn) {
-            const req = reqEvent.request;
-            const filePath = join(publicDir, req.url.replace(`http://localhost:${port}`, ''));
+            const file = await Deno.open(filePath);
+            const fileInfo = await Deno.stat(filePath);
 
-            try {
-                const file = await Deno.open(filePath);
-                const fileInfo = await Deno.stat(filePath);
-
-                if (fileInfo.isDirectory) {
-                    reqEvent.respondWith(new Response("Forbidden", { status: 403 }));
-                } else {
-                    const contentType = getContentType(filePath);
-                    const headers = new Headers();
-                    headers.set("Content-Type", contentType);
-                    const fileContent = await readAll(file);
-                    reqEvent.respondWith(new Response(fileContent, { status: 200, headers }));
-                }
-
+            if (fileInfo.isDirectory) {
                 file.close();
-            } catch (error) {
-                reqEvent.respondWith(new Response("File not found", { status: 404 }));
+                return new Response("Forbidden", { status: 403 });
+            } else {
+                const contentType = getContentType(filePath);
+                const headers = new Headers();
+                headers.set("Content-Type", contentType);
+                const fileContent = await readAll(file);
+                file.close();
+                return new Response(fileContent, { status: 200, headers });
             }
+
+        } catch (error) {
+            console.warn('⚠️ Http Server Error:', error);
+            return new Response("File not found", { status: 404 });
         }
-    }
+    });
 }
 
 function getContentType(filePath: string): string {

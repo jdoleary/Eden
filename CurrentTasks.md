@@ -1,5 +1,4 @@
 ## Tasks
-- --preview is broken, getting `Http: connection closed before message completed`
 
 ## Bugs
 - Bug: Nested directories mess up in the Previous Button (see page "Armbar". Previous button says ": Locks")
@@ -8,6 +7,7 @@
 - Possible Bug: Does static assets with spaces in their name get published properly (their filepath?)
 
 ## Tech Debt
+- // TODO: Make config help text visible to users
 - Warn if a directory is both ignored and included as a static serve directory in config
 - outDirectory should consider multiple projects and not clobber
 - // TODO: Clean up forbidden files, they ruin the JSON
