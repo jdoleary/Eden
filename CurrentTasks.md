@@ -1,14 +1,23 @@
-## Tasks
+## MVP Tasks
+- (MVP) Bi-directional linking
+    - see: `// TODO make backlinks work`
+- Generate an index.html if none is provided so that going to the url shown in --preview doesn't return a 404
+- (MVP) Bug: `Assets` page is included in toc and you can get to it's 404 via next buttons
+- (MVP) Custom URL
+- (MVP) Example site and source that demos all working features
 
 ## Bugs
 - Bug: Nested directories mess up in the Previous Button (see page "Armbar". Previous button says ": Locks")
 - Bug: ignoreDirs does fuzzy matching but should be exact, see tests in os.ts
 - Possible Bug: Does static assets with spaces in their name get published properly (their filepath?)
 
+## Enhancements
+- Prevent page centering from jumping around when pages switch to scrollbar present/not present
 ## Tech Debt
 - // TODO: Make config help text visible to users
 - Warn if a directory is both ignored and included as a static serve directory in config
 - outDirectory should consider multiple projects and not clobber
+    - CLI should only overwrite, never delete the outDir contents
 - // TODO: Clean up forbidden files, they ruin the JSON
 - Add Sentry for error reporting
 - Replace markdown parser as it is imperfect and misses thinks like youtube links
@@ -17,15 +26,12 @@
     - Alternate parser possibility: https://github.com/ubersl0th/markdown/
 - Fix hacky way of removing %20 from image urls
 - Handle page titles with parenthesis
-- CLI should only overwrite, never delete the outDir contents
-- Improve CLI -h flag output
 
 
 ## Backlog
 - Add EULA to executable output
 - Remove manifest
 - feature: Add <meta> description for SEO
-
 - auto embed youtube videos:
 ```
 <iframe width="560" height="315" src="https://www.youtube.com/embed/VA6zjDN690s" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
@@ -33,7 +39,6 @@
 
 ## Features
 ### Easy
-- (MVP) Custom URL
 - Index pages based on tags (ex: https://maggieappleton.com/essays)
 - Ability to create different object types, ontologies, and tags
     - Example: https://www.gwern.net/About#confidence-tags
@@ -42,8 +47,6 @@
         - ex test page is http://localhost:8000/My_Own_Curriculum.html
         - Make use of metadataParser
 - Ability to support interactive and animation embeds
-- (MVP) Bi-directional linking
-    - see: `// TODO make backlinks work`
 - Expandible/collapsible blocks (like Roam or Gamma)
 - Navigation: Support for vertical and horizontal nav, primary and secondary, floating navbar, nested or expanded megamenu navigation
 - Sidenotes, in margin
