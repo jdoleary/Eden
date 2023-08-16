@@ -1,9 +1,17 @@
 ## MVP Tasks
-- (MVP) Bi-directional linking
+- Refactor to use Marky
+    - Core_Concepts page isn't parsing right because there isn't an extra newline after header
+- Bi-directional linking
     - see: `// TODO make backlinks work`
+        - Backlinks will have to be aggregated on a pass before all files are converted to html
+        - Allow backlinks to link to the element
+            - smooth scrolling https://stackoverflow.com/a/24739173/4418836
 - Generate an index.html if none is provided so that going to the url shown in --preview doesn't return a 404
 - (MVP) Custom URL
 - (MVP) Example site and source that demos all working features
+    - Explain CLI usage in and out of workingdirectory
+- (MVP) outDirectory should consider multiple projects and not clobber
+    - CLI should only overwrite, never delete the outDir contents
 
 ## Bugs
 - Bug: Nested directories mess up in the Previous Button (see page "Armbar". Previous button says ": Locks")
@@ -15,8 +23,6 @@
 ## Tech Debt
 - // TODO: Make config help text visible to users
 - Warn if a directory is both ignored and included as a static serve directory in config
-- outDirectory should consider multiple projects and not clobber
-    - CLI should only overwrite, never delete the outDir contents
 - // TODO: Clean up forbidden files, they ruin the JSON
 - Add Sentry for error reporting
 - Replace markdown parser as it is imperfect and misses thinks like youtube links
@@ -80,6 +86,10 @@
 - Sell MVP
     - Landing Page / Accept Payment
     - Advertise
+    - Relevant Sites / Influencers
+        - markdownguide.org
 
 ## Relevant Links
 - [.md meta data](https://help.obsidian.md/Editing+and+formatting/Properties)
+- [Commonmark Spec](https://spec.commonmark.org/0.30/)
+- [Markdown Guide Extended Syntax](https://www.markdownguide.org/extended-syntax/)
