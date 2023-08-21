@@ -27,10 +27,25 @@ export async function host(publicDir: string) {
             return new Response(fileContent, { status: 200, headers });
 
         } catch (error) {
-            console.warn('⚠️  Http Server Error:', error);
+            if (!squelchServerError(error)) {
+                console.warn('⚠️  Http Server Error:', error);
+            }
             return new Response("File not found", { status: 404 });
         }
     });
+}
+function squelchServerError(error: any): boolean {
+    try {
+        // Ignore not found .ico
+        if (error.name == 'NotFound' && error.message.includes('favicon.ico')) {
+            return true;
+        }
+        return false;
+    } catch (e) {
+        console.error(e);
+        return false;
+    }
+
 }
 
 function getContentType(filePath: string): string {
