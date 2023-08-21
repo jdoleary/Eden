@@ -4,7 +4,6 @@
         - Backlinks will have to be aggregated on a pass before all files are converted to html
         - Allow backlinks to link to the element
             - smooth scrolling https://stackoverflow.com/a/24739173/4418836
-- (MVP) Generate an index.html if none is provided so that going to the url shown in --preview doesn't return a 404
 - (MVP) Check for update
 - (MVP) Custom URL (in video tutorial)
 - (MVP) Example site and source that demos all working features
@@ -20,6 +19,7 @@
 
 ## Enhancements
 - Prevent page centering from jumping around when pages switch to scrollbar present/not present
+- Custom index page
 ## Tech Debt
 - // TODO: Make config help text visible to users
 - Warn if a directory is both ignored and included as a static serve directory in config
