@@ -52,6 +52,11 @@ async function main() {
             description: 'Prints help information to stdout'
         },
         {
+            names: ['verbose'],
+            type: 'boolean',
+            description: 'Shows verbose logs'
+        },
+        {
             names: ['preview'],
             type: 'boolean',
             description: 'Starts a http server to preview the generated html and associated files locally.  Press Ctrl+c to close the http server.'
@@ -83,6 +88,9 @@ async function main() {
         }
     }
     const cliFlags = parse(Deno.args, cliFlagOptions);
+    if (cliFlags.verbose) {
+        globalThis.useLogVerbose = true;
+    }
     if (cliFlags.v || cliFlags.version) {
         console.log(VERSION);
         return;
@@ -135,8 +143,6 @@ async function main() {
     }
     logVerbose('Got config:', config);
 
-    // set logVerbose so the console.ts will work
-    globalThis.useLogVerbose = config.logVerbose || false;
 
     if (!config.parseDir || !config.outDir) {
         console.error('❌ Config is invalid', config);
