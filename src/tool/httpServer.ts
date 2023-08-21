@@ -10,7 +10,7 @@ export async function host(publicDir: string) {
 
         const url = new URL(req.url);
         console.log("Path:", url.pathname);
-        let filePath = join(publicDir, url.pathname);
+        let filePath = join(publicDir, url.pathname).replaceAll('%20', ' ');
         try {
             const fileInfo = await Deno.stat(filePath);
 

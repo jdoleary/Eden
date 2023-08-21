@@ -7,8 +7,6 @@
 - (MVP) Custom URL (in video tutorial)
 - (MVP) Example site and source that demos all working features
     - Explain CLI usage in and out of workingdirectory
-- (MVP) Bug: Does static assets with spaces in their name get published properly (their filepath?)
-    - Verified bug, they do not in the local server, I'm not sure if they do in the published server
 
 ## Bugs
 - Bug: Nested directories mess up in the Previous Button (see page "Armbar". Previous button says ": Locks")
