@@ -43,7 +43,7 @@ export async function deploy(projectId: string, files: DeployableFile[], vercelT
         headers,
         body: JSON.stringify(data),
     };
-    console.log(`Publishing site with ${data.files.length} files`);
+    console.log(`Publishing site with ${data.files.length} files... This may take a moment`);
     logVerbose('Files', data.files.map(f => f.file));
 
     const response = await fetch(apiUrl, options);
@@ -51,7 +51,14 @@ export async function deploy(projectId: string, files: DeployableFile[], vercelT
     if (response.status === 200) {
         const responseBody = await response.json();
         logVerbose("Publish successful:", responseBody);
-        console.log("✅ Publish request succeeded.  It may take a couple minutes for the website to update.  See your site at", responseBody.alias.map(url => `https://${url}`));
+        // try..catch due to `as` casting
+        try {
+            if (responseBody.alias) {
+                console.log("✅ Publish request succeeded.  It may take a couple minutes for the website to update.  See your site at", (responseBody.alias as string[]).map(url => `https://${url}`));
+            }
+        } catch (e) {
+            console.error(e);
+        }
     } else {
         const responseBody = await response.json();
         console.error("❌ Publish failed. Status:", response.status, responseBody);
