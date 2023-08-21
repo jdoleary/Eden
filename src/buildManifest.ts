@@ -14,7 +14,7 @@ import { parse } from "https://deno.land/std@0.194.0/flags/mod.ts";
 import { createDirectoryIndexFile } from "./htmlGenerators/indexFile.ts";
 import { addContentsToTemplate } from "./htmlGenerators/useTemplate.ts";
 import { getDirs, getFiles } from "./os.ts";
-import { pageNameToPagePath, pathToPageName } from "./path.ts";
+import { getOutDir, pageNameToPagePath, pathToPageName } from "./path.ts";
 import { Config, configName, stylesName, TableOfContents, tableOfContentsURL, templateName } from "./sharedTypes.ts";
 import { host } from "./tool/httpServer.ts";
 import { deploy, DeployableFile } from "./tool/publish.ts";
@@ -117,7 +117,7 @@ async function main() {
     const parseDir = cliFlags.parseDir || Deno.cwd();
     const config: Config = {
         projectName: 'my-md2web-site',
-        outDir: "out",
+        outDirRoot: "out",
         parseDir,
         ignoreDirs: [
             "node_modules",
@@ -128,7 +128,6 @@ async function main() {
         staticServeDirs: [],
         logVerbose: false
     };
-    console.log(`Converting files in "${path.resolve(parseDir)}" to website files at "${path.resolve(config.outDir)}"`);
     // If there is no config file in parseDir, create one from the default
     const configPath = path.join(config.parseDir, configName)
     if (!await exists(configPath)) {
@@ -142,21 +141,22 @@ async function main() {
         return;
     }
     logVerbose('Got config:', config);
+    console.log(`Converting files in "${path.resolve(parseDir)}" to website files at "${path.resolve(getOutDir(config))}"`);
 
 
-    if (!config.parseDir || !config.outDir) {
+    if (!config.parseDir || !config.outDirRoot) {
         console.error('❌ Config is invalid', config);
         return;
     }
 
     // Clean outDir
     try {
-        await Deno.remove(config.outDir, { recursive: true });
+        await Deno.remove(getOutDir(config), { recursive: true });
     } catch (e) {
         console.log('Could not clean outDir:', e);
     }
-    if (!await exists(config.outDir)) {
-        await Deno.mkdir(config.outDir, { recursive: true });
+    if (!await exists(getOutDir(config))) {
+        await Deno.mkdir(getOutDir(config), { recursive: true });
     }
 
     if (config.staticServeDirs.length) {
@@ -164,7 +164,7 @@ async function main() {
         for (const staticDir of config.staticServeDirs) {
             const absoluteStaticDir = path.join(config.parseDir, staticDir);
             try {
-                await copy(absoluteStaticDir, path.join(config.outDir, staticDir));
+                await copy(absoluteStaticDir, path.join(getOutDir(config), staticDir));
             } catch (e) {
                 console.error('❌ Err: Could not find static dir', absoluteStaticDir);
 
@@ -209,13 +209,13 @@ async function main() {
         }
         // Create an index page for every directory except for the parse dir (the table of contents better serves this)
         if (d.dir != config.parseDir) {
-            createDirectoryIndexFile(d, config.outDir, tableOfContents, config);
+            createDirectoryIndexFile(d, tableOfContents, config);
         }
     }
 
     logVerbose('Table of Contents:', tableOfContents);
     // Create table of contents
-    const tocOutPath = path.join(config.outDir, tableOfContentsURL);
+    const tocOutPath = path.join(getOutDir(config), tableOfContentsURL);
 
     const tableOfContentsHtml = await addContentsToTemplate(tableOfContents.map(x => {
         // -1 sets the top level pages flush with the left hand side
@@ -235,7 +235,7 @@ async function main() {
     }
 
     // Create the template files from defaults unless they already exist in the parseDir:
-    const templatePath = path.join(config.parseDir, templateName)
+    const templatePath = path.join(config.parseDir, templateName);
     if (!await exists(templatePath)) {
         console.log('Creating template in ', templatePath);
         await copy('templateDefault', templatePath);
@@ -250,7 +250,7 @@ async function main() {
     // Copy styles to outDir so it will be statically served
     if (await exists(stylesPath)) {
         logVerbose('Copying styles in parseDir to outDir.');
-        await copy(stylesName, path.join(config.outDir, stylesName));
+        await copy(stylesName, path.join(getOutDir(config), stylesName));
     } else {
         console.error('Warning: styles.css is missing.  Output html will be without styles.');
     }
@@ -316,8 +316,8 @@ async function main() {
         } else {
             const deployableFiles: DeployableFile[] = [];
             // Get all contents of files in outDir to send to Vercel to publish
-            for await (const absoluteFilePath of getFiles(config.outDir, config)) {
-                const relativepath = path.relative(config.outDir, absoluteFilePath);
+            for await (const absoluteFilePath of getFiles(getOutDir(config), config)) {
+                const relativepath = path.relative(getOutDir(config), absoluteFilePath);
                 // Tech Debt:These extensions corrupt the json currently
                 const disallowedExtensions = ['.ai', '.psd'];
                 const ext = path.parse(relativepath).ext;
@@ -340,7 +340,7 @@ async function main() {
 
 
     if (cliFlags.preview) {
-        host(config.outDir);
+        host(getOutDir(config));
     }
 }
 main().catch(e => {
@@ -361,8 +361,8 @@ async function process(filePath: string, allFilesNames: FileName[], tableOfConte
         console.error('parseDir is undefined');
         return;
     }
-    if (!config.outDir) {
-        console.error('outDir is undefined');
+    if (!config.outDirRoot) {
+        console.error('outDirRoot is undefined');
         return;
     }
     logVerbose('\nProcess', filePath)
@@ -507,7 +507,7 @@ async function process(filePath: string, allFilesNames: FileName[], tableOfConte
 
         try {
             // Get the new path
-            const outPath = path.join(config.outDir, relativePath);
+            const outPath = path.join(getOutDir(config), relativePath);
             // Make the directory that the file will end up in
             await Deno.mkdir(path.parse(outPath).dir, { recursive: true });
             // Rename the file as .html

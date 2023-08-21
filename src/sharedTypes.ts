@@ -7,7 +7,7 @@ export type TableOfContents = { indent: number, pageName: string, relativePath: 
 export interface Config {
     projectName: string;
     parseDir: string;
-    outDir: string;
+    outDirRoot: string;
     ignoreDirs: string[];
     // These directories will be statically served so that their files are accessible from
     // the website root.  Useful for serving images or json for example.

@@ -1,14 +1,14 @@
 import * as path from "https://deno.land/std@0.177.0/path/mod.ts";
-import { pageNameToPagePath, pathToPageName } from "../path.ts";
+import { getOutDir, pageNameToPagePath, pathToPageName } from "../path.ts";
 import { Config, TableOfContents } from "../sharedTypes.ts";
 import { addContentsToTemplate } from "./useTemplate.ts";
 
-export async function createDirectoryIndexFile(d: { dir: string, contents: Deno.DirEntry[] }, outDir: string, tableOfContents: TableOfContents, config: Config) {
+export async function createDirectoryIndexFile(d: { dir: string, contents: Deno.DirEntry[] }, tableOfContents: TableOfContents, config: Config) {
     try {
         const relativePath = path.relative(config.parseDir, d.dir);
         // Get the new path
         // ex: 'out'
-        const outPath = path.join(outDir, relativePath);
+        const outPath = path.join(getOutDir(config), relativePath);
         // Make the directory that the file will end up in
         await Deno.mkdir(outPath, { recursive: true });
         // Rename the file as .html

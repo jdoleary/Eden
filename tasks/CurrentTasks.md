@@ -7,8 +7,6 @@
 - (MVP) Custom URL (in video tutorial)
 - (MVP) Example site and source that demos all working features
     - Explain CLI usage in and out of workingdirectory
-- (MVP) outDirectory should consider multiple projects and not clobber
-    - CLI should only overwrite, never delete the outDir contents
 - (MVP) Bug: Does static assets with spaces in their name get published properly (their filepath?)
     - Verified bug, they do not in the local server, I'm not sure if they do in the published server
 
@@ -17,6 +15,7 @@
 - Bug: ignoreDirs does fuzzy matching but should be exact, see tests in os.ts
 
 ## Enhancements
+- CLI should only overwrite, never delete the outDir contents
 - Prevent page centering from jumping around when pages switch to scrollbar present/not present
 - Custom index page
 ## Tech Debt

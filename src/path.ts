@@ -1,7 +1,11 @@
 import * as path from "https://deno.land/std@0.177.0/path/mod.ts";
 import { assertEquals } from "https://deno.land/std@0.196.0/testing/asserts.ts";
+import { Config } from "./sharedTypes.ts";
 
 const WEB_PATH_SEPARATOR = '/';
+export function getOutDir(config: Config): string {
+    return path.join(config.outDirRoot, config.projectName);
+}
 // returned pagePath is specifically for the web so seperator is always "/"
 // Always returns a relative path (no leading "/")
 export function pageNameToPagePath(relativePath: string, name: string, extension = '.html') {
