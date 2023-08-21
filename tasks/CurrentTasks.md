@@ -1,4 +1,5 @@
 ## MVP Tasks
+- (MVP) bug: Asset serving doesn't work for drag-n-drop exe
 - (MVP) Bi-directional linking
     - see: `// TODO make backlinks work`
         - Backlinks will have to be aggregated on a pass before all files are converted to html
@@ -91,3 +92,4 @@
 
 ## Competition
 - [Quartz](https://quartz.jzhao.xyz/)
+    - Too many links make pages feel overwhelming due to their styling

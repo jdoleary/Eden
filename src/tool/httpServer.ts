@@ -9,8 +9,8 @@ export async function host(publicDir: string) {
     Deno.serve(async (req) => {
 
         const url = new URL(req.url);
-        console.log("Path:", url.pathname);
         let filePath = join(publicDir, url.pathname).replaceAll('%20', ' ');
+        console.log("--preview: Serving: Web Path:", url.pathname, 'Disk Path:', filePath);
         try {
             const fileInfo = await Deno.stat(filePath);
 

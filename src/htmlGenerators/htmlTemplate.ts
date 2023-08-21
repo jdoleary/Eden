@@ -1,4 +1,36 @@
-body {
+export const defaultHtmlTemplate = `<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    {{title}}
+    <!-- <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet"> -->
+    <link rel="stylesheet" href="/styles.css">
+    <script>
+        window.metadata = {{ metadata }};
+    </script>
+</head>
+
+<body>
+    <main>
+        <nav>
+            {{breadcrumbs}}
+        </nav>
+        <article>
+            <!-- Created {{created}}
+            Modified {{modified}} -->
+            {{content}}
+        </article>
+    </main>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</body>
+
+</html>`
+
+export const defaultStyles = `body {
     background-color: #393939;
     font-family: 'Verdana', 'Helvetica', sans-serif;
     font-display: optional;
@@ -158,4 +190,4 @@ nav>.center-dot:last-child {
 .pageNumber a {
     cursor: pointer;
     border: none;
-}
+}`

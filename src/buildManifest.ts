@@ -20,6 +20,7 @@ import { host } from "./tool/httpServer.ts";
 import { deploy, DeployableFile } from "./tool/publish.ts";
 import { extractMetadata } from "./tool/metadataParser.ts";
 import { logVerbose } from "./tool/console.ts";
+import { defaultHtmlTemplate, defaultStyles } from './htmlGenerators/htmlTemplate.ts';
 
 const VERSION = '0.1.0'
 const PROGRAM_NAME = 'md2Web';
@@ -116,8 +117,8 @@ async function main() {
     // This will eventually be supplied via CLI
     const parseDir = cliFlags.parseDir || Deno.cwd();
     const config: Config = {
-        projectName: 'my-md2web-site',
-        outDirRoot: "out",
+        projectName: `my-${PROGRAM_NAME}-project`,
+        outDirRoot: `${PROGRAM_NAME}Out`,
         parseDir,
         ignoreDirs: [
             "node_modules",
@@ -153,7 +154,7 @@ async function main() {
     try {
         await Deno.remove(getOutDir(config), { recursive: true });
     } catch (e) {
-        console.log('Could not clean outDir:', e);
+        logVerbose('Could not clean outDir:', e);
     }
     if (!await exists(getOutDir(config))) {
         await Deno.mkdir(getOutDir(config), { recursive: true });
@@ -238,14 +239,14 @@ async function main() {
     const templatePath = path.join(config.parseDir, templateName);
     if (!await exists(templatePath)) {
         console.log('Creating template in ', templatePath);
-        await copy('templateDefault', templatePath);
+        await Deno.writeTextFile(templatePath, defaultHtmlTemplate);
     }
     // Copy the default styles unless they already exist 
     // (which means they could be changed by the user in which case do not overwrite)
     const stylesPath = path.join(config.parseDir, stylesName)
     if (!await exists(stylesPath)) {
-        console.log('Creating default styles file in ', stylesPath);
-        await copy(stylesName, stylesPath);
+        console.log('Creating default styles in ', stylesPath);
+        await Deno.writeTextFile(stylesPath, defaultStyles);
     }
     // Copy styles to outDir so it will be statically served
     if (await exists(stylesPath)) {

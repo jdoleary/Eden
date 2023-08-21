@@ -8,8 +8,9 @@ export async function* getDirs(dir: string, config: Config): AsyncGenerator<{ di
     yield { dir: dir, contents: Array.from(Deno.readDirSync(dir)) };
     for await (const dirent of dirents) {
         const res = path.resolve(dir, dirent.name);
+        // Ignore outDirRoot or else it will loop forever
         // Ignore both ignoreDirectories and staticServeDirectorys (we don't want static serve directories showing up in table of contents)
-        if (isDirectoryIgnored(res, config.parseDir, [...config.ignoreDirs, ...config.staticServeDirs])) {
+        if (isDirectoryIgnored(res, config.parseDir, [...config.ignoreDirs, ...config.staticServeDirs, config.outDirRoot])) {
             // Do not process a file in an ignore directory
             continue;
         }
@@ -27,7 +28,8 @@ export async function* getFiles(dir: string, config: Config): AsyncGenerator<str
             // Do not process the manifest itself
             continue;
         }
-        if (isDirectoryIgnored(res, config.parseDir, [...config.ignoreDirs, ...config.staticServeDirs])) {
+        // Ignore outDirRoot or else it will loop forever
+        if (isDirectoryIgnored(res, config.parseDir, [...config.ignoreDirs, ...config.staticServeDirs, config.outDirRoot])) {
             // Do not process a file in an ignore directory
             continue;
         }
