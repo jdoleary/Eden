@@ -2,3 +2,5 @@
 node_modules/
 out/
 scratch
+to_refactor.ts
+marky.test.ts

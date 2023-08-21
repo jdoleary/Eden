@@ -4,7 +4,6 @@
         - Backlinks will have to be aggregated on a pass before all files are converted to html
         - Allow backlinks to link to the element
             - smooth scrolling https://stackoverflow.com/a/24739173/4418836
-- (MVP) Check for update
 - (MVP) Custom URL (in video tutorial)
 - (MVP) Example site and source that demos all working features
     - Explain CLI usage in and out of workingdirectory
@@ -91,3 +90,7 @@
 - [.md meta data](https://help.obsidian.md/Editing+and+formatting/Properties)
 - [Commonmark Spec](https://spec.commonmark.org/0.30/)
 - [Markdown Guide Extended Syntax](https://www.markdownguide.org/extended-syntax/)
+
+
+## Competition
+- [Quartz](https://quartz.jzhao.xyz/)
