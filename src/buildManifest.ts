@@ -465,7 +465,7 @@ async function process(filePath: string, allFilesNames: FileName[], tableOfConte
                             }
                         }
                         if (!foundMissingImage) {
-                            console.error('⚠️ Missing image', imageUrl);
+                            console.error('⚠️ Missing image', imageUrl, 'check config staticServeDirs for missing directory.');
                         }
                     }
                     // Remove leading "!"
