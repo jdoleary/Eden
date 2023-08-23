@@ -1,6 +1,9 @@
 import * as path from "https://deno.land/std@0.177.0/path/mod.ts";
-import { Config } from "./sharedTypes.ts";
+import { Config, configDirName } from "./sharedTypes.ts";
+function getIgnoredDirectories(config: Config): string[] {
+    return [...config.ignoreDirs, ...config.staticServeDirs, config.outDirRoot, configDirName];
 
+}
 export async function* getDirs(dir: string, config: Config): AsyncGenerator<{ dir: string, contents: Deno.DirEntry[] }, void, void> {
     const dirents = Deno.readDir(dir);
     // Yield top level directory first so its own contents will be included
@@ -10,7 +13,7 @@ export async function* getDirs(dir: string, config: Config): AsyncGenerator<{ di
         const res = path.resolve(dir, dirent.name);
         // Ignore outDirRoot or else it will loop forever
         // Ignore both ignoreDirectories and staticServeDirectorys (we don't want static serve directories showing up in table of contents)
-        if (isDirectoryIgnored(res, config.parseDir, [...config.ignoreDirs, ...config.staticServeDirs, config.outDirRoot])) {
+        if (isDirectoryIgnored(res, config.parseDir, getIgnoredDirectories(config))) {
             // Do not process a file in an ignore directory
             continue;
         }
@@ -29,7 +32,7 @@ export async function* getFiles(dir: string, config: Config): AsyncGenerator<str
             continue;
         }
         // Ignore outDirRoot or else it will loop forever
-        if (isDirectoryIgnored(res, config.parseDir, [...config.ignoreDirs, ...config.staticServeDirs, config.outDirRoot])) {
+        if (isDirectoryIgnored(res, config.parseDir, getIgnoredDirectories(config))) {
             // Do not process a file in an ignore directory
             continue;
         }
