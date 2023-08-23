@@ -15,7 +15,7 @@ import { createDirectoryIndexFile } from "./htmlGenerators/indexFile.ts";
 import { addContentsToTemplate } from "./htmlGenerators/useTemplate.ts";
 import { getDirs, getFiles } from "./os.ts";
 import { getConfDir, getOutDir, pageNameToPagePath, pathOSRelative, pathToPageName } from "./path.ts";
-import { Config, configDir, configName, stylesName, TableOfContents, tableOfContentsURL, templateName } from "./sharedTypes.ts";
+import { Config, configName, stylesName, TableOfContents, tableOfContentsURL, templateName } from "./sharedTypes.ts";
 import { host } from "./tool/httpServer.ts";
 import { deploy, DeployableFile } from "./tool/publish.ts";
 import { extractMetadata } from "./tool/metadataParser.ts";

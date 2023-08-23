@@ -1,6 +1,6 @@
 import * as path from "https://deno.land/std@0.177.0/path/mod.ts";
 import { assertEquals } from "https://deno.land/std@0.196.0/testing/asserts.ts";
-import { Config, configDir } from "./sharedTypes.ts";
+import { Config, configDirName } from "./sharedTypes.ts";
 
 // Warning: Paths can get complicated because relative paths may be relative to cwd or parseDir
 // or they may be relative to the web root if they are being used in the website
@@ -11,7 +11,7 @@ const WEB_PATH_SEPARATOR = '/';
 export function getConfDir(parseDir: pathOSAbsolute): pathOSAbsolute {
     // confDir doesn't need to be scoped to a project name like outDir does,
     // because it lives in the parseDir and the parseDir represents a single project already 
-    const confPath = path.join(parseDir, configDir);
+    const confPath = path.join(parseDir, configDirName);
     const isAbsolute = path.isAbsolute(confPath);
     return isAbsolute ? confPath : path.resolve(confPath);
 }
