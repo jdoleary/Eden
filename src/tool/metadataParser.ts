@@ -10,12 +10,16 @@ function* searchInParts(string: string) {
     }
     yield string.slice(position - amount, string.length);
 }
-export function extractMetadata(fileContents: string) {
+
+// Note: modifies fileContents to remove metadata string
+export function extractMetadata(fileContents: string): { metadata: any, metadataCharacterCount: number } | null {
     const stringSearcher = searchInParts(fileContents);
     let hasMetaData = null;
     let countEndDashes = 0;
-    let metaData = '';
+    let metadata = '';
+    let charactersToRemove = 0;
     for (const v of stringSearcher) {
+        charactersToRemove += v.length;
         if (hasMetaData == null) {
             if (v == '---') {
                 hasMetaData = true;
@@ -34,9 +38,9 @@ export function extractMetadata(fileContents: string) {
                 if (countEndDashes == 3) {
                     // .slice removes the trailing '---' so that it's valid yaml
                     const sliceAmount = -(3 - dashesAddedThisLoop);
-                    const yaml = sliceAmount < 0 ? metaData.slice(0, sliceAmount) : metaData;
+                    const yaml = sliceAmount < 0 ? metadata.slice(0, sliceAmount) : metadata;
                     try {
-                        return parse(yaml);
+                        return { metadata: parse(yaml), metadataCharacterCount: charactersToRemove };
                     } catch (e) {
                         console.error('❌ Error parsing metadata', e);
                     }
@@ -45,7 +49,7 @@ export function extractMetadata(fileContents: string) {
                 countEndDashes = 0;
             }
         }
-        metaData += v;
+        metadata += v;
     }
     return null;
 }
@@ -93,6 +97,6 @@ after metadata`,
 ].map(test => {
     Deno.test(test.description, () => {
         const actual = extractMetadata(test.input)
-        assertEquals(actual, test.expected);
+        assertEquals(actual?.metadata, test.expected);
     })
 })

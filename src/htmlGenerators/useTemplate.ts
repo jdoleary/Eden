@@ -4,8 +4,8 @@ import { Backlinks } from "../tool/backlinkFinder.ts";
 import { absoluteOsMdPathToWebPath } from "../path.ts";
 
 // Takes a string that contains html with template designators (e.g. {{content}}) and fills all the templates
-export async function addContentsToTemplate(content: string, templateHtml: string, { config, tableOfContents, filePath, relativePath, titleOverride, metaData, backlinks }: {
-    config: Config, tableOfContents: TableOfContents, filePath: string, relativePath: string, titleOverride: string, metaData: any, backlinks: Backlinks
+export async function addContentsToTemplate(content: string, templateHtml: string, { config, tableOfContents, filePath, relativePath, titleOverride, metadata, backlinks }: {
+    config: Config, tableOfContents: TableOfContents, filePath: string, relativePath: string, titleOverride: string, metadata: any, backlinks: Backlinks
 }): Promise<string> {
     // Get all nested templates and add to html
     // Prepend page title to top of content
@@ -68,7 +68,7 @@ export async function addContentsToTemplate(content: string, templateHtml: strin
 
     // {{ metadata  }} has spaces due to formatter changing it
     // TODO find a better way to add this to the head rather than replace
-    content = content.replace('{{ metadata }}', JSON.stringify(metaData) || '{}');
+    content = content.replace('{{ metadata }}', JSON.stringify(metadata) || '{}');
 
 
     // Get file meta data

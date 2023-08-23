@@ -18,6 +18,7 @@
 - Bug: ignoreDirs does fuzzy matching but should be exact, see tests in os.ts
 
 ## Enhancements
+- Will this work with other languages? See potential issue in removing by character in extractMetadata()
 - Distinguish between multiple backlinks in the same file (for the sake of linking to the correct one)
 - Support pages that are just backlinks but don't exist as their own page
 - allow for defining different templates than default in a .md's metadata

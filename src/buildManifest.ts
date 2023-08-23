@@ -302,7 +302,7 @@ async function main() {
         // -1 sets the top level pages flush with the left hand side
         const indentHTML: string[] = Array(x.indent - 1).fill('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
         return `<div>${indentHTML.join('')}<a href="${x.relativePath}">${x.pageName}</a></div>`;
-    }).join(''), templateHtml, { config, tableOfContents, filePath: tocOutPath, relativePath: '', titleOverride: 'Table of Contents', metaData: null, backlinks });
+    }).join(''), templateHtml, { config, tableOfContents, filePath: tocOutPath, relativePath: '', titleOverride: 'Table of Contents', metadata: null, backlinks });
 
     await Deno.writeTextFile(tocOutPath, tableOfContentsHtml);
 
@@ -434,7 +434,10 @@ async function process(filePath: string, templateHtml: string, { allFilesNames, 
         fileContents = fileContents.replaceAll('[[', '');
         fileContents = fileContents.replaceAll(']]', '');
 
-        const metaData = extractMetadata(fileContents);
+        const extracted = extractMetadata(fileContents);
+        const { metadata, metadataCharacterCount } = extracted || { metadata: {}, metadataCharacterCount: 0 };
+        // Remove metadata so it doesn't get converted into the html
+        fileContents = fileContents.slice(metadataCharacterCount);
 
         // Convert markdown to html
         const mdTokens = tokens(fileContents);
@@ -562,7 +565,7 @@ async function process(filePath: string, templateHtml: string, { allFilesNames, 
             .replaceAll('%20', ' ');
 
         const relativePath = path.relative(config.parseDir, filePath);
-        htmlString = await addContentsToTemplate(htmlString, templateHtml, { config, tableOfContents, filePath, relativePath, metaData, titleOverride: '', backlinks });
+        htmlString = await addContentsToTemplate(htmlString, templateHtml, { config, tableOfContents, filePath, relativePath, metadata, titleOverride: '', backlinks });
 
         try {
             // Get the new path
