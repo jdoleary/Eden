@@ -2,9 +2,13 @@
 // deno-lint-ignore-file no-var
 declare global {
     var useLogVerbose: boolean;
+    // will print extra instructions if running for the first time
+    var firstRun: boolean;
 }
 // Initialize to false, will be set from cli flags
 window.useLogVerbose = false;
+// Initialize to false, will be set later in execution
+window.firstRun = false;
 
 import * as path from "https://deno.land/std@0.177.0/path/mod.ts";
 import { copy } from "https://deno.land/std@0.195.0/fs/copy.ts";
@@ -134,6 +138,9 @@ async function main() {
 
     // Create the config directory if it doesn't exist
     if (!await exists(getConfDir(config.parseDir))) {
+        // A missing confDir means that this is the first time this program is being
+        // run on a parseDir
+        window.firstRun = true;
         await Deno.mkdir(getConfDir(config.parseDir), { recursive: true });
     }
 
@@ -358,6 +365,10 @@ async function main() {
         }
     }
 
+    if (window.firstRun) {
+        console.log(`\n\nFirst time setup:\nTemplate files have been created for you in ${getConfDir(config.parseDir)}.  You can modify the config file (${configName}) to change the behavior of this program or try modifying the ${templateName} or ${stylesName} to change the appearance of the generated website!\n`);
+    }
+
 
     if (cliFlags.preview) {
         host(getOutDir(config));
@@ -365,7 +376,16 @@ async function main() {
 }
 main().catch(e => {
     console.error(e);
-    prompt("An error occurred... Press any key and enter to exit.");
+}).then(() => {
+    // If there are no args, this exe was probably executed via a double-click,
+    // so we must prompt to leave the log open.  However, we must NOT prompt
+    // if there are args (such as --preview) because that will prevent
+    // the http server from serving content
+    // and there's also no reason to prompt if it was triggered via the command line
+    if (Deno.build.os === "windows" && Deno.args.length === 0) {
+
+        prompt("Finished... Enter any key to exit.");
+    }
 });
 interface FileName {
     name: string;
