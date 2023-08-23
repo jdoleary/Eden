@@ -7,8 +7,16 @@
 - (MVP) Custom URL (in video tutorial)
 - (MVP) Example site and source that demos all working features
     - Explain CLI usage in and out of workingdirectory
-- add readme instructions
+- add readme instructions in config dir?
 - Change icon from deno dinosaur to something else
+    - http://www.angusj.com/resourcehacker/
+- Add footer
+- Potential app name ideas:
+    - Osiris
+    - Usir
+    - MarkdownMeadow
+    - Just use my .me site
+- if the out dir goes inside of the obsidian directory it takes obsidian too long to start up (it's caching) so the out dir should be somewhere else
 
 ## Bugs
 - Bug: Nested directories mess up in the Previous Button (see page "Armbar". Previous button says ": Locks")
@@ -92,6 +100,7 @@
 - [.md meta data](https://help.obsidian.md/Editing+and+formatting/Properties)
 - [Commonmark Spec](https://spec.commonmark.org/0.30/)
 - [Markdown Guide Extended Syntax](https://www.markdownguide.org/extended-syntax/)
+- zettelkasten
 
 
 ## Competition

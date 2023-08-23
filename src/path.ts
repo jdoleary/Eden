@@ -24,12 +24,22 @@ export function getOutDir(config: Config): pathOSAbsolute {
         ? outDirPath
         : path.resolve(outDirPath)
 }
-// returned pagePath is specifically for the web so seperator is always "/"
-// Always returns a relative path (no leading "/") (pathWeb)
-// For example, see tests below
-export function pageNameToPagePath(relativePath: string, name: string, extension = '.html'): pathWeb {
-    // .filter removes leading and trailing separators
-    return [...relativePath.split(path.sep).filter(x => !!x), (path.basename(name, path.extname(name)) + extension)].join(WEB_PATH_SEPARATOR).replaceAll(' ', '_')
+
+const TEST_PARSE_DIR = 'C:/parseDir/';
+[
+    [`${TEST_PARSE_DIR}Submissions/Locks/Straight Ankle Lock.md`, '/Submissions/Locks/Straight_Ankle_Lock.html']
+].map(([osPath, expectedPath]) => {
+
+    Deno.test(`absoluteOsMdPathToWebPath: ${osPath} -> ${expectedPath} `, () => {
+        const actual = absoluteOsMdPathToWebPath(osPath, TEST_PARSE_DIR);
+        const expected = expectedPath;
+        assertEquals(actual, expected);
+    });
+});
+export function absoluteOsMdPathToWebPath(osPath: string, parseDir: string): pathWeb {
+    // `'/' +`: Make absolute path so that deeply nested pages
+    // can link out to non-relative paths
+    return '/' + path.relative(parseDir, osPath).replaceAll('\\', '/').replaceAll(' ', '_').split('.md').join('.html');
 }
 
 [
@@ -46,11 +56,14 @@ export function pageNameToPagePath(relativePath: string, name: string, extension
         assertEquals(actual, expected);
     });
 });
-
-// Extracts a human-readable page name and replaces "_" with spaces.
-export function pathToPageName(filepath: string): string {
-    return path.parse(filepath).name.replaceAll('_', ' ');
+// returned pagePath is specifically for the web so seperator is always "/"
+// Always returns a relative path (no leading "/") (pathWeb)
+// For example, see tests above
+export function pageNameToPagePath(relativePath: string, name: string, extension = '.html'): pathWeb {
+    // .filter removes leading and trailing separators
+    return [...relativePath.split(path.sep).filter(x => !!x), (path.basename(name, path.extname(name)) + extension)].join(WEB_PATH_SEPARATOR).replaceAll(' ', '_')
 }
+
 
 [
     ['/test/nest/path_has_underscores.html', 'path has underscores'],
@@ -65,6 +78,11 @@ export function pathToPageName(filepath: string): string {
         assertEquals(actual, expected);
     });
 });
+// Extracts a human-readable page name and replaces "_" with spaces.
+export function pathToPageName(filepath: string): string {
+    return path.parse(filepath).name.replaceAll('_', ' ');
+}
+
 
 
 // pathWeb is a path to be used for fetching data in the website such as

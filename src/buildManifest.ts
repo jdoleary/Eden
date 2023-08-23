@@ -18,7 +18,7 @@ import { parse } from "https://deno.land/std@0.194.0/flags/mod.ts";
 import { createDirectoryIndexFile } from "./htmlGenerators/indexFile.ts";
 import { addContentsToTemplate } from "./htmlGenerators/useTemplate.ts";
 import { getDirs, getFiles } from "./os.ts";
-import { getConfDir, getOutDir, pageNameToPagePath, pathOSRelative, pathToPageName } from "./path.ts";
+import { absoluteOsMdPathToWebPath, getConfDir, getOutDir, pageNameToPagePath, pathOSRelative, pathToPageName, pathWeb } from "./path.ts";
 import { Config, configName, stylesName, TableOfContents, tableOfContentsURL, templateName } from "./sharedTypes.ts";
 import { host } from "./tool/httpServer.ts";
 import { deploy, DeployableFile } from "./tool/publish.ts";
@@ -296,7 +296,7 @@ async function main() {
     for await (const f of getFiles(allFilesPath, config)) {
         const parsed = path.parse(f);
         if (parsed.ext == '.md') {
-            allFilesNames.push({ name: parsed.name, kpath: path.relative(config.parseDir, f.split('.md').join('.html')) });
+            allFilesNames.push({ name: parsed.name, webPath: absoluteOsMdPathToWebPath(f, config.parseDir) });
         }
     }
 
@@ -408,7 +408,7 @@ main().catch(e => {
 });
 interface FileName {
     name: string;
-    kpath: string;
+    webPath: pathWeb;
 }
 async function process(filePath: string, templateHtml: string, allFilesNames: FileName[], tableOfContents: TableOfContents, config: Config) {
     // Dev, test single file
@@ -450,10 +450,7 @@ async function process(filePath: string, templateHtml: string, allFilesNames: Fi
             let isTokenModified = false;
             // Add backlinks
             if (token.type == 'text') {
-                for (let { name, kpath } of allFilesNames) {
-                    // Make absolute path so that deeply nested pages
-                    // can link out to non-relative paths
-                    kpath = '/' + kpath;
+                for (const { name, webPath } of allFilesNames) {
                     if (name == path.parse(filePath).name) {
                         // Don't link to self
                         continue;
@@ -464,7 +461,7 @@ async function process(filePath: string, templateHtml: string, allFilesNames: Fi
                         // since it must now be split
                         isTokenModified = true;
                         const splitToken = token.content.split(name);
-                        const url = kpath.replaceAll('\\', '/').replaceAll(' ', '_');
+                        const url = webPath;
 
                         for (let i = 0; i < splitToken.length; i++) {
                             const splitInstance = splitToken[i];
