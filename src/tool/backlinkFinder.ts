@@ -16,6 +16,10 @@ export async function findBacklinks(filePathsGenerator: AsyncGenerator<string, v
     const backlinkPerformanceStart = performance.now();
     const backlinks: Backlinks = {};
     for await (const filePath of filePathsGenerator) {
+        if (path.parse(filePath).ext != '.md') {
+            // Only process .md files
+            continue;
+        }
         const filePathAsWebPath = absoluteOsMdPathToWebPath(filePath, parseDir);
         const f = await Deno.open(filePath);
         try {
