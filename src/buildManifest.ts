@@ -251,7 +251,7 @@ async function main() {
     // Copy styles to outDir so it will be statically served
     if (await exists(stylesPath)) {
         logVerbose('Copying styles in parseDir to outDir.');
-        await copy(stylesName, path.join(getOutDir(config), stylesName));
+        await copy(stylesPath, path.join(getOutDir(config), stylesName));
     } else {
         console.error('Warning: styles.css is missing.  Output html will be without styles.');
     }
