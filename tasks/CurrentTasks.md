@@ -1,5 +1,4 @@
 ## MVP Tasks
-- (MVP) bug: Asset serving doesn't work for drag-n-drop exe
 - (MVP) Bi-directional linking
     - see: `// TODO make backlinks work`
         - Backlinks will have to be aggregated on a pass before all files are converted to html
@@ -8,6 +7,8 @@
 - (MVP) Custom URL (in video tutorial)
 - (MVP) Example site and source that demos all working features
     - Explain CLI usage in and out of workingdirectory
+- add readme instructions
+- Change icon from deno dinosaur to something else
 
 ## Bugs
 - Bug: Nested directories mess up in the Previous Button (see page "Armbar". Previous button says ": Locks")

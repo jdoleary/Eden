@@ -120,6 +120,22 @@ async function main() {
     }
     // This will eventually be supplied via CLI
     const parseDir = cliFlags.parseDir || Deno.cwd();
+    let staticServeDirs: string[] = [];
+    let obsidianAttachmentFolderPath = '';
+    try {
+        const obsidianAppJsonText = await Deno.readTextFile(path.join(parseDir, '.obsidian', 'app.json'));
+        const obsidianAppJson = JSON.parse(obsidianAppJsonText);
+        if (obsidianAppJson && obsidianAppJson.attachmentFolderPath) {
+            // This variable is used for firstTime logging later
+            obsidianAttachmentFolderPath = obsidianAppJson.attachmentFolderPath;
+            // Set obsidian's attachmentFolderPath as a staticServeDir so obsidian's images will work out of the box
+            staticServeDirs = [obsidianAppJson.attachmentFolderPath]
+        }
+    } catch (_) {
+        // Fully ignorable error, this file may not exist
+    }
+
+    // Default config
     const config: Config = {
         projectName: `my-digital-garden`,
         outDirRoot: `${PROGRAM_NAME}-out`,
@@ -128,9 +144,7 @@ async function main() {
             "node_modules",
             ".obsidian",
         ],
-        // TODO: Make config help text visible to users
-        // If you are using an .obsidian/app.json 'attachmentFolderPath', that path should go in staticServeDirs
-        staticServeDirs: [],
+        staticServeDirs,
         logVerbose: false
     };
     // If there is no config file in parseDir, create one from the default
@@ -150,6 +164,8 @@ async function main() {
     }
     try {
         Object.assign(config, JSON.parse(await Deno.readTextFile(configPath)) || {});
+        // Keep obsidian attachmentFolderPath as static serve dir
+        config.staticServeDirs = [...config.staticServeDirs, ...staticServeDirs]
     } catch (e) {
         console.log('Caught: Manifest non-existant or corrupt', e);
         return;
@@ -368,7 +384,8 @@ async function main() {
     }
 
     if (window.firstRun) {
-        console.log(`\n\nFirst time setup:\nTemplate files have been created for you in ${getConfDir(config.parseDir)}.  You can modify the config file (${configName}) to change the behavior of this program or try modifying the ${templateName} or ${stylesName} to change the appearance of the generated website!\n`);
+        console.log(`Found .obsidian/app.json, automatically adding "${obsidianAttachmentFolderPath}" as staticServeDir in config`);
+        console.log(`\n\n~~~First time setup~~~\nTemplate files have been created for you in ${getConfDir(config.parseDir)}.  You can modify the config file (${configName}) to change the behavior of this program or try modifying the ${templateName} or ${stylesName} to change the appearance of the generated website!\n`);
     }
 
 
