@@ -14,8 +14,8 @@ import { parse } from "https://deno.land/std@0.194.0/flags/mod.ts";
 import { createDirectoryIndexFile } from "./htmlGenerators/indexFile.ts";
 import { addContentsToTemplate } from "./htmlGenerators/useTemplate.ts";
 import { getDirs, getFiles } from "./os.ts";
-import { getOutDir, pageNameToPagePath, pathToPageName } from "./path.ts";
-import { Config, configName, stylesName, TableOfContents, tableOfContentsURL, templateName } from "./sharedTypes.ts";
+import { getConfDir, getOutDir, pageNameToPagePath, pathOSRelative, pathToPageName } from "./path.ts";
+import { Config, configDir, configName, stylesName, TableOfContents, tableOfContentsURL, templateName } from "./sharedTypes.ts";
 import { host } from "./tool/httpServer.ts";
 import { deploy, DeployableFile } from "./tool/publish.ts";
 import { extractMetadata } from "./tool/metadataParser.ts";
@@ -23,7 +23,7 @@ import { logVerbose } from "./tool/console.ts";
 import { defaultHtmlTemplate, defaultStyles } from './htmlGenerators/htmlTemplate.ts';
 
 const VERSION = '0.1.0'
-const PROGRAM_NAME = 'md2Web';
+const PROGRAM_NAME = 'md2web';
 
 interface ManifestFiles {
     [filePath: string]: {
@@ -117,8 +117,8 @@ async function main() {
     // This will eventually be supplied via CLI
     const parseDir = cliFlags.parseDir || Deno.cwd();
     const config: Config = {
-        projectName: `my-${PROGRAM_NAME}-project`,
-        outDirRoot: `${PROGRAM_NAME}Out`,
+        projectName: `my-digital-garden`,
+        outDirRoot: `${PROGRAM_NAME}-out`,
         parseDir,
         ignoreDirs: [
             "node_modules",
@@ -130,19 +130,25 @@ async function main() {
         logVerbose: false
     };
     // If there is no config file in parseDir, create one from the default
-    const configPath = path.join(config.parseDir, configName)
+    const configPath = path.join(getConfDir(config.parseDir), configName)
+
+    // Create the config directory if it doesn't exist
+    if (!await exists(getConfDir(config.parseDir))) {
+        await Deno.mkdir(getConfDir(config.parseDir), { recursive: true });
+    }
+
     if (!await exists(configPath)) {
         console.log('Creating config in ', configPath);
         await Deno.writeTextFile(configPath, JSON.stringify(config, null, 2));
     }
     try {
-        Object.assign(config, JSON.parse(await Deno.readTextFile(path.join(config.parseDir, configName))) || {});
+        Object.assign(config, JSON.parse(await Deno.readTextFile(configPath)) || {});
     } catch (e) {
         console.log('Caught: Manifest non-existant or corrupt', e);
         return;
     }
     logVerbose('Got config:', config);
-    console.log(`Converting files in "${path.resolve(parseDir)}" to website files at "${path.resolve(getOutDir(config))}"`);
+    console.log(`Converting files in "${parseDir}" to website files at "${getOutDir(config)}"`);
 
 
     if (!config.parseDir || !config.outDirRoot) {
@@ -156,6 +162,7 @@ async function main() {
     } catch (e) {
         logVerbose('Could not clean outDir:', e);
     }
+    // Create the out directory if it doesn't exist
     if (!await exists(getOutDir(config))) {
         await Deno.mkdir(getOutDir(config), { recursive: true });
     }
@@ -181,17 +188,28 @@ async function main() {
     // } catch (e) {
     //     console.log('Caught: Manifest non-existant or corrupt', e);
     // }
+    // Get default html template
+    // Todo: future enhancement, allow for defining different templates in a .md's metadata
+    const templateReplacer = '{{content}}';
+    let templateHtml = templateReplacer;
+    const defaultTemplatePath = path.join(getConfDir(config.parseDir), templateName);
+    try {
+        templateHtml = await Deno.readTextFile(defaultTemplatePath);
+    } catch (_) {
+        // Use default demplate
+        console.log(`Default template not found.  Check for the existence of ${defaultTemplatePath}`);
+    }
 
     const tableOfContents: TableOfContents = [];
 
     const allFilesPath = path.join('.', config.parseDir);
     // Create index file for each directory
     for await (const d of getDirs(allFilesPath, config)) {
-        const relativePath = path.relative(config.parseDir, d.dir).replaceAll(' ', '_');
-        const pageNameSteps = relativePath.split('\\');
+        const directoryPathSegment: pathOSRelative = path.relative(config.parseDir, d.dir).replaceAll(' ', '_');
+        const pageNameSteps = directoryPathSegment.split('\\');
         const indent = pageNameSteps.length;
-        const pageName = pathToPageName(relativePath);
-        tableOfContents.push({ indent, pageName, relativePath, isDir: true });
+        const pageName = pathToPageName(directoryPathSegment);
+        tableOfContents.push({ indent, pageName, relativePath: directoryPathSegment, isDir: true });
         // Add files to table of contents for use later for "next" and "prev" buttons to know order of pages
         for (const content of d.contents) {
             if (content.isFile) {
@@ -200,7 +218,7 @@ async function main() {
                         indent: indent + 1,
                         parentDir: d.dir,
                         pageName: content.name.replace('.md', ''),
-                        relativePath: path.relative(config.parseDir, path.resolve(config.parseDir, pageNameToPagePath(relativePath, content.name))), isDir: false
+                        relativePath: pageNameToPagePath(directoryPathSegment, content.name), isDir: false
                     });
                 } else {
                     logVerbose('table of contents: skipping', content.name);
@@ -210,9 +228,10 @@ async function main() {
         }
         // Create an index page for every directory except for the parse dir (the table of contents better serves this)
         if (d.dir != config.parseDir) {
-            createDirectoryIndexFile(d, tableOfContents, config);
+            createDirectoryIndexFile(d, templateHtml, tableOfContents, config);
         }
     }
+
 
     logVerbose('Table of Contents:', tableOfContents);
     // Create table of contents
@@ -222,7 +241,7 @@ async function main() {
         // -1 sets the top level pages flush with the left hand side
         const indentHTML: string[] = Array(x.indent - 1).fill('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
         return `<div>${indentHTML.join('')}<a href="${x.relativePath}">${x.pageName}</a></div>`;
-    }).join(''), { config, tableOfContents, filePath: tocOutPath, relativePath: '', titleOverride: 'Table of Contents', metaData: null });
+    }).join(''), templateHtml, { config, tableOfContents, filePath: tocOutPath, relativePath: '', titleOverride: 'Table of Contents', metaData: null });
 
     await Deno.writeTextFile(tocOutPath, tableOfContentsHtml);
 
@@ -235,15 +254,15 @@ async function main() {
         }
     }
 
-    // Create the template files from defaults unless they already exist in the parseDir:
-    const templatePath = path.join(config.parseDir, templateName);
+    // Create the template files from defaults unless they already exist in the parseDir's config directory:
+    const templatePath = path.join(getConfDir(config.parseDir), templateName);
     if (!await exists(templatePath)) {
         console.log('Creating template in ', templatePath);
         await Deno.writeTextFile(templatePath, defaultHtmlTemplate);
     }
     // Copy the default styles unless they already exist 
     // (which means they could be changed by the user in which case do not overwrite)
-    const stylesPath = path.join(config.parseDir, stylesName)
+    const stylesPath = path.join(getConfDir(config.parseDir), stylesName)
     if (!await exists(stylesPath)) {
         console.log('Creating default styles in ', stylesPath);
         await Deno.writeTextFile(stylesPath, defaultStyles);
@@ -296,7 +315,7 @@ async function main() {
         // console.log('File changed:', f);
         try {
 
-            await process(f, allFilesNames, tableOfContents, config);
+            await process(f, templateHtml, allFilesNames, tableOfContents, config);
         } catch (e) {
             console.error('error in process', e);
         }
@@ -352,7 +371,7 @@ interface FileName {
     name: string;
     kpath: string;
 }
-async function process(filePath: string, allFilesNames: FileName[], tableOfContents: TableOfContents, config: Config) {
+async function process(filePath: string, templateHtml: string, allFilesNames: FileName[], tableOfContents: TableOfContents, config: Config) {
     // Dev, test single file
     // if (filePath !== 'C:\\ObsidianJordanJiuJitsu\\JordanJiuJitsu\\Submissions\\Strangles\\Triangle.md') {
     //     return;
@@ -504,7 +523,7 @@ async function process(filePath: string, allFilesNames: FileName[], tableOfConte
             .replaceAll('%20', ' ');
 
         const relativePath = path.relative(config.parseDir, filePath);
-        htmlString = await addContentsToTemplate(htmlString, { config, tableOfContents, filePath, relativePath, metaData, titleOverride: '' });
+        htmlString = await addContentsToTemplate(htmlString, templateHtml, { config, tableOfContents, filePath, relativePath, metaData, titleOverride: '' });
 
         try {
             // Get the new path

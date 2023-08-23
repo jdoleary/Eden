@@ -3,7 +3,7 @@ import { getOutDir, pageNameToPagePath, pathToPageName } from "../path.ts";
 import { Config, TableOfContents } from "../sharedTypes.ts";
 import { addContentsToTemplate } from "./useTemplate.ts";
 
-export async function createDirectoryIndexFile(d: { dir: string, contents: Deno.DirEntry[] }, tableOfContents: TableOfContents, config: Config) {
+export async function createDirectoryIndexFile(d: { dir: string, contents: Deno.DirEntry[] }, templateHtml: string, tableOfContents: TableOfContents, config: Config) {
     try {
         const relativePath = path.relative(config.parseDir, d.dir);
         // Get the new path
@@ -18,7 +18,7 @@ export async function createDirectoryIndexFile(d: { dir: string, contents: Deno.
         const htmlString = await addContentsToTemplate(d.contents.filter(x => x.name.endsWith('.md') || x.isDirectory).map(x => {
             const link = pageNameToPagePath(path.relative(config.parseDir, d.dir), x.name, x.isDirectory ? '' : '.html');
             return `<a href="${link}">${pathToPageName(link)}</a>`
-        }).join('<br/>'), { config, tableOfContents, filePath: htmlOutPath, relativePath, titleOverride: '', metaData: null })
+        }).join('<br/>'), templateHtml, { config, tableOfContents, filePath: htmlOutPath, relativePath, titleOverride: '', metaData: null })
         // Write the file
         await Deno.writeTextFile(htmlOutPath, htmlString);
         if (config.logVerbose) {
