@@ -181,7 +181,9 @@ async function main() {
             try {
                 await copy(absoluteStaticDir, path.join(getOutDir(config), staticDir));
             } catch (e) {
-                console.error('❌ Err: Could not find static dir', absoluteStaticDir);
+                if (e.name !== 'AlreadyExists') {
+                    console.error('❌ Error occurred when copying assets to static dir', e);
+                }
 
             }
             logVerbose('Statically serving contents of', `${staticDir} at /${staticDir}`);
