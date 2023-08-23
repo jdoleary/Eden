@@ -1,9 +1,11 @@
 import * as path from "https://deno.land/std@0.177.0/path/mod.ts";
 import { Config, TableOfContents, tableOfContentsURL, templateName } from "../sharedTypes.ts";
+import { Backlinks } from "../tool/backlinkFinder.ts";
+import { absoluteOsMdPathToWebPath } from "../path.ts";
 
 // Takes a string that contains html with template designators (e.g. {{content}}) and fills all the templates
-export async function addContentsToTemplate(content: string, templateHtml: string, { config, tableOfContents, filePath, relativePath, titleOverride, metaData }: {
-    config: Config, tableOfContents: TableOfContents, filePath: string, relativePath: string, titleOverride: string, metaData: any
+export async function addContentsToTemplate(content: string, templateHtml: string, { config, tableOfContents, filePath, relativePath, titleOverride, metaData, backlinks }: {
+    config: Config, tableOfContents: TableOfContents, filePath: string, relativePath: string, titleOverride: string, metaData: any, backlinks: Backlinks
 }): Promise<string> {
     // Get all nested templates and add to html
     // Prepend page title to top of content
@@ -53,6 +55,14 @@ export async function addContentsToTemplate(content: string, templateHtml: strin
         })].filter(x => !!x).join('<span class="center-dot">·</span>');
     }
     content = content.replace('{{breadcrumbs}}', breadcrumbs);
+    const webPath = absoluteOsMdPathToWebPath(filePath, config.parseDir);
+    const backlinkList = backlinks[webPath];
+    if (backlinkList) {
+        content = content.replace('{{backlinks}}', backlinkList.map(({ text, from }) => `<a href="${from}">${text}</a>`).join(''));
+    } else {
+
+        content = content.replace('{{backlinks}}', '');
+    }
 
     // {{ metadata  }} has spaces due to formatter changing it
     // TODO find a better way to add this to the head rather than replace

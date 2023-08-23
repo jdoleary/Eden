@@ -25,7 +25,7 @@ import { deploy, DeployableFile } from "./tool/publish.ts";
 import { extractMetadata } from "./tool/metadataParser.ts";
 import { logVerbose } from "./tool/console.ts";
 import { defaultHtmlTemplate, defaultStyles } from './htmlGenerators/htmlTemplate.ts';
-import { findBacklinks } from "./tool/backlinkFinder.ts";
+import { Backlinks, findBacklinks } from "./tool/backlinkFinder.ts";
 
 const VERSION = '0.1.0'
 const PROGRAM_NAME = 'md2web';
@@ -250,6 +250,20 @@ async function main() {
     const tableOfContents: TableOfContents = [];
 
     const allFilesPath = path.join('.', config.parseDir);
+    // Get a list of all file names to support automatic back linking
+    const allFilesNames = [];
+    for await (const f of getFiles(allFilesPath, config)) {
+        const parsed = path.parse(f);
+        if (parsed.ext == '.md') {
+            allFilesNames.push({ name: parsed.name, webPath: absoluteOsMdPathToWebPath(f, config.parseDir) });
+        }
+    }
+
+    // console.log('jtest allfilenames', allFilesNames, allFilesNames.length);
+    // console.log('jtest table', tableOfContents.map(x => `${x.pageName}, ${x.isDir}`), tableOfContents.length);
+    logVerbose('All markdown file names:', Array.from(allFilesNames));
+    const backlinks = await findBacklinks(getFiles(allFilesPath, config), allFilesNames, config.parseDir);
+
     // Create index file for each directory
     for await (const d of getDirs(allFilesPath, config)) {
         const directoryPathSegment: pathOSRelative = path.relative(config.parseDir, d.dir).replaceAll(' ', '_');
@@ -275,7 +289,7 @@ async function main() {
         }
         // Create an index page for every directory except for the parse dir (the table of contents better serves this)
         if (d.dir != config.parseDir) {
-            createDirectoryIndexFile(d, templateHtml, tableOfContents, config);
+            createDirectoryIndexFile(d, templateHtml, { tableOfContents, config, backlinks });
         }
     }
 
@@ -288,23 +302,10 @@ async function main() {
         // -1 sets the top level pages flush with the left hand side
         const indentHTML: string[] = Array(x.indent - 1).fill('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
         return `<div>${indentHTML.join('')}<a href="${x.relativePath}">${x.pageName}</a></div>`;
-    }).join(''), templateHtml, { config, tableOfContents, filePath: tocOutPath, relativePath: '', titleOverride: 'Table of Contents', metaData: null });
+    }).join(''), templateHtml, { config, tableOfContents, filePath: tocOutPath, relativePath: '', titleOverride: 'Table of Contents', metaData: null, backlinks });
 
     await Deno.writeTextFile(tocOutPath, tableOfContentsHtml);
 
-    // Get a list of all file names to support automatic back linking
-    const allFilesNames = [];
-    for await (const f of getFiles(allFilesPath, config)) {
-        const parsed = path.parse(f);
-        if (parsed.ext == '.md') {
-            allFilesNames.push({ name: parsed.name, webPath: absoluteOsMdPathToWebPath(f, config.parseDir) });
-        }
-    }
-
-    // console.log('jtest allfilenames', allFilesNames, allFilesNames.length);
-    // console.log('jtest table', tableOfContents.map(x => `${x.pageName}, ${x.isDir}`), tableOfContents.length);
-    logVerbose('All markdown file names:', Array.from(allFilesNames));
-    const backlinks = await findBacklinks(getFiles(allFilesPath, config), allFilesNames, config.parseDir);
 
     const convertingPerformanceStart = performance.now();
     for await (const f of getFiles(allFilesPath, config)) {
@@ -343,7 +344,7 @@ async function main() {
         // console.log('File changed:', f);
         try {
 
-            await process(f, templateHtml, allFilesNames, tableOfContents, config);
+            await process(f, templateHtml, { allFilesNames, tableOfContents, config, backlinks });
         } catch (e) {
             console.error('error in process', e);
         }
@@ -409,7 +410,7 @@ main().catch(e => {
         prompt("Finished... Enter any key to exit.");
     }
 });
-async function process(filePath: string, templateHtml: string, allFilesNames: FileName[], tableOfContents: TableOfContents, config: Config) {
+async function process(filePath: string, templateHtml: string, { allFilesNames, tableOfContents, config, backlinks }: { allFilesNames: FileName[], tableOfContents: TableOfContents, config: Config, backlinks: Backlinks }) {
     // Dev, test single file
     // if (filePath !== 'C:\\ObsidianJordanJiuJitsu\\JordanJiuJitsu\\Submissions\\Strangles\\Triangle.md') {
     //     return;
@@ -474,8 +475,8 @@ async function process(filePath: string, templateHtml: string, allFilesNames: Fi
                                     title: ''
                                 });
                                 modifiedMdTokens.push({
-                                    type: 'text',
-                                    content: name
+                                    type: 'html',
+                                    content: `<span id="${name}">${name}</span>`
                                 });
                                 modifiedMdTokens.push({
                                     type: 'end',
@@ -559,7 +560,7 @@ async function process(filePath: string, templateHtml: string, allFilesNames: Fi
             .replaceAll('%20', ' ');
 
         const relativePath = path.relative(config.parseDir, filePath);
-        htmlString = await addContentsToTemplate(htmlString, templateHtml, { config, tableOfContents, filePath, relativePath, metaData, titleOverride: '' });
+        htmlString = await addContentsToTemplate(htmlString, templateHtml, { config, tableOfContents, filePath, relativePath, metaData, titleOverride: '', backlinks });
 
         try {
             // Get the new path

@@ -1,9 +1,5 @@
 ## MVP Tasks
-- (MVP) Bi-directional linking
-    - see: `// TODO make backlinks work`
-        - Backlinks will have to be aggregated on a pass before all files are converted to html
-        - Allow backlinks to link to the element
-            - smooth scrolling https://stackoverflow.com/a/24739173/4418836
+- (MVP) Style backlinks section
 - (MVP) Custom URL (in video tutorial)
 - (MVP) Example site and source that demos all working features
     - Explain CLI usage in and out of workingdirectory

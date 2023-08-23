@@ -23,6 +23,9 @@ export const defaultHtmlTemplate = `<!DOCTYPE html>
             Modified {{modified}} -->
             {{content}}
         </article>
+        <aside>
+            {{backlinks}}
+        </aside>
     </main>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -30,7 +33,11 @@ export const defaultHtmlTemplate = `<!DOCTYPE html>
 
 </html>`
 
-export const defaultStyles = `body {
+export const defaultStyles = `
+html {
+  scroll-behavior: smooth;
+}
+body {
     background-color: #393939;
     font-family: 'Verdana', 'Helvetica', sans-serif;
     font-display: optional;
