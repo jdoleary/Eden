@@ -58,9 +58,8 @@ export async function addContentsToTemplate(content: string, templateHtml: strin
     const webPath = absoluteOsMdPathToWebPath(filePath, config.parseDir);
     const backlinkList = backlinks[webPath];
     if (backlinkList) {
-        content = content.replace('{{backlinks}}', backlinkList.map(({ text, from }) => `<a href="${from}">${text}</a>`).join(''));
+        content = content.replace('{{backlinks}}', backlinkList.map(({ text, from, lineNumber, backlinkName }) => `<a href="${from}#${backlinkName}">${text}</a>`).join(''));
     } else {
-
         content = content.replace('{{backlinks}}', '');
     }
 

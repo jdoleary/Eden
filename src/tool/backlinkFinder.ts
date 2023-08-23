@@ -1,11 +1,12 @@
 import { BufReader } from "https://deno.land/std@0.199.0/io/buf_reader.ts";
 import * as path from "https://deno.land/std@0.177.0/path/mod.ts";
-import { absoluteOsMdPathToWebPath, pathOSAbsolute, pathWeb } from "../path.ts";
+import { absoluteOsMdPathToWebPath, pathOSAbsolute, pathToPageName, pathWeb } from "../path.ts";
 import { FileName } from "../sharedTypes.ts";
 
 export type Backlinks = {
     [webPath: pathWeb]: {
         text: string;
+        backlinkName: string;
         lineNumber: number;
         // The file that the backlink is inside of 
         from: pathOSAbsolute;
@@ -40,7 +41,7 @@ export async function findBacklinks(filePathsGenerator: AsyncGenerator<string, v
                             if (!backlinks[webPath]) {
                                 backlinks[webPath] = [];
                             }
-                            backlinks[webPath].push({ text: name, lineNumber: lineNumberCounter, from: filePathAsWebPath })
+                            backlinks[webPath].push({ text: pathToPageName(filePathAsWebPath), backlinkName: name, lineNumber: lineNumberCounter, from: filePathAsWebPath })
                         }
                     }
                 }

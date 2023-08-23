@@ -23,9 +23,8 @@ export const defaultHtmlTemplate = `<!DOCTYPE html>
             Modified {{modified}} -->
             {{content}}
         </article>
-        <aside>
             {{backlinks}}
-        </aside>
+            <!-- TODO {{pagination}} -->
     </main>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
