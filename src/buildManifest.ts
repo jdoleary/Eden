@@ -464,6 +464,7 @@ async function process(filePath: string, templateHtml: string, allFilesNames: Fi
                         // since it must now be split
                         isTokenModified = true;
                         const splitToken = token.content.split(name);
+                        const url = kpath.replaceAll('\\', '/').replaceAll(' ', '_');
 
                         for (let i = 0; i < splitToken.length; i++) {
                             const splitInstance = splitToken[i];
@@ -473,7 +474,7 @@ async function process(filePath: string, templateHtml: string, allFilesNames: Fi
                                     type: 'start',
                                     tag: 'link',
                                     kind: 'inline',
-                                    url: kpath.replaceAll('\\', '/').replaceAll(' ', '_'),
+                                    url,
                                     title: ''
                                 });
                                 modifiedMdTokens.push({
@@ -484,7 +485,7 @@ async function process(filePath: string, templateHtml: string, allFilesNames: Fi
                                     type: 'end',
                                     tag: 'link',
                                     kind: 'inline',
-                                    url: kpath,
+                                    url,
                                     title: ''
                                 });
                             }
