@@ -19,12 +19,13 @@ import { createDirectoryIndexFile } from "./htmlGenerators/indexFile.ts";
 import { addContentsToTemplate } from "./htmlGenerators/useTemplate.ts";
 import { getDirs, getFiles } from "./os.ts";
 import { absoluteOsMdPathToWebPath, getConfDir, getOutDir, pageNameToPagePath, pathOSRelative, pathToPageName, pathWeb } from "./path.ts";
-import { Config, configName, stylesName, TableOfContents, tableOfContentsURL, templateName } from "./sharedTypes.ts";
+import { Config, configName, FileName, stylesName, TableOfContents, tableOfContentsURL, templateName } from "./sharedTypes.ts";
 import { host } from "./tool/httpServer.ts";
 import { deploy, DeployableFile } from "./tool/publish.ts";
 import { extractMetadata } from "./tool/metadataParser.ts";
 import { logVerbose } from "./tool/console.ts";
 import { defaultHtmlTemplate, defaultStyles } from './htmlGenerators/htmlTemplate.ts';
+import { findBacklinks } from "./tool/backlinkFinder.ts";
 
 const VERSION = '0.1.0'
 const PROGRAM_NAME = 'md2web';
@@ -303,7 +304,9 @@ async function main() {
     // console.log('jtest allfilenames', allFilesNames, allFilesNames.length);
     // console.log('jtest table', tableOfContents.map(x => `${x.pageName}, ${x.isDir}`), tableOfContents.length);
     logVerbose('All markdown file names:', Array.from(allFilesNames));
+    const backlinks = await findBacklinks(getFiles(allFilesPath, config), allFilesNames, config.parseDir);
 
+    const convertingPerformanceStart = performance.now();
     for await (const f of getFiles(allFilesPath, config)) {
         // Add file name path.relative to the domain
         // so, when I push to the `production` branch
@@ -353,7 +356,7 @@ async function main() {
     //         files: files
     //     }
     // ));
-    console.log('\n✅ Finished converting .md to .html in', performance.now(), 'milliseconds.');
+    console.log('\n✅ Finished converting .md to .html in', performance.now() - convertingPerformanceStart, 'milliseconds.');
 
     if (cliFlags.publish) {
         if (!cliFlags.vercelToken) {
@@ -406,10 +409,6 @@ main().catch(e => {
         prompt("Finished... Enter any key to exit.");
     }
 });
-interface FileName {
-    name: string;
-    webPath: pathWeb;
-}
 async function process(filePath: string, templateHtml: string, allFilesNames: FileName[], tableOfContents: TableOfContents, config: Config) {
     // Dev, test single file
     // if (filePath !== 'C:\\ObsidianJordanJiuJitsu\\JordanJiuJitsu\\Submissions\\Strangles\\Triangle.md') {

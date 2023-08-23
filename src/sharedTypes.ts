@@ -1,4 +1,4 @@
-import { pathOSAbsolute, pathOSRelative } from "./path.ts";
+import { pathOSAbsolute, pathOSRelative, pathWeb } from "./path.ts";
 
 export const templateName = 'template.html';
 export const stylesName = 'styles.css';
@@ -6,6 +6,10 @@ export const configDirName = 'md2web-config'
 export const configName = 'md2web.config.json';
 export const tableOfContentsURL = '/index.html';
 export type TableOfContents = { indent: number, pageName: string, relativePath: string, isDir: boolean, parentDir?: string }[];
+export interface FileName {
+    name: string;
+    webPath: pathWeb;
+}
 export interface Config {
     projectName: string;
     parseDir: pathOSAbsolute;

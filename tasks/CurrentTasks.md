@@ -23,6 +23,7 @@
 - Bug: ignoreDirs does fuzzy matching but should be exact, see tests in os.ts
 
 ## Enhancements
+- Support pages that are just backlinks but don't exist as their own page
 - allow for defining different templates than default in a .md's metadata
     - see: `// Get default html template`
     - Maybe allow for a root template that has boilerplate such as <html> and a specific template that does the rest
