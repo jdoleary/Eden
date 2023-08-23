@@ -308,6 +308,7 @@ async function main() {
 
 
     const convertingPerformanceStart = performance.now();
+    console.log('Converting .md files to .html')
     for await (const f of getFiles(allFilesPath, config)) {
         // Add file name path.relative to the domain
         // so, when I push to the `production` branch
@@ -357,7 +358,7 @@ async function main() {
     //         files: files
     //     }
     // ));
-    console.log('\n✅ Finished converting .md to .html in', performance.now() - convertingPerformanceStart, 'milliseconds.');
+    console.log('✅ Finished converting .md to .html in', performance.now() - convertingPerformanceStart, 'milliseconds.');
 
     if (cliFlags.publish) {
         if (!cliFlags.vercelToken) {

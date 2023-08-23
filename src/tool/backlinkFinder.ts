@@ -52,6 +52,6 @@ export async function findBacklinks(filePathsGenerator: AsyncGenerator<string, v
             f.close();
         }
     }
-    console.log('\n✅ Finished generating backlinks in', performance.now() - backlinkPerformanceStart, 'milliseconds.');
+    console.log('✅ Finished generating backlinks in', performance.now() - backlinkPerformanceStart, 'milliseconds.');
     return backlinks;
 }
