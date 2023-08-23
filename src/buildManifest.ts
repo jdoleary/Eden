@@ -180,6 +180,27 @@ async function main() {
             logVerbose('Statically serving contents of', `${staticDir} at /${staticDir}`);
         }
     }
+
+    // Create the template files from defaults unless they already exist in the parseDir's config directory:
+    const templatePath = path.join(getConfDir(config.parseDir), templateName);
+    if (!await exists(templatePath)) {
+        console.log('Creating template in ', templatePath);
+        await Deno.writeTextFile(templatePath, defaultHtmlTemplate);
+    }
+    // Copy the default styles unless they already exist 
+    // (which means they could be changed by the user in which case do not overwrite)
+    const stylesPath = path.join(getConfDir(config.parseDir), stylesName)
+    if (!await exists(stylesPath)) {
+        console.log('Creating default styles in ', stylesPath);
+        await Deno.writeTextFile(stylesPath, defaultStyles);
+    }
+    // Copy styles to outDir so it will be statically served
+    if (await exists(stylesPath)) {
+        logVerbose('Copying styles in parseDir to outDir.');
+        await copy(stylesPath, path.join(getOutDir(config), stylesName));
+    } else {
+        console.error('Warning: styles.css is missing.  Output html will be without styles.');
+    }
     // Get previous manifest so it can only process the files that have changed
     // To be used later once I add support for a changed template causing a waterfall change
     // let previousManifest: Manifest = { version: "0.0.0", files: {} };
@@ -252,27 +273,6 @@ async function main() {
         if (parsed.ext == '.md') {
             allFilesNames.push({ name: parsed.name, kpath: path.relative(config.parseDir, f.split('.md').join('.html')) });
         }
-    }
-
-    // Create the template files from defaults unless they already exist in the parseDir's config directory:
-    const templatePath = path.join(getConfDir(config.parseDir), templateName);
-    if (!await exists(templatePath)) {
-        console.log('Creating template in ', templatePath);
-        await Deno.writeTextFile(templatePath, defaultHtmlTemplate);
-    }
-    // Copy the default styles unless they already exist 
-    // (which means they could be changed by the user in which case do not overwrite)
-    const stylesPath = path.join(getConfDir(config.parseDir), stylesName)
-    if (!await exists(stylesPath)) {
-        console.log('Creating default styles in ', stylesPath);
-        await Deno.writeTextFile(stylesPath, defaultStyles);
-    }
-    // Copy styles to outDir so it will be statically served
-    if (await exists(stylesPath)) {
-        logVerbose('Copying styles in parseDir to outDir.');
-        await copy(stylesPath, path.join(getOutDir(config), stylesName));
-    } else {
-        console.error('Warning: styles.css is missing.  Output html will be without styles.');
     }
 
     // console.log('jtest allfilenames', allFilesNames, allFilesNames.length);
