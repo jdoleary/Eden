@@ -1,5 +1,4 @@
 ## MVP Tasks
-- (MVP) Style backlinks section
 - (MVP) Distinguish between multiple backlinks in the same file
 - (MVP)Move pagination to template option 
 - (MVP) Custom URL (in video tutorial)

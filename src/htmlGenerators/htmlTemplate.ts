@@ -22,9 +22,13 @@ export const defaultHtmlTemplate = `<!DOCTYPE html>
             <!-- Created {{created}}
             Modified {{modified}} -->
             {{content}}
+            <div id="backlinks">
+                {{backlinks}}
+            </div>
         </article>
-            {{backlinks}}
-            <!-- TODO {{pagination}} -->
+        <div class="footer flex space-between">
+            {{pagination}}
+        </div>
     </main>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -41,6 +45,15 @@ body {
     font-family: 'Verdana', 'Helvetica', sans-serif;
     font-display: optional;
     margin: 0;
+}
+.footer {
+    background-color: #fffefe;
+    padding: 3em;
+    box-sizing: border-box;
+}
+
+#backlinks {
+    margin:3em 0;
 }
 
 article {
@@ -143,6 +156,7 @@ nav>.center-dot:last-child {
 }
 
 .footer {
+    flex-direction:column;
     position: sticky;
     width: 100%;
     bottom: 0;
@@ -177,7 +191,7 @@ nav>.center-dot:last-child {
     box-shadow: inset 1px 1px 1px;
 }
 
-.footer a {
+.footer .pagination a {
     transition: 0.05s;
     display: block;
     margin: 0.5em;
