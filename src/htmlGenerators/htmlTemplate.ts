@@ -19,11 +19,13 @@ export const defaultHtmlTemplate = `<!DOCTYPE html>
             {{breadcrumbs}}
         </nav>
         <article>
-            <!-- Created {{created}}
-            Modified {{modified}} -->
             {{content}}
-            <div id="backlinks">
-                {{backlinks}}
+            <div id="article-footer">
+                <div id="backlinks">
+                    {{backlinks}}
+                </div>
+                <div>Created {{created}}</div>
+                <div>Modified {{modified}}</div>
             </div>
         </article>
         <div class="footer flex space-between">
@@ -55,12 +57,14 @@ body {
 #backlinks {
     margin:3em 0;
 }
+.inline-icon {
+    height:16px;
+    padding-right:0.3em;
+}
 
 article {
     background-color: #fffefe;
     padding: 3em;
-    /* For footer so text doesn't show below them */
-    padding-bottom: 0;
     max-width: 100%;
     width: 800px;
     height: 100%;

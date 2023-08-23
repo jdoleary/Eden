@@ -440,10 +440,12 @@ async function process(filePath: string, templateHtml: string, { allFilesNames, 
         const modifiedMdTokens: Token[] = [];
         let lastToken = undefined;
         for (const token of mdTokens) {
-            // Add external link svg to external links to show that they are external
             if (lastToken && lastToken.type == 'start' && lastToken.tag == 'link' && lastToken.url.includes('http')) {
-                if (token.type == 'text') {
-                    token.content = 'EXTERNAL_LINK_SVG' + token.content;
+                if (token.type == 'text' || token.type == 'html') {
+                    token.type = 'html';
+                    const url = new URL(lastToken.url);
+                    // Add the icon of the website before the link for user convenience
+                    token.content = `<img class="inline-icon" src="${url.origin}/favicon.ico"/>` + token.content;
                 }
             }
             // if true, prevents token from just being added, unchanged to modifiedMdTokens list
@@ -556,7 +558,6 @@ async function process(filePath: string, templateHtml: string, { allFilesNames, 
         }
         let htmlString = html(modifiedMdTokens);
         htmlString = htmlString
-            .replaceAll('EXTERNAL_LINK_SVG', externalLinkSVG)
             .replaceAll('%20', ' ');
 
         const relativePath = path.relative(config.parseDir, filePath);
@@ -582,10 +583,3 @@ async function process(filePath: string, templateHtml: string, { allFilesNames, 
     }
     logVerbose('Done processing', filePath, '\n');
 }
-const externalLinkSVG = `<?xml version="1.0" encoding="UTF-8"?>
-<svg width="1em" height="1em" version="1.1" viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg">
- <g fill="black">
-  <path d="m345.6 997.2h432c79.199 0 144-64.801 144-144v-264c0-13.199-10.801-24-24-24-13.199 0-24 10.801-24 24v264c0 52.801-43.199 96-96 96h-432c-52.801 0-96-43.199-96-96v-432c0-52.801 43.199-96 96-96h264c13.199 0 24-10.801 24-24s-10.801-24-24-24h-264c-79.199 0-144 64.801-144 144v432c0 79.199 64.797 144 144 144z"/>
-  <path d="m998.4 446.4v-219.6-4.8008-1.1992c0-1.1992 0-2.3984-1.1992-3.6016l-1.1992-1.1992c0-1.1992-1.1992-2.3984-1.1992-2.3984-1.1992-2.3984-3.6016-4.8008-7.1992-7.1992-1.1992-1.1992-2.3984-1.1992-3.6016-1.1992v-0.003906l-3.6016-1.1992h-1.1992-4.8008-219.6c-13.199 0-24 10.801-24 24s10.801 24 24 24h162l-351.6 349.2c-9.6016 9.6016-9.6016 24 0 33.602 9.6016 9.6016 24 9.6016 33.602 0l351.6-350.4v162c0 13.199 10.801 24 24 24 13.199-0.003906 23.996-10.801 23.996-24.004z"/>
- </g>
-</svg>`

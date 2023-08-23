@@ -1,13 +1,11 @@
 ## MVP Tasks
-- (MVP) Distinguish between multiple backlinks in the same file
-- (MVP)Move pagination to template option 
 - (MVP) Custom URL (in video tutorial)
 - (MVP) Example site and source that demos all working features
     - Explain CLI usage in and out of workingdirectory
 - add readme instructions in config dir?
 - Change icon from deno dinosaur to something else
     - http://www.angusj.com/resourcehacker/
-- Add footer
+- Add footer with app name and such
 - Potential app name ideas:
     - Osiris
     - Usir
@@ -20,6 +18,7 @@
 - Bug: ignoreDirs does fuzzy matching but should be exact, see tests in os.ts
 
 ## Enhancements
+- Distinguish between multiple backlinks in the same file (for the sake of linking to the correct one)
 - Support pages that are just backlinks but don't exist as their own page
 - allow for defining different templates than default in a .md's metadata
     - see: `// Get default html template`
