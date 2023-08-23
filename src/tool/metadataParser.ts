@@ -33,7 +33,8 @@ export function extractMetadata(fileContents: string) {
                 dashesAddedThisLoop++;
                 if (countEndDashes == 3) {
                     // .slice removes the trailing '---' so that it's valid yaml
-                    const yaml = metaData.slice(0, -(3 - dashesAddedThisLoop));
+                    const sliceAmount = -(3 - dashesAddedThisLoop);
+                    const yaml = sliceAmount < 0 ? metaData.slice(0, sliceAmount) : metaData;
                     try {
                         return parse(yaml);
                     } catch (e) {
