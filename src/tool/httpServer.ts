@@ -1,5 +1,6 @@
 import { extname, join } from "https://deno.land/std/path/mod.ts";
 import { readAll } from "https://deno.land/std/streams/read_all.ts"; // Import readAll from here
+import { logVerbose } from "./console.ts";
 
 
 export async function host(publicDir: string) {
@@ -10,7 +11,7 @@ export async function host(publicDir: string) {
 
         const url = new URL(req.url);
         let filePath = join(publicDir, url.pathname).replaceAll('%20', ' ');
-        console.log("--preview: Serving: Web Path:", url.pathname, 'Disk Path:', filePath);
+        logVerbose("--preview: Serving: web path:", url.pathname, ' at disk path:', filePath);
         try {
             const fileInfo = await Deno.stat(filePath);
 
