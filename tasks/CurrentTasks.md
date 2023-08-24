@@ -1,8 +1,8 @@
 ## MVP Tasks
+- (MVP) Homepage
 - Fix template html5 tags
 - Separate root template from content template
 - Support auto headers (for obsidian)
-- (MVP) Make sure auto backlinking and regular backlinking don't clobber each other
 - (MVP) Custom URL (in video tutorial)
 - (MVP) Example site and source that demos all working features
     - Explain CLI usage in and out of workingdirectory
@@ -17,7 +17,21 @@
 - Bug: ignoreDirs does fuzzy matching but should be exact, see tests in os.ts
 
 ## Enhancements
+- Custom tags could / should be used in the custom transcludable blocks. See tests.md in sample/ for example
+- Metadata inspired by Maggie  Appleton
+    - content
+    - title
+    - cover (thumbnail)
+    - description
+    - growthStage
+    - startDate
+    - topics
+    - type "essay", "note", "etc"
+    - updated
+    - slug
+    - filePath
 - Hide broken image icons
+- Auto url linking (turn urls into links even if they aren't markdown links)
 - Full width images
 - Will this work with other languages? See potential issue in removing by character in extractMetadata()
 - Distinguish between multiple backlinks in the same file (for the sake of linking to the correct one)
@@ -33,8 +47,6 @@
 - Warn if a directory is both ignored and included as a static serve directory in config
 - // TODO: Clean up forbidden files, they ruin the JSON
 - Add error reporting
-- youtu.be links are not being parsed correctly (see page "Chris Paines")
-    - It looks like they are so long as they are surrounded with `[]` as links should be in markdown
 - Fix hacky way of removing %20 from image urls
 - Handle page titles with parenthesis
 

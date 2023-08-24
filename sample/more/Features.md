@@ -10,6 +10,7 @@
 - ✅ Website icons next to external links (Like this: [Youtube](https://youtube.com))
 - 🔲 Metadata `publish`
 - 🔲 Metadata define custom `template`
+- 🔲 Metadata `thumbnail` for article for when it's displayed in an index page
 - 🔲 Full width images
 - 🔲 Embeddable Tweets, Youtube videos, and other content
 - 🔲 Index pages based on tags (example: [Maggie Appleton's Essays](https://maggieappleton.com/essays))
