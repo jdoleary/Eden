@@ -19,7 +19,9 @@ export const defaultHtmlTemplate = `<!DOCTYPE html>
             {{breadcrumbs}}
         </nav>
         <article>
-            {{content}}
+            <div id="article-content">
+                {{content}}
+            </div>
             <div id="article-footer">
                 <div id="backlinks">
                     {{backlinks}}
