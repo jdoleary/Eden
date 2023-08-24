@@ -1,4 +1,8 @@
 ## MVP Tasks
+- (MVP) Bug: If there is an index.html then no table of contents is rendered
+- (MVP) Config option to choose to include title of document as h1 or not
+- (MVP) Bug: Icon for obsidian docs not working
+- (MVP) Hide broken image icons
 - (MVP) Custom URL (in video tutorial)
 - (MVP) Example site and source that demos all working features
     - Explain CLI usage in and out of workingdirectory
@@ -18,6 +22,7 @@
 - Bug: ignoreDirs does fuzzy matching but should be exact, see tests in os.ts
 
 ## Enhancements
+- Full width images
 - Will this work with other languages? See potential issue in removing by character in extractMetadata()
 - Distinguish between multiple backlinks in the same file (for the sake of linking to the correct one)
 - Support pages that are just backlinks but don't exist as their own page
@@ -39,6 +44,7 @@
 
 
 ## Backlog
+
 - Add EULA to executable output
 - Remove manifest
 - feature: Add <meta> description for SEO
