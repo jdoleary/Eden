@@ -7,12 +7,12 @@ import { absoluteOsMdPathToWebPath } from "../path.ts";
 export async function addContentsToTemplate(content: string, templateHtml: string, { config, tableOfContents, filePath, relativePath, titleOverride, metadata, backlinks }: {
     config: Config, tableOfContents: TableOfContents, filePath: string, relativePath: string, titleOverride: string, metadata: any, backlinks: Backlinks
 }): Promise<string> {
-    // Get all nested templates and add to html
-    // Prepend page title to top of content
     const pageTitle = (relativePath.split('\\').slice(-1)[0] || '').replaceAll('.md', '');
     // The wrapping div separates the text from the nextPrev buttons so the buttons can be
     // at the bottom of the page
-    content = `<div><h1>${titleOverride || pageTitle}</h1>${content}</div>`;
+    if (titleOverride) {
+        content = `<div><h1>${titleOverride}</h1>${content}</div>`;
+    }
 
     const templateReplacer = '{{content}}';
 
