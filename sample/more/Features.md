@@ -1,10 +1,13 @@
 - ✅ Breadcrumbs
+- ✅ Metadata Support
+    - Tags
+    - Created Date
+    - Last Edited Date
 - ✅ Future-proof: Exportable data, portable, control and own your data, no lock-in
-- ✅ Make file metadata (such as Created On Date) accessible to the template
 - ✅ Highly Customizable via CSS, HTML, and JS
 - ✅ Backlinks
 - ✅ Support embeddable images
-- ✅ favicon.ico icons next to external links 
+- ✅ Website icons next to external links (Like this: [Youtube](https://youtube.com))
 - 🔲 Full width images
 - 🔲 Embeddable Tweets, Youtube videos, and other content
 - 🔲 Index pages based on tags (example: [Maggie Appleton's Essays](https://maggieappleton.com/essays))
