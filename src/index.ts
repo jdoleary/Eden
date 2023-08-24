@@ -287,7 +287,7 @@ async function main() {
 
         }
         // Create an index page for every directory except for the parse dir (the table of contents better serves this)
-        if (d.dir != config.parseDir) {
+        if (path.relative(config.parseDir, d.dir) != '') {
             createDirectoryIndexFile(d, templateHtml, { tableOfContents, config, backlinks });
         }
     }
