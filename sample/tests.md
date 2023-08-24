@@ -5,6 +5,33 @@
 - (Not Supported) Case insentitive auto backlink: features 
 - (Not Supported) Non-leading character case insentitive backlink: [[feaTUres]] 
 
+{/* ### Commented out content */}
+
+Invalid Backlink testing
+[[Multi space_backlink]]
+[[^]]
+[[#]]
+[[[]]
+[[]]]
+[[*]
+[["]]
+[[/]]
+[[\]]
+[[<]]
+[[>]]
+[[
+]]
+[[:]]
+[[|]]
+[[?]]
+[[$%!@&()]]
+
+
+Test embed youtube:
+![](https://youtu.be/aFBp0cZ79bQ?si=rdrrNxhVlJWzHpVw)
+Embeddable Twitter:
+![](https://twitter.com/JanOrszulik/status/1694627203219153124?s=20)
+
 Test custom xml tags:
 <AssumedAudience>
   This is a test for embedding custom tags

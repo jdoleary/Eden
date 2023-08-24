@@ -1,22 +1,29 @@
 ## MVP Tasks
 - (MVP) Homepage
-- Fix template html5 tags
+    - Header with links to special pages like "About"
+    - Footer: links to TOC, copywrite, buildwith Eden-md, social links, etc
+    - Fix template html5 tags
+    - Use xml for custom behavior such as showing pages by tag with cover art (ex: <AssumedAudience> gets special styling in Maggie Appleton's blog)
+- (MVP) Make mvp demo video and send to Zak
+
 - Separate root template from content template
-- Support auto headers (for obsidian)
-- (MVP) Custom URL (in video tutorial)
-- (MVP) Example site and source that demos all working features
-    - Explain CLI usage in and out of workingdirectory
+- Support auto h1 headers based on filename (for obsidian)
 - add readme instructions in config dir?
 - Change icon from deno dinosaur to something else
     - http://www.angusj.com/resourcehacker/
 - Add footer with app name and such
 - if the out dir goes inside of the obsidian directory it takes obsidian too long to start up (it's caching) so the out dir should be somewhere else
+- Would this program work with Notion too?? What other programs output .md files? Evernote?
 
 ## Bugs
 - Bug: Nested directories mess up in the Previous Button (see page "Armbar". Previous button says ": Locks")
 - Bug: ignoreDirs does fuzzy matching but should be exact, see tests in os.ts
 
 ## Enhancements
+- Output an rss.xml feed
+- Formatting: Obsidian usually takes a single \n to mean a newline where the current markdown parser will not
+- Allow for commented out content {/* ### Commented out */} that is in the doc but doesn't show
+- Embeddable youtube works with the image syntax: ![](https://youtu.be/aFBp0cZ79bQ?si=rdrrNxhVlJWzHpVw)
 - Custom tags could / should be used in the custom transcludable blocks. See tests.md in sample/ for example
 - Metadata inspired by Maggie  Appleton
     - content
@@ -52,7 +59,8 @@
 
 
 ## Backlog
-
+- Features to brag about (and to verify first)
+    - High Lighthouse + SEO rating
 - Add EULA to executable output
 - Remove manifest
 - feature: Add <meta> description for SEO
@@ -64,8 +72,8 @@
 
 ## Critical Path
 - Finish MVP Features
-    - User should be able to move the exe to the directory that they want to parse, run it once and have it make a website (if they provide a vercel token).  Vercel token could be saved to config (optionally)
-    - exe should create config files that are modifiable in the parse directory
+    - Homepage
+    - Make a 1 minute video showing how it works
 - Test
     - Beta Testers
 - Sell MVP
@@ -80,6 +88,10 @@
 - [Markdown Guide Extended Syntax](https://www.markdownguide.org/extended-syntax/)
 - zettelkasten
 - Notable: https://gwern.net/design
+- md editors
+    - Roam
+    - Tana.inc
+    - Obsidian
 
 
 ## Competition
