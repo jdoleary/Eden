@@ -8,6 +8,9 @@ export async function* getDirs(dir: string, config: Config): AsyncGenerator<{ di
     const dirents = Deno.readDir(dir);
     // Yield top level directory first so its own contents will be included
     // ex: content.name: 'Butterfly Sweep.md'
+    if (isDirectoryIgnored(dir, config.parseDir, getIgnoredDirectories(config))) {
+        return;
+    }
     yield { dir: dir, contents: Array.from(Deno.readDirSync(dir)) };
     for await (const dirent of dirents) {
         const res = path.resolve(dir, dirent.name);

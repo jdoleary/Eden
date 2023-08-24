@@ -1,7 +1,6 @@
 ## MVP Tasks
 - Fix template html5 tags
-- (MVP) Bug: Assets folder should not be included in table of contents
-    - Nor should config folder be in the table of contents
+- (MVP) Bug: Default dragging in images doesn't work like it does in obsidian
 - (MVP) Bug: If there is an index.html then no table of contents is rendered
 - (MVP) Config option to choose to include title of document as h1 or not
 - Separate root template from content template
@@ -12,16 +11,9 @@
 - Change icon from deno dinosaur to something else
     - http://www.angusj.com/resourcehacker/
 - Add footer with app name and such
-- Potential app name ideas:
-    - Osiris
-    - Usir
-    - MarkdownMeadow
-    - Eden-md
-    - Just use my .me site
 - if the out dir goes inside of the obsidian directory it takes obsidian too long to start up (it's caching) so the out dir should be somewhere else
 
 ## Bugs
-- bug: just dragging an image into a new obsidian project doesn't work.
 - Bug: Nested directories mess up in the Previous Button (see page "Armbar". Previous button says ": Locks")
 - Bug: ignoreDirs does fuzzy matching but should be exact, see tests in os.ts
 
@@ -58,40 +50,6 @@
 <iframe width="560" height="315" src="https://www.youtube.com/embed/VA6zjDN690s" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 ```
 
-## Features
-### Easy
-- Index pages based on tags (ex: https://maggieappleton.com/essays)
-- Ability to create different object types, ontologies, and tags
-    - Example: https://www.gwern.net/About#confidence-tags
-    - Example: Maggie Appleton's site, which has "Notes", "Essays", and "Patterns", among other collections of different objects
-    - Support [markdown metadata](https://help.obsidian.md/Editing+and+formatting/Properties) 
-        - ex test page is http://localhost:8000/My_Own_Curriculum.html
-        - Make use of metadataParser
-- Ability to support interactive and animation embeds
-- Expandible/collapsible blocks (like Roam or Gamma)
-- Navigation: Support for vertical and horizontal nav, primary and secondary, floating navbar, nested or expanded megamenu navigation
-- Sidenotes, in margin
-    - https://www.gwern.net/Sidenotes
-- Site search
-    - make entire garden available in json like [Maggie Appleton's Garden.json](https://maggieappleton.com/_next/data/yUhDOUNEYA1W3PsJNBhvU/garden.json)
-### Medium
-- Support syntax highlighting
-- Block-based, content as data, so the same piece of content can easily be transcluded in multiple places
-    - Adding in dynamically updated bits of content into other bits of content
-    - https://subpixel.space/entries/open-transclude/
-- Serve as or integrate with a headless or component content management system
-- Inflation-adjusted currency plugin (like Gwern)
-- Live link previews, infoboxes, and hover popups
-- Print-ready, capable of being exported to EPUB or PDF
-- Customizable header (like https://maggieappleton.com/) that works with transclusion.
-### Unkown
-- Annotation support (or compatible with social annotation plugins)
-- Notable: https://gwern.net/design
-### Done
-- Breadcrumbs
-- Future-proof: Exportable data, portable, control and own your data, no lock-in
-- Make file metadata (such as Created On Date) accessible to the template
-- Customizable via CSS, HTML, and JS
 
 ## Critical Path
 - Finish MVP Features
@@ -110,6 +68,7 @@
 - [Commonmark Spec](https://spec.commonmark.org/0.30/)
 - [Markdown Guide Extended Syntax](https://www.markdownguide.org/extended-syntax/)
 - zettelkasten
+- Notable: https://gwern.net/design
 
 
 ## Competition
