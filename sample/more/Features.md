@@ -8,6 +8,8 @@
 - ✅ Backlinks
 - ✅ Support embeddable images
 - ✅ Website icons next to external links (Like this: [Youtube](https://youtube.com))
+- 🔲 Metadata `publish`
+- 🔲 Metadata define custom `template`
 - 🔲 Full width images
 - 🔲 Embeddable Tweets, Youtube videos, and other content
 - 🔲 Index pages based on tags (example: [Maggie Appleton's Essays](https://maggieappleton.com/essays))
