@@ -28,7 +28,7 @@ import { defaultHtmlTemplate, defaultStyles } from './htmlGenerators/htmlTemplat
 import { Backlinks, findBacklinks } from "./tool/backlinkFinder.ts";
 
 const VERSION = '0.1.0'
-const PROGRAM_NAME = 'md2web';
+const PROGRAM_NAME = 'eden-md';
 
 interface ManifestFiles {
     [filePath: string]: {
