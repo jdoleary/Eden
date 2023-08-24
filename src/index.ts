@@ -19,7 +19,7 @@ import { createDirectoryIndexFile } from "./htmlGenerators/indexFile.ts";
 import { addContentsToTemplate } from "./htmlGenerators/useTemplate.ts";
 import { getDirs, getFiles } from "./os.ts";
 import { absoluteOsMdPathToWebPath, getConfDir, getOutDir, pageNameToPagePath, pathOSRelative, pathToPageName, pathWeb } from "./path.ts";
-import { Config, configName, FileName, stylesName, TableOfContents, tableOfContentsURL, templateName } from "./sharedTypes.ts";
+import { Config, configName, FileName, PROGRAM_NAME, stylesName, TableOfContents, tableOfContentsURL, templateName } from "./sharedTypes.ts";
 import { host } from "./tool/httpServer.ts";
 import { deploy, DeployableFile } from "./tool/publish.ts";
 import { extractMetadata } from "./tool/metadataParser.ts";
@@ -28,7 +28,6 @@ import { defaultHtmlTemplate, defaultStyles } from './htmlGenerators/htmlTemplat
 import { Backlinks, findBacklinks } from "./tool/backlinkFinder.ts";
 
 const VERSION = '0.1.0'
-const PROGRAM_NAME = 'eden-md';
 
 interface ManifestFiles {
     [filePath: string]: {

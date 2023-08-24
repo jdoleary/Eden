@@ -1,9 +1,10 @@
 import { pathOSAbsolute, pathOSRelative, pathWeb } from "./path.ts";
 
+export const PROGRAM_NAME = 'eden-md';
 export const templateName = 'template.html';
 export const stylesName = 'styles.css';
-export const configDirName = 'md2web-config'
-export const configName = 'md2web.config.json';
+export const configDirName = `${PROGRAM_NAME}-config`
+export const configName = `${PROGRAM_NAME}.config.json`;
 export const tableOfContentsURL = '/index.html';
 export type TableOfContents = { indent: number, pageName: string, relativePath: string, isDir: boolean, parentDir?: string }[];
 export interface FileName {
