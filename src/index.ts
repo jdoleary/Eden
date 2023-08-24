@@ -428,10 +428,10 @@ async function process(filePath: string, templateHtml: string, { allFilesNames, 
 
     if (path.parse(filePath).ext == '.md') {
         let fileContents = await Deno.readTextFile(filePath);
-        // Since pages are auto back linked, remove all obsidian link syntax
-        // TODO make backlinks work
-        fileContents = fileContents.replaceAll('[[', '');
-        fileContents = fileContents.replaceAll(']]', '');
+        const obsidianStyleImageEmbedRegex = /!\[\[([^\^#\[\]*"/\\<>\n\r:|?]+)\]\]/g;
+        const obsidianStyleBacklinkRegex = /\[\[([^\^#\[\]*"/\\<>\n\r:|?]+)\]\]/g;
+        fileContents = fileContents.replaceAll(obsidianStyleImageEmbedRegex, '![$1]($1)');
+        fileContents = fileContents.replaceAll(obsidianStyleBacklinkRegex, '[$1]($1)');
 
         const extracted = extractMetadata(fileContents);
         const { metadata, metadataCharacterCount } = extracted || { metadata: {}, metadataCharacterCount: 0 };
@@ -442,7 +442,11 @@ async function process(filePath: string, templateHtml: string, { allFilesNames, 
         const mdTokens = tokens(fileContents);
         const modifiedMdTokens: Token[] = [];
         let lastToken = undefined;
-        for (const token of mdTokens) {
+        for (let i = 0; i < mdTokens.length; i++) {
+            const token = mdTokens[i];
+            if (!token) {
+                continue;
+            }
             if (lastToken && lastToken.type == 'start' && lastToken.tag == 'link' && lastToken.url.includes('http')) {
                 if (token.type == 'text' || token.type == 'html') {
                     token.type = 'html';
@@ -502,53 +506,85 @@ async function process(filePath: string, templateHtml: string, { allFilesNames, 
 
                     }
                 }
-                // Embed images:
-                // ---
-                // TODO: Fix hacky support for embedding pngs.  The lib doesn't parse image tags for
-                // some reason
-                if (token.content.startsWith('!') && token.content.endsWith('.png')) {
-                    isTokenModified = true;
-                    // .slice(1) removes leading ! in markdown
-                    const imageRelativePath = token.content.slice(1);
-                    let imageUrl = `/${token.content.slice(1)}`;
-                    // !imageRelativePath.startsWith('http') ensures that links to online images are served as is
-                    // otherwise, ensure that images exist locally. This is needed because some .md editors such as Obsidian
-                    // have an Assets directory (stored in .obsidian/app.json `attachmentFolderPath`) that provide an implicit
-                    // path, so if the markdown is just converted to html as is, the path will be broken
-                    if (!imageRelativePath.startsWith('http') && !await exists(path.join(config.parseDir, imageRelativePath))) {
+
+            }
+            // Embed images:
+            if (token.type == 'start' && token.tag == 'image') {
+                // !imageRelativePath.startsWith('http') ensures that links to online images are served as is
+                // otherwise, ensure that images exist locally. This is needed because some .md editors such as Obsidian
+                // have an Assets directory (stored in .obsidian/app.json `attachmentFolderPath`) that provide an implicit
+                // path, so if the markdown is just converted to html as is, the path will be broken
+                if (!token.url.startsWith('http') && !await exists(path.join(getOutDir(config), token.url))) {
+                    // Important! Skip the next 2 tokens because we're going to replace them
+                    // Images have "start", "text", and "end" tokens.  Once the "start" is detected
+                    // we replace the next two
+                    if (mdTokens[i + 1].type == 'text') {
+                        // Note: the text tag is optional 
+                        // and may not exist if there is no text inside the `[TEXTHERE](image.png)` TEXTHERE area of the token
+                        // If it does exist, skip it with i++ since we'll be modifying the tag
+                        i++;
+                        if (mdTokens[i + 1].type != 'end') {
+                            console.error('Unexpected next tag, "text" tag was skipped but "end" tag was not found.', mdTokens[i + 1]);
+                            // revert skip
+                            i--;
+                        }
+
+                    }
+                    // Note: The "end" tag is REQUIRED and always expected.  It must exist and be skipped in order for the 
+                    // following image modification code to take place
+                    if (mdTokens[i + 1].type != 'end') {
+                        console.error('Unexpected next tag, could not skip image "start"\'s following "end" tag.', mdTokens[i + 1]);
+                    } else {
+                        // i++ skips the "end" tag since we are modifying the tag in this block
+                        i++;
+                        isTokenModified = true;
+                        let imageUrl = `/${token.url}`;
                         let foundMissingImage = false;
                         for (const staticPath of config.staticServeDirs) {
-                            const testPath = path.join(config.parseDir, staticPath, imageRelativePath);
+                            const testPath = path.join(getOutDir(config), staticPath, token.url);
                             if (await exists(testPath)) {
-                                imageUrl = `/${path.posix.join(staticPath, imageRelativePath)}`;
+                                // path.posix is needed because this is now a webPath
+                                imageUrl = `/${path.posix.join(staticPath, token.url)}`;
                                 foundMissingImage = true;
                                 break;
                             }
                         }
                         if (!foundMissingImage) {
-                            console.error('⚠️ Missing image', imageUrl, 'check config staticServeDirs for missing directory.');
+                            // Obsidian by default puts drag-n-dropped images in the root,
+                            // if the image is not found in any of the staticServeDirs but 
+                            // it is in the parseDir root
+                            // then copy it to the root of the outDir
+                            const pathAtParseRoot = path.join(config.parseDir, token.url);
+                            if (await exists(pathAtParseRoot)) {
+                                const newOutPath = path.join(getOutDir(config), token.url);
+                                await copy(pathAtParseRoot, newOutPath);
+                                // Convert to a relative path for web serve root
+                                imageUrl = `/${token.url}`;
+                                foundMissingImage = true;
+                            } else {
+                                console.error('⚠️ Missing image', imageUrl, 'check config staticServeDirs for missing directory.');
+                            }
                         }
-                    }
-                    // Remove leading "!"
-                    modifiedMdTokens.push({
-                        type: 'start',
-                        tag: 'image',
-                        kind: 'inline',
-                        url: imageUrl,
-                        title: ''
-                    });
-                    modifiedMdTokens.push({
-                        type: 'text',
-                        content: '',
-                    });
-                    modifiedMdTokens.push({
-                        type: 'end',
-                        tag: 'image',
-                        kind: 'inline',
-                        url: imageUrl,
-                        title: ''
-                    });
+                        modifiedMdTokens.push({
+                            type: 'start',
+                            tag: 'image',
+                            kind: 'inline',
+                            url: imageUrl,
+                            title: ''
+                        });
+                        modifiedMdTokens.push({
+                            type: 'text',
+                            content: '',
+                        });
+                        modifiedMdTokens.push({
+                            type: 'end',
+                            tag: 'image',
+                            kind: 'inline',
+                            url: imageUrl,
+                            title: ''
+                        });
 
+                    }
 
                 }
 

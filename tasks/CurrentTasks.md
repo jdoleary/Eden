@@ -1,9 +1,8 @@
 ## MVP Tasks
 - Fix template html5 tags
-- (MVP) Bug: Default dragging in images doesn't work like it does in obsidian
-- (MVP) Bug: If there is an index.html then no table of contents is rendered
-- (MVP) Config option to choose to include title of document as h1 or not
 - Separate root template from content template
+- Support auto headers (for obsidian)
+- obsidian backlinks are case-insensitive
 - (MVP) Custom URL (in video tutorial)
 - (MVP) Example site and source that demos all working features
     - Explain CLI usage in and out of workingdirectory
