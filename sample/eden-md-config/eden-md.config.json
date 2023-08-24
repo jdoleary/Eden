@@ -1,0 +1,11 @@
+{
+  "projectName": "my-digital-garden",
+  "outDirRoot": "eden-md-out",
+  "parseDir": "C:/git/markdownToWeb/sample/",
+  "ignoreDirs": [
+    "node_modules",
+    ".obsidian"
+  ],
+  "staticServeDirs": [],
+  "logVerbose": false
+}

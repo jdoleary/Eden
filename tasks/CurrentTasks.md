@@ -1,8 +1,10 @@
 ## MVP Tasks
+- Fix template html5 tags
+- (MVP) Bug: Assets folder should not be included in table of contents
+    - Nor should config folder be in the table of contents
 - (MVP) Bug: If there is an index.html then no table of contents is rendered
 - (MVP) Config option to choose to include title of document as h1 or not
-- (MVP) Bug: Icon for obsidian docs not working
-- (MVP) Hide broken image icons
+- Separate root template from content template
 - (MVP) Custom URL (in video tutorial)
 - (MVP) Example site and source that demos all working features
     - Explain CLI usage in and out of workingdirectory
@@ -14,14 +16,17 @@
     - Osiris
     - Usir
     - MarkdownMeadow
+    - Eden-md
     - Just use my .me site
 - if the out dir goes inside of the obsidian directory it takes obsidian too long to start up (it's caching) so the out dir should be somewhere else
 
 ## Bugs
+- bug: just dragging an image into a new obsidian project doesn't work.
 - Bug: Nested directories mess up in the Previous Button (see page "Armbar". Previous button says ": Locks")
 - Bug: ignoreDirs does fuzzy matching but should be exact, see tests in os.ts
 
 ## Enhancements
+- Hide broken image icons
 - Full width images
 - Will this work with other languages? See potential issue in removing by character in extractMetadata()
 - Distinguish between multiple backlinks in the same file (for the sake of linking to the correct one)
