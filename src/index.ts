@@ -449,7 +449,7 @@ async function process(filePath: string, templateHtml: string, { allFilesNames, 
                     token.type = 'html';
                     const url = new URL(lastToken.url);
                     // Add the icon of the website before the link for user convenience
-                    token.content = `<img class="inline-icon" src="${url.origin}/favicon.ico"/>` + token.content;
+                    token.content = `<img class="inline-icon" src="https://s2.googleusercontent.com/s2/favicons?domain=${url.origin}"/>` + token.content;
                 }
             }
             // if true, prevents token from just being added, unchanged to modifiedMdTokens list
