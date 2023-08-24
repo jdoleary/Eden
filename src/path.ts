@@ -48,6 +48,9 @@ export function absoluteOsMdPathToWebPath(osPath: string, parseDir: string): pat
     [`a${path.sep}`, 'name', 'a/name.html'],
     ['a/b', 'name', 'a/b/name.html'],
     ['', 'test.md', 'test.html'],
+    // Page names should always be converted to lowercase
+    // for the sake of case-insensitive backlinking
+    ['', 'TeSt.md', 'test.html'],
 ].map(([relativePath, name, expectedPath]) => {
 
     Deno.test(`pageNameToPagePath: ${relativePath},${name} -> ${expectedPath} `, () => {
@@ -61,7 +64,7 @@ export function absoluteOsMdPathToWebPath(osPath: string, parseDir: string): pat
 // For example, see tests above
 export function pageNameToPagePath(relativePath: string, name: string, extension = '.html'): pathWeb {
     // .filter removes leading and trailing separators
-    return [...relativePath.split(path.sep).filter(x => !!x), (path.basename(name, path.extname(name)) + extension)].join(WEB_PATH_SEPARATOR).replaceAll(' ', '_')
+    return [...relativePath.split(path.sep).filter(x => !!x), (path.basename(name, path.extname(name)) + extension).toLowerCase()].join(WEB_PATH_SEPARATOR).replaceAll(' ', '_')
 }
 
 

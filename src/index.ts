@@ -431,7 +431,27 @@ async function process(filePath: string, templateHtml: string, { allFilesNames, 
         const obsidianStyleImageEmbedRegex = /!\[\[([^\^#\[\]*"/\\<>\n\r:|?]+)\]\]/g;
         const obsidianStyleBacklinkRegex = /\[\[([^\^#\[\]*"/\\<>\n\r:|?]+)\]\]/g;
         fileContents = fileContents.replaceAll(obsidianStyleImageEmbedRegex, '![$1]($1)');
-        fileContents = fileContents.replaceAll(obsidianStyleBacklinkRegex, '[$1]($1)');
+        // Find existing obsidian-style backlinks (works even with case insensitive)
+        const existingBacklinks = (fileContents.match(obsidianStyleBacklinkRegex) || []).filter((x, i, array) => {
+            // Filter for unique tags
+            return array.indexOf(x) == i;
+        }).map(x => {
+            // Remove leading `[[` and trailing `]]`
+            return x.replace(/^\[\[/, '').replace(/\]\]$/, '');
+        });
+        // Turn Obsidian style backlinks into actual links:
+        existingBacklinks.forEach(backlinkText => {
+            const foundBacklinkPath = allFilesNames.find(({ name }) => {
+                if (name == path.parse(filePath).name) {
+                    // Don't link to self
+                    return false;
+                }
+                return name.toLowerCase() == backlinkText.toLowerCase();
+            });
+            if (foundBacklinkPath) {
+                fileContents = fileContents.replaceAll(`[[${backlinkText}]]`, `[${backlinkText}](${foundBacklinkPath.webPath})`);
+            }
+        });
 
         const extracted = extractMetadata(fileContents);
         const { metadata, metadataCharacterCount } = extracted || { metadata: {}, metadataCharacterCount: 0 };
@@ -457,7 +477,8 @@ async function process(filePath: string, templateHtml: string, { allFilesNames, 
             }
             // if true, prevents token from just being added, unchanged to modifiedMdTokens list
             let isTokenModified = false;
-            // Add backlinks
+            // Feature: Auto Backlinks
+            // Search the text for any text that matches a filename and make it a backlink
             if (token.type == 'text') {
                 for (const { name, webPath } of allFilesNames) {
                     if (name == path.parse(filePath).name) {

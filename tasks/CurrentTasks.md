@@ -2,7 +2,7 @@
 - Fix template html5 tags
 - Separate root template from content template
 - Support auto headers (for obsidian)
-- obsidian backlinks are case-insensitive
+- (MVP) Make sure auto backlinking and regular backlinking don't clobber each other
 - (MVP) Custom URL (in video tutorial)
 - (MVP) Example site and source that demos all working features
     - Explain CLI usage in and out of workingdirectory
