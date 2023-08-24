@@ -1,1 +1,1 @@
-deno compile --allow-net --allow-write --allow-read src/buildManifest.ts
+deno compile --allow-net --allow-write --allow-read src/index.ts
