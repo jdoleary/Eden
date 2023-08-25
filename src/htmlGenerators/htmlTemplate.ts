@@ -44,6 +44,10 @@ export const defaultStyles = `
 html {
   scroll-behavior: smooth;
 }
+p {
+   /* Keep newlines just like obsidian does */ 
+    white-space:pre;
+}
 body {
     background-color: #393939;
     font-family: 'Verdana', 'Helvetica', sans-serif;
