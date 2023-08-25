@@ -1,2 +1,2 @@
 # deno run --allow-net --allow-write --allow-read src/index.ts --parseDir C:/ObsidianJordanJiuJitsu/JordanJiuJitsu --preview && start http://localhost:8000/Table_of_Contents.html
-deno run --allow-net --allow-write --allow-read src/index.ts --parseDir C:/git/markdownToWeb/sample/ --preview && start http://localhost:8000/Table_of_Contents.html
+deno run --allow-net --allow-write --allow-read src/index.ts --parseDir C:/git/eden-markdown/sample/ --preview && start http://localhost:8000/Table_of_Contents.html
