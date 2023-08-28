@@ -111,3 +111,19 @@
 ## Competition
 - [Quartz](https://quartz.jzhao.xyz/)
     - Too many links make pages feel overwhelming due to their styling
+- https://www.11ty.dev/
+- Gatsby
+- Next.js
+- Jekyll
+- Even more https://www.11ty.dev/docs/#competitors
+- https://roam.garden/
+
+## Benchmark
+https://www.zachleat.com/web/build-benchmark/#benchmark-results
+Found using `time ./run.sh`
+Eden Results:
+250: 0.809s
+500: 4.395s
+1000: 10.196s
+2000: 21.907s
+4000: 54.249s
