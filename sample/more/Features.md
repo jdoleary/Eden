@@ -13,7 +13,7 @@
 - 🔲 🍎Metadata define custom `template`
 - 🔲 🍎Metadata `thumbnail` for article for when it's displayed in an index page
 - 🔲 🍎Embeddable content
-    - 🔲 Embeddable Youtube Videos
+    - ✅ Embeddable Youtube Videos
     - 🔲 Embeddable Tweets
 - 🔲 ⛰️Index pages based on tags (example: [Maggie Appleton's Essays](https://maggieappleton.com/essays))
 - 🔲 🌀Ability to create different object types, ontologies, and tags

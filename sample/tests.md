@@ -27,8 +27,9 @@ Invalid Backlink testing
 [[$%!@&()]]
 
 
-Test embed youtube:
+Test embed youtube (both types of link):
 ![](https://youtu.be/aFBp0cZ79bQ?si=rdrrNxhVlJWzHpVw)
+![](https://www.youtube.com/watch?v=aFBp0cZ79bQ)
 Embeddable Twitter:
 ![](https://twitter.com/JanOrszulik/status/1694627203219153124?s=20)
 

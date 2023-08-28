@@ -491,10 +491,53 @@ async function process(filePath: string, templateHtml: string, { allFilesNames, 
             }
             // Embed images:
             if (token.type == 'start' && token.tag == 'image') {
+                // Implement youtube and twitter special embeds (Obsidian Syntax)
+                if (token.url.startsWith('http')) {
+                    // Youtube regex matches the following:
+                    // https://youtu.be/
+                    // http://youtu.be/
+                    // https://youtube.com/
+                    // http://youtube.com/
+                    // https://youtu.be/aFBp0cZ79bQ?si=rdrrNxhVlJWzHpVw
+                    // https://www.youtube.com/watch?v=aFBp0cZ79bQ
+                    const youtubeRegex = /^https?:\/\/(www\.)?youtu\.?be(.com)?\/(watch\?v=)?(\w*)/;
+                    const youtubeMatch = token.url.match(youtubeRegex);
+                    const youtubeVideoId = youtubeMatch && youtubeMatch[4];
+                    if (youtubeVideoId) {
+                        // Important! Skip the next 2 tokens because we're going to replace them
+                        // Images have "start", "text", and "end" tokens.  Once the "start" is detected
+                        // we replace the next two
+                        if (mdTokens[i + 1].type == 'text') {
+                            // Note: the text tag is optional 
+                            // and may not exist if there is no text inside the `[TEXTHERE](image.png)` TEXTHERE area of the token
+                            // If it does exist, skip it with i++ since we'll be modifying the tag
+                            i++;
+                            if (mdTokens[i + 1].type != 'end') {
+                                console.error('Unexpected next tag, "text" tag was skipped but "end" tag was not found.', mdTokens[i + 1]);
+                                // revert skip
+                                i--;
+                            }
+                        }
+                        if (mdTokens[i + 1].type != 'end') {
+                            console.error('Unexpected next tag, could not skip image "start"\'s following "end" tag.', mdTokens[i + 1]);
+                        } else {
+                            // i++ skips the "end" tag since we are modifying the tag in this block
+                            i++;
+                            isTokenModified = true;
+                            modifiedMdTokens.push({
+                                type: 'html',
+                                content: `<iframe class="responsive-iframe" src="https://www.youtube.com/embed/${youtubeVideoId}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`
+                            });
+                        }
+
+                    }
+                }
                 // !imageRelativePath.startsWith('http') ensures that links to online images are served as is
                 // otherwise, ensure that images exist locally. This is needed because some .md editors such as Obsidian
                 // have an Assets directory (stored in .obsidian/app.json `attachmentFolderPath`) that provide an implicit
                 // path, so if the markdown is just converted to html as is, the path will be broken
+                // `!await exists` ensures that the image doesn't exist as the url relative to the outDir, in which case we drop into this
+                // block to try to find it
                 if (!token.url.startsWith('http') && !await exists(path.join(getOutDir(config), token.url))) {
                     // Important! Skip the next 2 tokens because we're going to replace them
                     // Images have "start", "text", and "end" tokens.  Once the "start" is detected
@@ -509,7 +552,6 @@ async function process(filePath: string, templateHtml: string, { allFilesNames, 
                             // revert skip
                             i--;
                         }
-
                     }
                     // Note: The "end" tag is REQUIRED and always expected.  It must exist and be skipped in order for the 
                     // following image modification code to take place
