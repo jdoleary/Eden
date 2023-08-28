@@ -24,6 +24,8 @@
 - Bug: ignoreDirs does fuzzy matching but should be exact, see tests in os.ts
 
 ## Enhancements
+- Optimize generating backlinks to work on multiple threads
+    - For the 4000 md file benchmark, generating backlinks takes a whole 7.7seconds and only runs on 1 core
 - For custom tags like "<AssumedAudience>", I think the best way to parse them is to look for html tags that match a custom formatter.
     - Otherwise it gets real messy parsing nested html tags.
 - Output an rss.xml feed
@@ -120,10 +122,16 @@
 
 ## Benchmark
 https://www.zachleat.com/web/build-benchmark/#benchmark-results
-Found using `time ./run.sh`
-Eden Results:
-250: 0.809s
-500: 4.395s
-1000: 10.196s
-2000: 21.907s
-4000: 54.249s
+
+Found using `rm -rf ./eden-md-out/my-digital-garden && time ./run.sh`
+### Eden Results:
+Results in seconds
+|# of md files|Eden|Astro|Eleventy|Gatsby|Hugo|
+|---|---|---|---|---|---|
+|250|0.656|2.270|0.584|14.462|0.071|
+|500|1.031|3.172|0.683|15.722|0.110|
+|1000|2.757|5.098|0.914|17.967|0.171|
+|2000|8.625|9.791|1.250|22.356|0.352|
+|4000|30.020|22.907|1.938|29.059|0.684|
+
+This puts Eden at around the same efficiency as Astro
