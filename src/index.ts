@@ -309,54 +309,12 @@ async function main() {
     const convertingPerformanceStart = performance.now();
     console.log('Converting .md files to .html')
     for await (const f of getFiles(allFilesPath, config)) {
-        // Add file name path.relative to the domain
-        // so, when I push to the `production` branch
-        //(`git push production master`), all the file names
-        // will be path.relative to where you can access them on the url
-        // and since the url hosts the `build` directory statically,
-        // this will list file names in the manifest as
-        // `images/explain/cast.gif` instead of `build/images/explain.cast.gif`
-        // WHEN YOU UPDATE MAKE SURE YOU ALSO UPDATE THE SERVER VERSION AND VERIFY THE VERSION NUMBER CHANGED.
-
-        // https://nodejs.org/api/crypto.html#cryptocreatehashalgorithm-options
-        // Create a hash of the file contents:
-        // const hashAlg = createHash('sha256');
-        // const hash: string = await new Promise<string>((resolve) => {
-        //     const input = createReadStream(f);
-        //     input.on('readable', () => {
-        //         // Only one element is going to be produced by the
-        //         // hash stream.
-        //         const data = input.read();
-        //         if (data)
-        //             hashAlg.update(data);
-        //         else {
-        //             const digest = hashAlg.digest('hex')
-        //             console.log(`${digest} ${path.relative(__dirname, f)}`);
-        //             resolve(digest);
-        //         }
-        //     });
-        // });
-        // const filePath = path.relative(path.join(__dirname, config.parseDir), f);
-
-        // const hasChanged = previousManifest.files[filePath]?.hash !== hash;
-        // TODO: not ready for hasChanged because a template changing will have to rerender all
-        // if (hasChanged) {
-        // console.log('File changed:', f);
         try {
-
             await process(f, templateHtml, { allFilesNames, tableOfContents, config, backlinks });
         } catch (e) {
             console.error('error in process', e);
         }
-        // }
-        // files[filePath] = { hash };
     }
-    // Deno.writeTextFile(path.join(config.parseDir, 'manifest.json'), JSON.stringify(
-    //     {
-    //         VERSION,
-    //         files: files
-    //     }
-    // ));
     console.log('✅ Finished converting .md to .html in', performance.now() - convertingPerformanceStart, 'milliseconds.');
 
     if (cliFlags.publish) {
