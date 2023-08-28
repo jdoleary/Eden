@@ -85,8 +85,13 @@
     - Make a 1 minute video showing how it works
 - Test
     - Beta Testers
+- Distribution
+    - Pitch: "An opinionated, batteries-included, Digital Garden generator built to work with Obsidian"
+    - OSS on Github for issues and so people can customize it
+    - Sale page on Gumroad for users that want to support
+    - Make it runnable without downloading via `Deno.run`
+    - Eventually make it an executable (signed and notorized for macos)
 - Sell MVP
-    - Landing Page / Accept Payment
     - Advertise
     - Relevant Sites / Influencers
         - markdownguide.org
