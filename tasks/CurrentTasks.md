@@ -1,4 +1,8 @@
 ## MVP Tasks
+- (MVP) Splash page with waitlist
+    - Validate the idea
+- (MVP) Sign app on mac
+    - https://developer.apple.com/forums/thread/130379
 - (MVP) Homepage
     - Header with links to special pages like "About"
     - Footer: links to TOC, copywrite, buildwith Eden-md, social links, etc
@@ -20,6 +24,8 @@
 - Bug: ignoreDirs does fuzzy matching but should be exact, see tests in os.ts
 
 ## Enhancements
+- For custom tags like "<AssumedAudience>", I think the best way to parse them is to look for html tags that match a custom formatter.
+    - Otherwise it gets real messy parsing nested html tags.
 - Output an rss.xml feed
 - Formatting: Obsidian usually takes a single \n to mean a newline where the current markdown parser will not
 - Allow for commented out content {/* ### Commented out */} that is in the doc but doesn't show
@@ -72,7 +78,6 @@
 
 ## Critical Path
 - Finish MVP Features
-    - Homepage
     - Make a 1 minute video showing how it works
 - Test
     - Beta Testers
@@ -82,16 +87,25 @@
     - Relevant Sites / Influencers
         - markdownguide.org
 
+## User flow
+- If the user runs the program for the first time and there is no config in the directory it should ASK
+"Would you like to generate a digital garden from the markdown files in {{DIRECTORY}}?"
+- If not, it will ask for a directory path
+    - If it cannot find that directory, exit
+- If a directory path is supplied, do nothing
+
 ## Relevant Links
 - [.md meta data](https://help.obsidian.md/Editing+and+formatting/Properties)
 - [Commonmark Spec](https://spec.commonmark.org/0.30/)
 - [Markdown Guide Extended Syntax](https://www.markdownguide.org/extended-syntax/)
 - zettelkasten
 - Notable: https://gwern.net/design
+- How to make a good purchase page: https://easlo.gumroad.com/l/brain?layout=profile
 - md editors
     - Roam
     - Tana.inc
     - Obsidian
+- Use Cliffy.io for a better cli experience
 
 
 ## Competition
