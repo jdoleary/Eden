@@ -47,7 +47,7 @@ SVG:
     <line x1="50" y1="50" x2="200" y2="200" stroke="blue" stroke-width="4" />
   </g>
 </svg>
-<br/>
+<br>
 
 Test HTML embedding from https://developer.mozilla.org/en-US/docs/Learn/HTML/Tables/Basics
 <table>
