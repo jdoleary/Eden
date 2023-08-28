@@ -24,6 +24,8 @@
 - Bug: ignoreDirs does fuzzy matching but should be exact, see tests in os.ts
 
 ## Enhancements
+- Optimization: What if I just store the `lastModified` value and skip documents that have been already processed past when they were last modified?
+    - I can run Deno.stat on a file about 1500 times in the time it takes to process the file once, so this should be a valid optimization gain
 - Optimize generating backlinks to work on multiple threads
     - For the 4000 md file benchmark, generating backlinks takes a whole 7.7seconds and only runs on 1 core
 - For custom tags like "<AssumedAudience>", I think the best way to parse them is to look for html tags that match a custom formatter.
@@ -126,6 +128,8 @@ https://www.zachleat.com/web/build-benchmark/#benchmark-results
 Found using `rm -rf ./eden-md-out/my-digital-garden && time ./run.sh`
 ### Eden Results:
 Results in seconds
+Note: the folder of 4000 markdown files is about 4MB
+
 |# of md files|Eden|Astro|Eleventy|Gatsby|Hugo|
 |---|---|---|---|---|---|
 |250|0.656|2.270|0.584|14.462|0.071|
