@@ -308,13 +308,15 @@ async function main() {
 
     const convertingPerformanceStart = performance.now();
     console.log('Converting .md files to .html')
+    const processPromises: Promise<void>[] = [];
     for await (const f of getFiles(allFilesPath, config)) {
         try {
-            await process(f, templateHtml, { allFilesNames, tableOfContents, config, backlinks });
+            processPromises.push(process(f, templateHtml, { allFilesNames, tableOfContents, config, backlinks }));
         } catch (e) {
             console.error('error in process', e);
         }
     }
+    await Promise.all(processPromises);
     console.log('✅ Finished converting .md to .html in', performance.now() - convertingPerformanceStart, 'milliseconds.');
 
     if (cliFlags.publish) {
