@@ -70,13 +70,13 @@ p {
     white-space:pre-wrap;
 }
 body {
-    background-color: #fffefe;
+    background-color: #ffffff;
     font-family: 'Verdana', 'Helvetica', sans-serif;
     font-display: optional;
     margin: 0;
 }
 .article-footer {
-    background-color: #fffefe;
+    background-color: #ffffff;
     padding: 3em;
     box-sizing: border-box;
 }
@@ -90,7 +90,7 @@ body {
 }
 
 article {
-    background-color: #fffefe;
+    background-color: #ffffff;
     max-width: 100%;
     width: 800px;
     height: 100%;
@@ -187,7 +187,7 @@ nav>.center-dot:last-child {
     /* Same as article */
     padding-bottom: 2em;
     /* Same as article */
-    background-color: #fffefe;
+    background-color: #ffffff;
     max-width: 800px;
     box-shadow: 0 -1px 0.9px;
 }
