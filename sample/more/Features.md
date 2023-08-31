@@ -13,6 +13,7 @@
 - ✅ 🍎Metadata `publish`
 - ✅ 🍎Metadata define custom `template`
 - ✅ 🍎Metadata `type` like tags but singular.
+- 🔲  🍎Metadata `tags` should link to index pages
 - 🔲 🔑🌀Custom Static Components (similar to shortcodes)
 - 🔲 🔑🌀Site search
     - make entire garden available in json like [Maggie Appleton's Garden.json](https://maggieappleton.com/_next/data/yUhDOUNEYA1W3PsJNBhvU/garden.json) This will be necessary to support homepage

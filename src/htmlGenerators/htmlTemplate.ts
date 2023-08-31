@@ -15,19 +15,27 @@ export const defaultHtmlTemplate = `<!DOCTYPE html>
 
 <body>
     <main>
-        <nav>
-            {{breadcrumbs}}
-        </nav>
         <article>
             <div id="article-content">
+                <nav>
+                    {{breadcrumbs}}
+                </nav>
+                {{metadata:title}}
+                {{metadata:subtitle}}
+                <hr>
+                <div id="article-metadata">
+                    {{metadata:tags}}
+                    <div>
+                        <div>Planted {{created}}</div>
+                        <div>Last tended {{modified}}</div>
+                    </div>
+                </div>
                 {{content}}
             </div>
             <div id="article-footer">
                 <div id="backlinks">
                     {{backlinks}}
                 </div>
-                <div>Created {{created}}</div>
-                <div>Modified {{modified}}</div>
                 {{pagination}}
             </div>
         </article>
@@ -46,14 +54,10 @@ body {
 }
 
 h1 {
-    font-size: 5.33em;
-}
-
-h2 {
     font-size: 3.5em;
 }
 
-h3 {
+h2 {
     font-size: 1.55em;
 }
 
@@ -87,7 +91,6 @@ body {
 
 article {
     background-color: #fffefe;
-    padding: 3em;
     max-width: 100%;
     width: 800px;
     height: 100%;
@@ -124,13 +127,12 @@ main {
 nav {
     display: flex;
     flex-wrap: wrap;
-    color: white;
     text-decoration: none;
+    padding-bottom: 1em;
 }
 
 nav>.center-dot {
     content: "·";
-    padding: 16px;
 }
 
 nav>.center-dot:last-child {
@@ -151,12 +153,14 @@ nav>.center-dot:last-child {
     }
 }
 
+.nav-item:first-child {
+    padding-left:0;
+}
 .nav-item {
-    padding: 16px;
+    padding:0 0.5em;
     /* allow the anchor tag to grow in size */
     display: block;
     text-decoration: none;
-    color: white;
 }
 
 .nav-item:hover {
@@ -241,5 +245,13 @@ nav>.center-dot:last-child {
     aspect-ratio: 16/9;
     width:100%;
     height:100%;
+}
+#article-tags {
+    display:flex;
+    gap:1em;
+}
+#article-metadata {
+    display:flex;
+    justify-content:space-between;
 }
 `

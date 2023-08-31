@@ -1,10 +1,7 @@
 ## MVP Tasks
-- (MVP) Homepage
-    - Header with links to special pages like "About"
-    - Footer: links to TOC, copywrite, buildwith Eden-md, social links, etc
-    - Fix template html5 tags
-    - Use xml for custom behavior such as showing pages by tag with cover art (ex: <AssumedAudience> gets special styling in Maggie Appleton's blog)
+- Better styling
 - (MVP) Make mvp demo video and send to Zak
+    - Try to drum up interest with a Discord server / mailing list for a "zero-config digital garden"
 ---
 - Add Eden version number to generated manifest so that I can notify users how to migrate when version number changes only if they need to
 - Separate root template from content template
@@ -120,6 +117,7 @@
     - Tana.inc
     - Obsidian
 - Use Cliffy.io for a better cli experience
+- Styling inspiration: https://mdxjs.com/docs/getting-started/#quick-start
 
 
 ## Competition

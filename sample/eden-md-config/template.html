@@ -15,19 +15,27 @@
 
 <body>
     <main>
-        <nav>
-            {{breadcrumbs}}
-        </nav>
         <article>
             <div id="article-content">
+                <nav>
+                    {{breadcrumbs}}
+                </nav>
+                {{metadata:title}}
+                {{metadata:subtitle}}
+                <hr>
+                <div id="article-metadata">
+                    {{metadata:tags}}
+                    <div>
+                        <div>Planted {{created}}</div>
+                        <div>Last tended {{modified}}</div>
+                    </div>
+                </div>
                 {{content}}
             </div>
             <div id="article-footer">
                 <div id="backlinks">
                     {{backlinks}}
                 </div>
-                <div>Created {{created}}</div>
-                <div>Modified {{modified}}</div>
                 {{pagination}}
             </div>
         </article>

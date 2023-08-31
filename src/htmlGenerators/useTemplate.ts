@@ -4,8 +4,8 @@ import { Backlinks } from "../tool/backlinkFinder.ts";
 import { absoluteOsMdPathToWebPath, pathOSAbsolute } from "../path.ts";
 
 // Takes a string that contains html with template designators (e.g. {{content}}) and fills all the templates
-export async function addContentsToTemplate(content: string, templateHtml: string, { config, tableOfContents, filePath, relativePath, titleOverride, metadata, backlinks }: {
-    config: Config, tableOfContents: TableOfContents, filePath: string, relativePath: string, titleOverride: string, metadata: any, backlinks: Backlinks
+export async function addContentsToTemplate(content: string, templateHtml: string, { config, tableOfContents, filePath, relativePath, titleOverride, metadata, backlinks, isDir }: {
+    config: Config, tableOfContents: TableOfContents, filePath: string, relativePath: string, titleOverride: string, metadata: any, backlinks: Backlinks, isDir: boolean
 }): Promise<string> {
     const pageTitle = (relativePath.split('\\').slice(-1)[0] || '').replaceAll('.md', '');
     // The wrapping div separates the text from the nextPrev buttons so the buttons can be
@@ -34,7 +34,7 @@ export async function addContentsToTemplate(content: string, templateHtml: strin
                 return '';
             }
             return `<a class="nav-item" href=${url}>${currentPathStep}</a>`;
-        })].filter(x => !!x).join('<span class="center-dot">·</span>');
+        })].filter(x => !!x).join('<span class="center-dot">/</span>');
     }
     content = content.replace('{{breadcrumbs}}', breadcrumbs);
     const webPath = absoluteOsMdPathToWebPath(filePath, config.parseDir);
@@ -67,24 +67,37 @@ export async function addContentsToTemplate(content: string, templateHtml: strin
     }
     content = content.replace('{{pagination}}', pagination);
 
-    // {{ metadata  }} has spaces due to formatter changing it
-    // TODO find a better way to add this to the head rather than replace
-    content = content.replace('{{ metadata }}', JSON.stringify(metadata) || '{}');
+    if (metadata) {
+        // {{ metadata  }} has spaces due to formatter changing it
+        // TODO find a better way to add this to the head rather than replace
+        content = content.replace('{{ metadata }}', JSON.stringify(metadata) || '{}');
 
-
-    // Get file meta data
-    try {
-        const metadata = await Deno.stat(path.join(config.parseDir, relativePath));
-        if (metadata.birthtime) {
-            content = content.replace('{{created}}', metadata.birthtime?.toLocaleDateString() || '');
-            const tocEntry = findTOCEntryFromFilepath(tableOfContents, filePath);
-            if (tocEntry) {
-                tocEntry.createdAt = metadata.birthtime;
-            }
+        if (metadata.title) {
+            content = content.replace('{{metadata:title}}', `<h1>${metadata.title}</h1>`);
         }
-        content = content.replace('{{modified}}', metadata.mtime?.toLocaleDateString() || '');
-    } catch (e) {
-        console.error('❌ Err: Failed to get metadata for ', filePath);
+        if (metadata.subtitle) {
+            content = content.replace('{{metadata:subtitle}}', `<h2>${metadata.subtitle}</h2>`);
+        }
+        if (metadata.tags) {
+            content = content.replace('{{metadata:tags}}', `<div id="article-tags">${metadata.tags.map((tag: string) => `<span>${tag}</span>`).join('')}</div>`);
+        }
+    }
+
+    if (!isDir) {
+        // Get file stat data on the harddrive
+        try {
+            const statInfo = await Deno.stat(path.join(config.parseDir, relativePath));
+            if (statInfo.birthtime) {
+                content = content.replace('{{created}}', statInfo.birthtime?.toLocaleDateString() || '');
+                const tocEntry = findTOCEntryFromFilepath(tableOfContents, filePath);
+                if (tocEntry) {
+                    tocEntry.createdAt = statInfo.birthtime;
+                }
+            }
+            content = content.replace('{{modified}}', statInfo.mtime?.toLocaleDateString() || '');
+        } catch (e) {
+            console.error('❌ Err: Failed to get file stat for ', filePath);
+        }
     }
 
     return content;
