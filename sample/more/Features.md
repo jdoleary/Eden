@@ -12,7 +12,7 @@
 - ✅ ️Built-in rss feed support (automatically creates `/rss.xml`)
 - ✅ 🍎Metadata `publish`
 - ✅ 🍎Metadata define custom `template`
-- 🔲 🔑⛰️Template Footer: with social links and link to rss.xml
+- ✅ 🍎Metadata `type` like tags but singular.
 - 🔲 🔑🌀Custom Static Components (similar to shortcodes)
 - 🔲 🔑🌀Site search
     - make entire garden available in json like [Maggie Appleton's Garden.json](https://maggieappleton.com/_next/data/yUhDOUNEYA1W3PsJNBhvU/garden.json) This will be necessary to support homepage
@@ -39,6 +39,7 @@
 - 🔲 ⛰️Customizable header (like https://maggieappleton.com/) that works with transclusion.
 - 🔲 ⛰️Annotation support (or compatible with social annotation plugins)
 - 🔲 ⛰️Optimization: Optionally only process files that have changed to speed up compile time
+- 🔲 ⛰️Template Footer: with social links and link to rss.xml
 
 
 ```

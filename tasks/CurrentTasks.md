@@ -6,6 +6,7 @@
     - Use xml for custom behavior such as showing pages by tag with cover art (ex: <AssumedAudience> gets special styling in Maggie Appleton's blog)
 - (MVP) Make mvp demo video and send to Zak
 ---
+- Add Eden version number to generated manifest so that I can notify users how to migrate when version number changes only if they need to
 - Separate root template from content template
 - Support auto h1 headers based on filename (for obsidian)
 - add readme instructions in config dir?
