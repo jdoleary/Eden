@@ -11,7 +11,7 @@ export async function addContentsToTemplate(content: string, templateHtml: strin
     // The wrapping div separates the text from the nextPrev buttons so the buttons can be
     // at the bottom of the page
     if (titleOverride) {
-        content = `<div><h1>${titleOverride}</h1>${content}</div>`;
+        content = `<div><h2>${titleOverride}</h2>${content}</div>`;
     }
 
     const templateReplacer = '{{content}}';
