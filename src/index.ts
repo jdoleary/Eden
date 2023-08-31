@@ -275,6 +275,7 @@ async function main() {
             if (content.isFile) {
                 if (content.name.endsWith('.md')) {
                     tableOfContents.push({
+                        originalFilePath: path.join(d.dir, content.name),
                         indent: indent + 1,
                         parentDir: d.dir,
                         pageName: content.name.replace('.md', ''),
@@ -293,18 +294,6 @@ async function main() {
     }
 
 
-    logVerbose('Table of Contents:', tableOfContents);
-    // Create table of contents
-    const tocOutPath = path.join(getOutDir(config), tableOfContentsURL);
-
-    const tableOfContentsHtml = await addContentsToTemplate(tableOfContents.map(x => {
-        // -1 sets the top level pages flush with the left hand side
-        const indentHTML: string[] = Array(x.indent - 1).fill('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
-        return `<div>${indentHTML.join('')}<a href="${x.relativePath}">${x.pageName}</a></div>`;
-    }).join(''), templateHtml, { config, tableOfContents, filePath: tocOutPath, relativePath: '', titleOverride: 'Table of Contents', metadata: null, backlinks });
-
-    await Deno.writeTextFile(tocOutPath, tableOfContentsHtml);
-
 
     const convertingPerformanceStart = performance.now();
     console.log('Converting .md files to .html')
@@ -318,6 +307,20 @@ async function main() {
     }
     await Promise.all(processPromises);
     console.log('✅ Finished converting .md to .html in', performance.now() - convertingPerformanceStart, 'milliseconds.');
+
+    logVerbose('Table of Contents:', tableOfContents);
+    // Create table of contents
+    // Note: Table of contents must be created AFTER all files are `process`ed so that
+    // files with metadata `publish` can mutate the tableOfContents object
+    const tocOutPath = path.join(getOutDir(config), tableOfContentsURL);
+
+    const tableOfContentsHtml = await addContentsToTemplate(tableOfContents.map(x => {
+        // -1 sets the top level pages flush with the left hand side
+        const indentHTML: string[] = Array(x.indent - 1).fill('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
+        return `<div>${indentHTML.join('')}<a href="${x.relativePath}">${x.pageName}</a></div>`;
+    }).join(''), templateHtml, { config, tableOfContents, filePath: tocOutPath, relativePath: '', titleOverride: 'Table of Contents', metadata: null, backlinks });
+
+    await Deno.writeTextFile(tocOutPath, tableOfContentsHtml);
 
     if (cliFlags.publish) {
         if (!cliFlags.vercelToken) {
@@ -415,6 +418,18 @@ async function process(filePath: string, templateHtml: string, { allFilesNames, 
 
         const extracted = extractMetadata(fileContents);
         const { metadata, metadataCharacterCount } = extracted || { metadata: {}, metadataCharacterCount: 0 };
+
+        // metadata: `publish`
+        // Supports omitting a document from being rendered
+        if (metadata.publish === false) {
+            logVerbose('Skipping processing', filePath, 'Due to `metadata.publish == false`\n');
+            const normalizedPath = path.normalize(filePath);
+            // Remove file from table of contents
+            const removeIndex = tableOfContents.findIndex(entry => path.normalize(entry.originalFilePath || '') === normalizedPath);
+            tableOfContents.splice(removeIndex, 1);
+            return;
+        }
+
         // metadata: `template`
         // Supports using a custom template instead of default template
         if (metadata.template) {
@@ -451,6 +466,7 @@ async function process(filePath: string, templateHtml: string, { allFilesNames, 
             }
             // if true, prevents token from just being added, unchanged to modifiedMdTokens list
             let isTokenModified = false;
+            // TODO Process custom html tags
             // Feature: Auto Backlinks
             // Search the text for any text that matches a filename and make it a backlink
             if (token.type == 'text') {

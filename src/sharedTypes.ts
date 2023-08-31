@@ -6,7 +6,7 @@ export const stylesName = 'styles.css';
 export const configDirName = `${PROGRAM_NAME}-config`
 export const configName = `${PROGRAM_NAME}.config.json`;
 export const tableOfContentsURL = '/tableOfContents.html';
-export type TableOfContents = { indent: number, pageName: string, relativePath: string, isDir: boolean, parentDir?: string }[];
+export type TableOfContents = { originalFilePath?: string, indent: number, pageName: string, relativePath: string, isDir: boolean, parentDir?: string }[];
 export interface FileName {
     name: string;
     webPath: pathWeb;
