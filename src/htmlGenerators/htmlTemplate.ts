@@ -41,9 +41,26 @@ export const defaultHtmlTemplate = `<!DOCTYPE html>
 </html>`
 
 export const defaultStyles = `
-html {
-  scroll-behavior: smooth;
+body {
+    font-size: 18px;
 }
+
+h1 {
+    font-size: 5.33em;
+}
+
+h2 {
+    font-size: 3.5em;
+}
+
+h3 {
+    font-size: 1.55em;
+}
+
+h1,h2,h3 {
+    margin:0;
+}
+
 p {
    /* Keep newlines just like obsidian does */ 
     white-space:pre;
@@ -86,13 +103,6 @@ a:hover {
 
 a {
     text-decoration: none;
-}
-
-article h1 {
-    margin-top: 0;
-    border-bottom: 1px solid black;
-    text-align: center;
-    padding-bottom: 0.5em;
 }
 
 img {
