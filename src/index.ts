@@ -415,6 +415,20 @@ async function process(filePath: string, templateHtml: string, { allFilesNames, 
 
         const extracted = extractMetadata(fileContents);
         const { metadata, metadataCharacterCount } = extracted || { metadata: {}, metadataCharacterCount: 0 };
+        // metadata: `template`
+        // Supports using a custom template instead of default template
+        if (metadata.template) {
+            const defaultTemplatePath = path.join(getConfDir(config.parseDir), metadata.template);
+            try {
+                templateHtml = await Deno.readTextFile(defaultTemplatePath);
+            } catch (_) {
+                // Use default demplate
+                console.warn(`Custom template ${metadata.template} not found.  Check for the existence of ${defaultTemplatePath}`);
+            }
+
+
+        }
+
         // Remove metadata so it doesn't get converted into the html
         fileContents = fileContents.slice(metadataCharacterCount);
 
