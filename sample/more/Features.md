@@ -12,11 +12,15 @@
 - ✅ ️Built-in rss feed support (automatically creates `/rss.xml`)
 - ✅ 🍎Metadata `publish`
 - ✅ 🍎Metadata define custom `template`
+- 🔲 🔑⛰️Template Footer: with social links and link to rss.xml
+- 🔲 🔑🌀Custom Static Components (similar to shortcodes)
+- 🔲 🔑🌀Site search
+    - make entire garden available in json like [Maggie Appleton's Garden.json](https://maggieappleton.com/_next/data/yUhDOUNEYA1W3PsJNBhvU/garden.json) This will be necessary to support homepage
 - 🔲 🍎Metadata `thumbnail` for article for when it's displayed in an index page
 - 🔲 Embeddable content
     - ✅ Embeddable Youtube Videos
     - 🔲⛰️Embeddable Tweets
-- 🔲 ⛰️Index pages based on tags (example: [Maggie Appleton's Essays](https://maggieappleton.com/essays))
+- 🔲 🔑⛰️Index pages based on tags (example: [Maggie Appleton's Essays](https://maggieappleton.com/essays))
 - 🔲 🌀Ability to create different object types, ontologies, and tags
     - Example: https://www.gwern.net/About#confidence-tags
     - Example: Maggie Appleton's site, which has "Notes", "Essays", and "Patterns", among other collections of different objects
@@ -25,8 +29,6 @@
 - 🔲 Navigation: Support for vertical and horizontal nav, primary and secondary, floating navbar, nested or expanded megamenu navigation
 - 🔲 Sidenotes, in margin
     - https://www.gwern.net/Sidenotes
-- 🔲 🌀Site search
-    - make entire garden available in json like [Maggie Appleton's Garden.json](https://maggieappleton.com/_next/data/yUhDOUNEYA1W3PsJNBhvU/garden.json) This will be necessary to support homepage
 - 🔲 ⛰️Support syntax highlighting
 - 🔲 🌀Block-based, content as data, so the same piece of content can easily be transcluded in multiple places
     - Adding in dynamically updated bits of content into other bits of content
@@ -44,4 +46,5 @@
 *⛰️: Medium Difficulty
 *🌀: Complex (may take longer to implement)
 *❓: Optional (unsure if this will be a final feature)
+*🔑: Key feature
 ```

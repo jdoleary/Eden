@@ -1,15 +1,11 @@
 ## MVP Tasks
-- (MVP) Splash page with waitlist
-    - Validate the idea
-- (MVP) Sign app on mac
-    - https://developer.apple.com/forums/thread/130379
 - (MVP) Homepage
     - Header with links to special pages like "About"
     - Footer: links to TOC, copywrite, buildwith Eden-md, social links, etc
     - Fix template html5 tags
     - Use xml for custom behavior such as showing pages by tag with cover art (ex: <AssumedAudience> gets special styling in Maggie Appleton's blog)
 - (MVP) Make mvp demo video and send to Zak
-
+---
 - Separate root template from content template
 - Support auto h1 headers based on filename (for obsidian)
 - add readme instructions in config dir?
@@ -18,6 +14,10 @@
 - Add footer with app name and such
 - if the out dir goes inside of the obsidian directory it takes obsidian too long to start up (it's caching) so the out dir should be somewhere else
 - Would this program work with Notion too?? What other programs output .md files? Evernote?
+- Splash page with waitlist
+    - Validate the idea
+- Sign & notorize app on mac
+    - https://developer.apple.com/forums/thread/130379
 
 ## Bugs
 - Bug: Nested directories mess up in the Previous Button (see page "Armbar". Previous button says ": Locks")
@@ -82,11 +82,15 @@
 
 ## Critical Path
 - Finish MVP Features
-    - Make a 1 minute video showing how it works
+    - Custom Static Components
+        - These will be used to create a homepage and can have custom logic
+        - Example: <AuthorsNote>Read more at blah blah blah</AuthorsNote>
+            - This will send the content of the xml to a custom js function which will output custom html (like components)
+- Make a 1 minute video showing how it works
 - Test
     - Beta Testers
 - Distribution
-    - Pitch: "An opinionated, batteries-included, Digital Garden generator built to work with Obsidian"
+    - Pitch: "Powerful, extensible, no-fuss Digital Garden generator"
     - OSS on Github for issues and so people can customize it
     - Sale page on Gumroad for users that want to support
     - Make it runnable without downloading via `Deno.run`
