@@ -28,11 +28,11 @@ export const defaultHtmlTemplate = `<!DOCTYPE html>
                 </div>
                 <div>Created {{created}}</div>
                 <div>Modified {{modified}}</div>
+                {{pagination}}
             </div>
         </article>
-        <div class="footer flex space-between">
-            {{pagination}}
-        </div>
+        <footer>
+        </footer>
     </main>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -63,15 +63,15 @@ h1,h2,h3 {
 
 p {
    /* Keep newlines just like obsidian does */ 
-    white-space:pre;
+    white-space:pre-wrap;
 }
 body {
-    background-color: #393939;
+    background-color: #fffefe;
     font-family: 'Verdana', 'Helvetica', sans-serif;
     font-display: optional;
     margin: 0;
 }
-.footer {
+.article-footer {
     background-color: #fffefe;
     padding: 3em;
     box-sizing: border-box;
@@ -175,7 +175,7 @@ nav>.center-dot:last-child {
     justify-content: space-between;
 }
 
-.footer {
+.article-footer {
     flex-direction:column;
     position: sticky;
     width: 100%;
@@ -201,17 +201,23 @@ nav>.center-dot:last-child {
     text-align: right;
 }
 
-.footer .nextPrevButtons:hover {
+.nextPrevButtons:hover {
     transform: translateY(-2px);
     box-shadow: 1px 1px 1px;
 }
 
-.footer .nextPrevButtons:active {
+.nextPrevButtons:active {
     transform: translateY(1px);
     box-shadow: inset 1px 1px 1px;
 }
+.pagination .nextPrevButtons:first-child {
+    margin-left:0;
+}
+.pagination .nextPrevButtons:last-child {
+    margin-right:0;
+}
 
-.footer .pagination a {
+.pagination a {
     transition: 0.05s;
     display: block;
     margin: 0.5em;
