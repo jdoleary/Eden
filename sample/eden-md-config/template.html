@@ -15,19 +15,21 @@
 
 <body>
     <main>
+        <nav>
+        </nav>
         <article>
             <div id="article-content">
-                <nav>
+                <div id="breadcrumbs">
                     {{breadcrumbs}}
-                </nav>
+                </div>
                 {{metadata:title}}
                 {{metadata:subtitle}}
                 <hr>
                 <div id="article-metadata">
                     {{metadata:tags}}
-                    <div>
-                        <div>Planted {{created}}</div>
-                        <div>Last tended {{modified}}</div>
+                    <div class="gray right-align">
+                        <div>Created {{created}}</div>
+                        <div>Last modified {{modified}}</div>
                     </div>
                 </div>
                 {{content}}

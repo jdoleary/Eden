@@ -15,19 +15,21 @@ export const defaultHtmlTemplate = `<!DOCTYPE html>
 
 <body>
     <main>
+        <nav>
+        </nav>
         <article>
             <div id="article-content">
-                <nav>
+                <div id="breadcrumbs">
                     {{breadcrumbs}}
-                </nav>
+                </div>
                 {{metadata:title}}
                 {{metadata:subtitle}}
                 <hr>
                 <div id="article-metadata">
                     {{metadata:tags}}
-                    <div>
-                        <div>Planted {{created}}</div>
-                        <div>Last tended {{modified}}</div>
+                    <div class="gray right-align">
+                        <div>Created {{created}}</div>
+                        <div>Last modified {{modified}}</div>
                     </div>
                 </div>
                 {{content}}
@@ -74,6 +76,16 @@ body {
     font-family: 'Verdana', 'Helvetica', sans-serif;
     font-display: optional;
     margin: 0;
+    color:#313131;
+}
+nav {
+    height:82px;
+}
+.gray {
+    color:gray;
+}
+.right-align {
+    text-align:right;
 }
 .article-footer {
     background-color: #ffffff;
@@ -110,6 +122,8 @@ a {
 
 img {
     max-width: 100%;
+    display:block;
+    margin:0 auto;
 }
 
 ul {
@@ -124,18 +138,18 @@ main {
     align-items: center;
 }
 
-nav {
+#breadcrumbs {
     display: flex;
     flex-wrap: wrap;
     text-decoration: none;
     padding-bottom: 1em;
 }
 
-nav>.center-dot {
+#breadcrumbs>.center-dot {
     content: "·";
 }
 
-nav>.center-dot:last-child {
+#breadcrumbs>.center-dot:last-child {
     content: "";
 }
 
@@ -153,21 +167,21 @@ nav>.center-dot:last-child {
     }
 }
 
-.nav-item:first-child {
+.breadcrumbs-item:first-child {
     padding-left:0;
 }
-.nav-item {
+.breadcrumbs-item {
     padding:0 0.5em;
     /* allow the anchor tag to grow in size */
     display: block;
     text-decoration: none;
 }
 
-.nav-item:hover {
+.breadcrumbs-item:hover {
     transform: translateY(-2px);
 }
 
-.nav-item:active {
+.breadcrumbs-item:active {
     transform: translateY(1px);
 }
 

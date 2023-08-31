@@ -26,14 +26,14 @@ export async function addContentsToTemplate(content: string, templateHtml: strin
     content = content.replace('{{title}}', `<title>${title}</title>`);
     let breadcrumbs = '';
     if (relativePath) {
-        breadcrumbs = [`<a href="${tableOfContentsURL}"' class="nav-item">Home</a>`, ...relativePath.split(path.sep).map(currentPathStep => {
+        breadcrumbs = [`<a href="${tableOfContentsURL}"' class="breadcrumbs-item">Home</a>`, ...relativePath.split(path.sep).map(currentPathStep => {
             const preUrl = relativePath.split(currentPathStep)[0];
             const url = path.join('/', preUrl, currentPathStep);
             if (currentPathStep == title) {
                 // No breadcrumb for current title
                 return '';
             }
-            return `<a class="nav-item" href=${url}>${currentPathStep}</a>`;
+            return `<a class="breadcrumbs-item" href=${url}>${currentPathStep}</a>`;
         })].filter(x => !!x).join('<span class="center-dot">/</span>');
     }
     content = content.replace('{{breadcrumbs}}', breadcrumbs);
@@ -71,17 +71,11 @@ export async function addContentsToTemplate(content: string, templateHtml: strin
         // {{ metadata  }} has spaces due to formatter changing it
         // TODO find a better way to add this to the head rather than replace
         content = content.replace('{{ metadata }}', JSON.stringify(metadata) || '{}');
-
-        if (metadata.title) {
-            content = content.replace('{{metadata:title}}', `<h1>${metadata.title}</h1>`);
-        }
-        if (metadata.subtitle) {
-            content = content.replace('{{metadata:subtitle}}', `<h2>${metadata.subtitle}</h2>`);
-        }
-        if (metadata.tags) {
-            content = content.replace('{{metadata:tags}}', `<div id="article-tags">${metadata.tags.map((tag: string) => `<span>${tag}</span>`).join('')}</div>`);
-        }
     }
+
+    content = content.replace('{{metadata:title}}', metadata && metadata.title ? `<h1>${metadata.title}</h1>` : '');
+    content = content.replace('{{metadata:subtitle}}', metadata && metadata.subtitle ? `<h2 class="gray">${metadata.subtitle}</h2>` : '');
+    content = content.replace('{{metadata:tags}}', metadata && metadata.tags ? `<div id="article-tags">${metadata.tags.map((tag: string) => `<span>${tag}</span>`).join('')}</div>` : '');
 
     if (!isDir) {
         // Get file stat data on the harddrive
