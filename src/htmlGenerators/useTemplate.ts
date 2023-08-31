@@ -45,11 +45,12 @@ export async function addContentsToTemplate(content: string, templateHtml: strin
         content = content.replace('{{backlinks}}', '');
     }
     // Add footer "next" and "prev" buttons
-    const currentPage = tableOfContents.find(x => x.pageName == pageTitle);
-    const currentIndex = currentPage ? tableOfContents.indexOf(currentPage) : -1;
+    const publishedTableOfContents = tableOfContents.filter(x => x.publish);
+    const currentPage = publishedTableOfContents.find(x => x.pageName == pageTitle);
+    const currentIndex = currentPage ? publishedTableOfContents.indexOf(currentPage) : -1;
     let pagination = '';
     if (currentIndex !== -1) {
-        const previous = tableOfContents[currentIndex - 1];
+        const previous = publishedTableOfContents[currentIndex - 1];
         pagination += `<div class="pagination flex space-between">`;
         // Add next and previous buttons to page
         // If other page is in a different chapter, show the chapter before a ":"
@@ -60,7 +61,7 @@ export async function addContentsToTemplate(content: string, templateHtml: strin
             : `<a class="nextPrevButtons ${titleOverride == 'Table of Contents' ? 'hidden' : ''}" href="${tableOfContentsURL}">Table of Contents</a>`}`;
         // Add pageNumber
         pagination += `<div class="pageNumber"><a href="${tableOfContentsURL}">${currentIndex + 1}</a></div>`;
-        const next = tableOfContents[currentIndex + 1];
+        const next = publishedTableOfContents[currentIndex + 1];
         pagination += `${next ? `<a class="nextPrevButtons" href="\\${next.relativePath}">${next.pageName} →</a>` : ''}`;
         pagination += `</div>`;
     }
