@@ -9,6 +9,7 @@
 - ✅ Backlinks
 - ✅ Support embeddable images
 - ✅ Website icons next to external links (Like this: [Youtube](https://youtube.com))
+- ✅ ️Built-in rss feed support (automatically creates `/rss.xml`)
 - ✅ 🍎Metadata `publish`
 - ✅ 🍎Metadata define custom `template`
 - 🔲 🍎Metadata `thumbnail` for article for when it's displayed in an index page
@@ -36,7 +37,6 @@
 - 🔲 ⛰️Customizable header (like https://maggieappleton.com/) that works with transclusion.
 - 🔲 ⛰️Annotation support (or compatible with social annotation plugins)
 - 🔲 ⛰️Optimization: Optionally only process files that have changed to speed up compile time
-- 🔲 ⛰️Built-in rss feed support
 
 
 ```

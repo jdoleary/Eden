@@ -1,7 +1,7 @@
 import * as path from "https://deno.land/std@0.177.0/path/mod.ts";
-import { Config, TableOfContents, tableOfContentsURL, templateName } from "../sharedTypes.ts";
+import { Config, TableOfContents, TableOfContentsEntry, tableOfContentsURL } from "../sharedTypes.ts";
 import { Backlinks } from "../tool/backlinkFinder.ts";
-import { absoluteOsMdPathToWebPath } from "../path.ts";
+import { absoluteOsMdPathToWebPath, pathOSAbsolute } from "../path.ts";
 
 // Takes a string that contains html with template designators (e.g. {{content}}) and fills all the templates
 export async function addContentsToTemplate(content: string, templateHtml: string, { config, tableOfContents, filePath, relativePath, titleOverride, metadata, backlinks }: {
@@ -74,12 +74,24 @@ export async function addContentsToTemplate(content: string, templateHtml: strin
     // Get file meta data
     try {
         const metadata = await Deno.stat(path.join(config.parseDir, relativePath));
-        content = content.replace('{{created}}', metadata.birthtime?.toLocaleDateString() || '');
+        if (metadata.birthtime) {
+            content = content.replace('{{created}}', metadata.birthtime?.toLocaleDateString() || '');
+            const tocEntry = findTOCEntryFromFilepath(tableOfContents, filePath);
+            if (tocEntry) {
+                tocEntry.createdAt = metadata.birthtime;
+            }
+        }
         content = content.replace('{{modified}}', metadata.mtime?.toLocaleDateString() || '');
     } catch (e) {
         console.error('❌ Err: Failed to get metadata for ', filePath);
     }
 
     return content;
+
+}
+
+export function findTOCEntryFromFilepath(tableOfContents: TableOfContents, filePath: pathOSAbsolute): TableOfContentsEntry | undefined {
+    const normalizedPath = path.normalize(filePath);
+    return tableOfContents.find(entry => (entry.originalFilePath || '') === normalizedPath);
 
 }

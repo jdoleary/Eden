@@ -9,5 +9,11 @@
   "staticServeDirs": [
     "Assets"
   ],
-  "logVerbose": false
+  "logVerbose": false,
+  "rssInfo": {
+    "title": "Sample Digital Garden",
+    "description": "My Digital Garden",
+    "homepage": "https://example.com",
+    "language": "en"
+  }
 }

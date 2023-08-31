@@ -16,16 +16,17 @@ import { exists } from "https://deno.land/std@0.198.0/fs/exists.ts";
 import { html, tokens, Token } from "https://deno.land/x/rusty_markdown/mod.ts";
 import { parse } from "https://deno.land/std@0.194.0/flags/mod.ts";
 import { createDirectoryIndexFile } from "./htmlGenerators/indexFile.ts";
-import { addContentsToTemplate } from "./htmlGenerators/useTemplate.ts";
+import { addContentsToTemplate, findTOCEntryFromFilepath } from "./htmlGenerators/useTemplate.ts";
 import { getDirs, getFiles } from "./os.ts";
-import { absoluteOsMdPathToWebPath, getConfDir, getOutDir, pageNameToPagePath, pathOSRelative, pathToPageName, pathWeb } from "./path.ts";
-import { Config, configName, FileName, PROGRAM_NAME, stylesName, TableOfContents, tableOfContentsURL, templateName } from "./sharedTypes.ts";
+import { absoluteOsMdPathToWebPath, getConfDir, getOutDir, pageNameToPagePath, pathOSAbsolute, pathOSRelative, pathToPageName, pathWeb } from "./path.ts";
+import { Config, configName, FileName, PROGRAM_NAME, stylesName, TableOfContents, TableOfContentsEntry, tableOfContentsURL, templateName } from "./sharedTypes.ts";
 import { host } from "./tool/httpServer.ts";
 import { deploy, DeployableFile } from "./tool/publish.ts";
 import { extractMetadata } from "./tool/metadataParser.ts";
 import { logVerbose } from "./tool/console.ts";
 import { defaultHtmlTemplate, defaultStyles } from './htmlGenerators/htmlTemplate.ts';
 import { Backlinks, findBacklinks } from "./tool/backlinkFinder.ts";
+import { makeRSSFeed } from "./tool/rss-feed-maker.ts";
 
 const VERSION = '0.1.0'
 
@@ -136,8 +137,9 @@ async function main() {
     }
 
     // Default config
+    const projectName = `my-digital-garden`;
     const config: Config = {
-        projectName: `my-digital-garden`,
+        projectName,
         outDirRoot: `${PROGRAM_NAME}-out`,
         parseDir,
         ignoreDirs: [
@@ -145,7 +147,13 @@ async function main() {
             ".obsidian",
         ],
         staticServeDirs,
-        logVerbose: false
+        logVerbose: false,
+        rssInfo: {
+            title: projectName,
+            description: 'My Digital Garden',
+            homepage: 'https://example.com',
+            language: 'en'
+        }
     };
     // If there is no config file in parseDir, create one from the default
     const configPath = path.join(getConfDir(config.parseDir), configName)
@@ -269,17 +277,19 @@ async function main() {
         const pageNameSteps = directoryPathSegment.split('\\');
         const indent = pageNameSteps.length;
         const pageName = pathToPageName(directoryPathSegment);
-        tableOfContents.push({ indent, pageName, relativePath: directoryPathSegment, isDir: true });
+        tableOfContents.push({ indent, pageName, relativePath: directoryPathSegment, isDir: true, publish: true });
         // Add files to table of contents for use later for "next" and "prev" buttons to know order of pages
         for (const content of d.contents) {
             if (content.isFile) {
                 if (content.name.endsWith('.md')) {
                     tableOfContents.push({
-                        originalFilePath: path.join(d.dir, content.name),
+                        originalFilePath: path.normalize(path.join(d.dir, content.name)),
                         indent: indent + 1,
                         parentDir: d.dir,
                         pageName: content.name.replace('.md', ''),
-                        relativePath: pageNameToPagePath(directoryPathSegment, content.name), isDir: false
+                        relativePath: pageNameToPagePath(directoryPathSegment, content.name), isDir: false,
+                        // Defaults to true until it is changed later when the file's metadata is processed
+                        publish: true
                     });
                 } else {
                     logVerbose('table of contents: skipping', content.name);
@@ -314,13 +324,20 @@ async function main() {
     // files with metadata `publish` can mutate the tableOfContents object
     const tocOutPath = path.join(getOutDir(config), tableOfContentsURL);
 
-    const tableOfContentsHtml = await addContentsToTemplate(tableOfContents.map(x => {
+    const tableOfContentsHtml = await addContentsToTemplate(tableOfContents.filter(x => x.publish).map(x => {
         // -1 sets the top level pages flush with the left hand side
         const indentHTML: string[] = Array(x.indent - 1).fill('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
         return `<div>${indentHTML.join('')}<a href="${x.relativePath}">${x.pageName}</a></div>`;
     }).join(''), templateHtml, { config, tableOfContents, filePath: tocOutPath, relativePath: '', titleOverride: 'Table of Contents', metadata: null, backlinks });
-
     await Deno.writeTextFile(tocOutPath, tableOfContentsHtml);
+
+    // Create rss.xml
+    if (config.rssInfo) {
+        const rssOutPath = path.join(getOutDir(config), 'rss.xml');
+        const rssXML = makeRSSFeed(tableOfContents, config.rssInfo);
+        await Deno.writeTextFile(rssOutPath, rssXML);
+    }
+
 
     if (cliFlags.publish) {
         if (!cliFlags.vercelToken) {
@@ -423,10 +440,12 @@ async function process(filePath: string, templateHtml: string, { allFilesNames, 
         // Supports omitting a document from being rendered
         if (metadata.publish === false) {
             logVerbose('Skipping processing', filePath, 'Due to `metadata.publish == false`\n');
-            const normalizedPath = path.normalize(filePath);
-            // Remove file from table of contents
-            const removeIndex = tableOfContents.findIndex(entry => path.normalize(entry.originalFilePath || '') === normalizedPath);
-            tableOfContents.splice(removeIndex, 1);
+            const tocEntry = findTOCEntryFromFilepath(tableOfContents, filePath)
+            if (tocEntry) {
+                tocEntry.publish = false;
+            } else {
+                console.error('Unexpected, could not locate', filePath, 'in table of contents in order to set `publish` to false');
+            }
             return;
         }
 

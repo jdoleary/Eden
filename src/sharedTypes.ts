@@ -5,8 +5,20 @@ export const templateName = 'template.html';
 export const stylesName = 'styles.css';
 export const configDirName = `${PROGRAM_NAME}-config`
 export const configName = `${PROGRAM_NAME}.config.json`;
-export const tableOfContentsURL = '/tableOfContents.html';
-export type TableOfContents = { originalFilePath?: string, indent: number, pageName: string, relativePath: string, isDir: boolean, parentDir?: string }[];
+export const tableOfContentsURL = '/index.html';
+export type TableOfContentsEntry = {
+    originalFilePath?: pathOSAbsolute,
+    // If the document will be publicly available and converted to html
+    publish: boolean,
+    indent: number,
+    pageName: string,
+    relativePath: string,
+    isDir: boolean,
+    parentDir?: string,
+    // The date when the item was created
+    createdAt?: Date,
+};
+export type TableOfContents = TableOfContentsEntry[];
 export interface FileName {
     name: string;
     webPath: pathWeb;
@@ -24,4 +36,12 @@ export interface Config {
     // These paths are relative to the parseDir
     staticServeDirs: string[];
     logVerbose?: boolean;
+    rssInfo?: RSSInfo;
+}
+
+export interface RSSInfo {
+    title: string,
+    homepage: string,
+    description: string,
+    language: string
 }
