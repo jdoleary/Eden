@@ -78,6 +78,11 @@ async function main() {
             description: 'Publishes the generated files to the web via Vercel.  Note: vercelToken is required to use --publish.'
         },
         {
+            names: ['overwrite-template'],
+            type: 'boolean',
+            description: 'Overwrites existing template files with the default.'
+        },
+        {
             names: ['vercelToken'],
             type: 'string',
             description: 'Used in concert with --publish in order to publish the generated files to the web via Vercel.'
@@ -216,14 +221,14 @@ async function main() {
 
     // Create the template files from defaults unless they already exist in the parseDir's config directory:
     const templatePath = path.join(getConfDir(config.parseDir), templateName);
-    if (!await exists(templatePath)) {
+    if (cliFlags['overwrite-template'] || !await exists(templatePath)) {
         console.log('Creating template in ', templatePath);
         await Deno.writeTextFile(templatePath, defaultHtmlTemplate);
     }
     // Copy the default styles unless they already exist 
     // (which means they could be changed by the user in which case do not overwrite)
     const stylesPath = path.join(getConfDir(config.parseDir), stylesName)
-    if (!await exists(stylesPath)) {
+    if (cliFlags['overwrite-template'] || !await exists(stylesPath)) {
         console.log('Creating default styles in ', stylesPath);
         await Deno.writeTextFile(stylesPath, defaultStyles);
     }
