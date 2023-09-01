@@ -1,7 +1,12 @@
 ## MVP Tasks
 - Better styling
+    - Make title default to page name if no title property is provided
 - (MVP) Make mvp demo video and send to Zak
     - Try to drum up interest with a Discord server / mailing list for a "zero-config digital garden"
+    - Video steps
+        - The "why", explain the value prop
+        - TODO
+        - CTA
 ---
 - Add Eden version number to generated manifest so that I can notify users how to migrate when version number changes only if they need to
 - Separate root template from content template
