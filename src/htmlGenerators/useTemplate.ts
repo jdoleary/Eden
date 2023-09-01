@@ -4,15 +4,10 @@ import { Backlinks } from "../tool/backlinkFinder.ts";
 import { absoluteOsMdPathToWebPath, pathOSAbsolute } from "../path.ts";
 
 // Takes a string that contains html with template designators (e.g. {{content}}) and fills all the templates
-export async function addContentsToTemplate(content: string, templateHtml: string, { config, tableOfContents, filePath, relativePath, titleOverride, metadata, backlinks, isDir }: {
-    config: Config, tableOfContents: TableOfContents, filePath: string, relativePath: string, titleOverride: string, metadata: any, backlinks: Backlinks, isDir: boolean
+export async function addContentsToTemplate(content: string, templateHtml: string, { config, tableOfContents, filePath, relativePath, metadata, backlinks, isDir }: {
+    config: Config, tableOfContents: TableOfContents, filePath: string, relativePath: string, metadata: any, backlinks: Backlinks, isDir: boolean
 }): Promise<string> {
     const pageTitle = (relativePath.split('\\').slice(-1)[0] || '').replaceAll('.md', '');
-    // The wrapping div separates the text from the nextPrev buttons so the buttons can be
-    // at the bottom of the page
-    if (titleOverride) {
-        content = `<div><h2>${titleOverride}</h2>${content}</div>`;
-    }
 
     const templateReplacer = '{{content}}';
 
@@ -58,7 +53,7 @@ export async function addContentsToTemplate(content: string, templateHtml: strin
             ? `<a class="nextPrevButtons" href="\\${previous.relativePath}">← ${previous.parentDir !== currentPage?.parentDir
                 ? path.parse(previous.parentDir || '').name + ':'
                 : ''} ${previous.pageName}</a>`
-            : `<a class="nextPrevButtons ${titleOverride == 'Table of Contents' ? 'hidden' : ''}" href="${tableOfContentsURL}">Table of Contents</a>`}`;
+            : `<a class="nextPrevButtons ${(metadata && metadata.title == 'Table of Contents') ? 'hidden' : ''}" href="${tableOfContentsURL}">Table of Contents</a>`}`;
         // Add pageNumber
         pagination += `<div class="pageNumber"><a href="${tableOfContentsURL}">${currentIndex + 1}</a></div>`;
         const next = publishedTableOfContents[currentIndex + 1];

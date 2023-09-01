@@ -333,7 +333,7 @@ async function main() {
         // -1 sets the top level pages flush with the left hand side
         const indentHTML: string[] = Array(x.indent - 1).fill('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
         return `<div>${indentHTML.join('')}<a href="${x.relativePath}">${x.pageName}</a></div>`;
-    }).join(''), templateHtml, { config, tableOfContents, filePath: tocOutPath, relativePath: '', titleOverride: 'Table of Contents', metadata: null, backlinks, isDir: true });
+    }).join(''), templateHtml, { config, tableOfContents, filePath: tocOutPath, relativePath: '', metadata: { title: 'Table of Contents' }, backlinks, isDir: true });
     await Deno.writeTextFile(tocOutPath, tableOfContentsHtml);
 
     // Create rss.xml
@@ -677,7 +677,7 @@ async function process(filePath: string, templateHtml: string, { allFilesNames, 
             .replaceAll('%20', ' ');
 
         const relativePath = path.relative(config.parseDir, filePath);
-        htmlString = await addContentsToTemplate(htmlString, templateHtml, { config, tableOfContents, filePath, relativePath, metadata, titleOverride: '', backlinks, isDir: false });
+        htmlString = await addContentsToTemplate(htmlString, templateHtml, { config, tableOfContents, filePath, relativePath, metadata, backlinks, isDir: false });
 
         try {
             // Get the new path
