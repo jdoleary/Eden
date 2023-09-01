@@ -21,7 +21,7 @@ export async function addContentsToTemplate(content: string, templateHtml: strin
     const [templateStart, templateEnd] = templateHtml.split(templateReplacer);
     content = (templateStart || '') + content + (templateEnd || '');
     // }
-    const title = filePath.split(path.sep).slice(-1)[0];
+    const title = path.parse(filePath).name;
 
     content = content.replace('{{title}}', `<title>${title}</title>`);
     let breadcrumbs = '';
@@ -73,9 +73,10 @@ export async function addContentsToTemplate(content: string, templateHtml: strin
         content = content.replace('{{ metadata }}', JSON.stringify(metadata) || '{}');
     }
 
-    content = content.replace('{{metadata:title}}', metadata && metadata.title ? `<h1>${metadata.title}</h1>` : '');
+    content = content.replace('{{metadata:title}}', `<h1>${metadata && metadata.title ? metadata.title : title}</h1>`);
     content = content.replace('{{metadata:subtitle}}', metadata && metadata.subtitle ? `<h2 class="gray">${metadata.subtitle}</h2>` : '');
-    content = content.replace('{{metadata:tags}}', metadata && metadata.tags ? `<div id="article-tags">${metadata.tags.map((tag: string) => `<span>${tag}</span>`).join('')}</div>` : '');
+    // Even if tags don't exist, it should still be an empty div so that the createdAt timestamps stay on the right side of the flex
+    content = content.replace('{{metadata:tags}}', metadata && metadata.tags ? `<div id="article-tags">${metadata.tags.map((tag: string) => `<span>${tag}</span>`).join('')}</div>` : '<div></div>');
 
     if (!isDir) {
         // Get file stat data on the harddrive

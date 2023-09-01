@@ -1,6 +1,5 @@
 ## MVP Tasks
 - Better styling
-    - Make title default to page name if no title property is provided
 - (MVP) Make mvp demo video and send to Zak
     - Try to drum up interest with a Discord server / mailing list for a "zero-config digital garden"
     - Video steps
