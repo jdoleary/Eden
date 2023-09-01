@@ -7,6 +7,7 @@ import { Backlinks } from "../tool/backlinkFinder.ts";
 export async function createDirectoryIndexFile(d: { dir: string, contents: Deno.DirEntry[] }, templateHtml: string, { tableOfContents, config, backlinks }: { tableOfContents: TableOfContents, config: Config, backlinks: Backlinks }) {
     try {
         const relativePath = path.relative(config.parseDir, d.dir);
+        const title = path.parse(d.dir).name;
         // Get the new path
         // ex: 'out'
         const outPath = path.join(getOutDir(config), relativePath);
@@ -19,7 +20,7 @@ export async function createDirectoryIndexFile(d: { dir: string, contents: Deno.
         const htmlString = await addContentsToTemplate(d.contents.filter(x => x.name.endsWith('.md') || x.isDirectory).map(x => {
             const link = pageNameToPagePath(path.relative(config.parseDir, d.dir), x.name, x.isDirectory ? '' : '.html');
             return `<a href="/${link}">${pathToPageName(link)}</a>`
-        }).join('<br/>'), templateHtml, { config, tableOfContents, filePath: htmlOutPath, relativePath, metadata: null, backlinks, isDir: true })
+        }).join('<br/>'), templateHtml, { config, tableOfContents, filePath: htmlOutPath, relativePath, metadata: { title }, backlinks, isDir: true })
         // Write the file
         await Deno.writeTextFile(htmlOutPath, htmlString);
         if (config.logVerbose) {
