@@ -16,7 +16,7 @@ export async function addContentsToTemplate(content: string, templateHtml: strin
     const [templateStart, templateEnd] = templateHtml.split(templateReplacer);
     content = (templateStart || '') + content + (templateEnd || '');
     // }
-    const title = path.parse(filePath).name;
+    const title = metadata && metadata.title || path.parse(filePath).name;
 
     content = content.replace('{{title}}', `<title>${title}</title>`);
     let breadcrumbs = '';
@@ -24,7 +24,7 @@ export async function addContentsToTemplate(content: string, templateHtml: strin
         breadcrumbs = [`<a href="${tableOfContentsURL}"' class="breadcrumbs-item">Home</a>`, ...relativePath.split(path.sep).map(currentPathStep => {
             const preUrl = relativePath.split(currentPathStep)[0];
             const url = path.join('/', preUrl, currentPathStep);
-            if (currentPathStep == title) {
+            if (path.parse(currentPathStep).name == title) {
                 // No breadcrumb for current title
                 return '';
             }
