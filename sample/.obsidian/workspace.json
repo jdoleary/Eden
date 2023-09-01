@@ -42,9 +42,33 @@
                 "source": false
               }
             }
+          },
+          {
+            "id": "5e765b581b20b7e2",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "test-properties.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "5d85e27c95d088f9",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "summary.md",
+                "mode": "source",
+                "source": false
+              }
+            }
           }
         ],
-        "currentTab": 2
+        "currentTab": 4
       }
     ],
     "direction": "vertical"
@@ -110,7 +134,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "tests.md",
+                "file": "summary.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -127,7 +151,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "tests.md",
+                "file": "summary.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -150,7 +174,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "tests.md"
+                "file": "summary.md"
               }
             }
           }
@@ -171,11 +195,17 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "0aa34fd226f46a39",
+  "active": "453283dcefe37e33",
   "lastOpenFiles": [
-    "summary.md",
-    "tests.md",
+    "testmd2web2.md",
+    "test backlink.md",
+    "testmd2web.md",
+    "plain.md",
+    "do-not-publish.md",
     "bumblebee-at-root.gif",
+    "test-properties.md",
+    "tests.md",
+    "summary.md",
     "more/Metadata.md",
     "more/images.md",
     "Multi Space_Backlink$^.md",
