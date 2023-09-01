@@ -484,8 +484,15 @@ async function process(filePath: string, templateHtml: string, { allFilesNames, 
                 if (token.type == 'text' || token.type == 'html') {
                     token.type = 'html';
                     const url = new URL(lastToken.url);
+                    let origin = url.origin;
+
+                    // Special case: handle missing favicon for youtu.be
+                    if (origin === 'https://youtu.be') {
+                        origin = 'https://youtube.com';
+                    }
+
                     // Add the icon of the website before the link for user convenience
-                    token.content = `<img class="inline-icon" src="https://s2.googleusercontent.com/s2/favicons?domain=${url.origin}"/>` + token.content;
+                    token.content = `<img class="inline-icon" src="https://s2.googleusercontent.com/s2/favicons?domain=${origin}"/>` + token.content;
                 }
             }
             // if true, prevents token from just being added, unchanged to modifiedMdTokens list
