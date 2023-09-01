@@ -18,7 +18,7 @@ export async function createDirectoryIndexFile(d: { dir: string, contents: Deno.
         const htmlOutPath = path.join(outPath, 'index.html').replaceAll(' ', '_');
         const htmlString = await addContentsToTemplate(d.contents.filter(x => x.name.endsWith('.md') || x.isDirectory).map(x => {
             const link = pageNameToPagePath(path.relative(config.parseDir, d.dir), x.name, x.isDirectory ? '' : '.html');
-            return `<a href="${link}">${pathToPageName(link)}</a>`
+            return `<a href="/${link}">${pathToPageName(link)}</a>`
         }).join('<br/>'), templateHtml, { config, tableOfContents, filePath: htmlOutPath, relativePath, titleOverride: '', metadata: null, backlinks, isDir: true })
         // Write the file
         await Deno.writeTextFile(htmlOutPath, htmlString);

@@ -686,6 +686,9 @@ async function process(filePath: string, templateHtml: string, { allFilesNames, 
             await Deno.mkdir(path.parse(outPath).dir, { recursive: true });
             // Rename the file as .html
             // .replaceAll: Replace all spaces with underscores, so they become valid html paths
+            // Note: Even though pageNameToPagePath returns `pathWeb` that is the path that we use 
+            // for the htmlOutPath which is relative to the `ourDir` because that is the path that
+            // it WILL become on the web (even though it's being saved to the harddrive now).
             const htmlOutPath = pageNameToPagePath(path.dirname(outPath), outPath);
             // Write the file
             await Deno.writeTextFile(htmlOutPath, htmlString);
