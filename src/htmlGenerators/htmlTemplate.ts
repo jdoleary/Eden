@@ -102,6 +102,9 @@ nav {
 .inline-icon {
     height:16px;
     padding-right:0.3em;
+    /* This must be declared explicitly because imgs default to centered and this needs
+    to be inline*/
+    display:inline;
 }
 
 article {
