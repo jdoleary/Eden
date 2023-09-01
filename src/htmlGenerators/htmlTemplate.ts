@@ -13,7 +13,7 @@ export const defaultHtmlTemplate = `<!DOCTYPE html>
     </script>
 </head>
 
-<body>
+<body class="{{pageType}}">
     <main>
         <nav>
         </nav>
@@ -53,6 +53,11 @@ export const defaultHtmlTemplate = `<!DOCTYPE html>
 export const defaultStyles = `
 body {
     font-size: 18px;
+    background-color: #ffffff;
+    font-family: 'Verdana', 'Helvetica', sans-serif;
+    font-display: optional;
+    margin: 0;
+    color:#313131;
 }
 
 h1 {
@@ -71,12 +76,10 @@ p {
    /* Keep newlines just like obsidian does */ 
     white-space:pre-wrap;
 }
-body {
-    background-color: #ffffff;
-    font-family: 'Verdana', 'Helvetica', sans-serif;
-    font-display: optional;
-    margin: 0;
-    color:#313131;
+
+/* directory index pages shouldn't show article metadata */
+body.type-directory #article-metadata {
+    display: none;
 }
 nav {
     height:82px;
