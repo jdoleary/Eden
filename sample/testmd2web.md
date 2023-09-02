@@ -1,16 +1,17 @@
 ---
 test: metadata
 tags:
- - journal
- - test tag
-publish: false
+  - journal
+  - test
+  - tag
+publish: true
 ---
 [[test backlink]]
 Test online images
 ![alt text](https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/Grosser_Panda.JPG/1200px-Grosser_Panda.JPG "Panda Title")
 
 Test local images in Assets dir
-![[JiuJitsuRainbow.png]]
+![[flower.png]]
 
 
 *   This is a list item with two paragraphs.
