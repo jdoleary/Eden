@@ -6,6 +6,11 @@ export const stylesName = 'styles.css';
 export const configDirName = `${PROGRAM_NAME}-config`
 export const configName = `${PROGRAM_NAME}.config.json`;
 export const tableOfContentsURL = '/index.html';
+export interface Metadata {
+    publish: boolean;
+    template: string;
+    tags: string[];
+}
 export type TableOfContentsEntry = {
     originalFilePath?: pathOSAbsolute,
     // If the document will be publicly available and converted to html

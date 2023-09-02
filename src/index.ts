@@ -19,7 +19,7 @@ import { createDirectoryIndexFile } from "./htmlGenerators/indexFile.ts";
 import { addContentsToTemplate, findTOCEntryFromFilepath } from "./htmlGenerators/useTemplate.ts";
 import { getDirs, getFiles } from "./os.ts";
 import { absoluteOsMdPathToWebPath, getConfDir, getOutDir, pageNameToPagePath, pathOSAbsolute, pathOSRelative, pathToPageName, pathWeb } from "./path.ts";
-import { Config, configName, FileName, PROGRAM_NAME, stylesName, TableOfContents, TableOfContentsEntry, tableOfContentsURL, templateName } from "./sharedTypes.ts";
+import { Config, configName, FileName, Metadata, PROGRAM_NAME, stylesName, TableOfContents, TableOfContentsEntry, tableOfContentsURL, templateName } from "./sharedTypes.ts";
 import { host } from "./tool/httpServer.ts";
 import { deploy, DeployableFile } from "./tool/publish.ts";
 import { extractMetadata } from "./tool/metadataParser.ts";
@@ -320,7 +320,11 @@ async function main() {
             console.error('error in process', e);
         }
     }
-    await Promise.all(processPromises);
+    try {
+        await Promise.all(processPromises);
+    } catch (e) {
+        console.error('Error while processing files', e);
+    }
     console.log('✅ Finished converting .md to .html in', performance.now() - convertingPerformanceStart, 'milliseconds.');
 
     logVerbose('Table of Contents:', tableOfContents);
@@ -439,11 +443,11 @@ async function process(filePath: string, templateHtml: string, { allFilesNames, 
         });
 
         const extracted = extractMetadata(fileContents);
-        const { metadata, metadataCharacterCount } = extracted || { metadata: {}, metadataCharacterCount: 0 };
+        const { metadata, metadataCharacterCount }: { metadata: Metadata | undefined, metadataCharacterCount: number } = extracted || { metadata: {}, metadataCharacterCount: 0 };
 
         // metadata: `publish`
         // Supports omitting a document from being rendered
-        if (metadata.publish === false) {
+        if (metadata && metadata.publish === false) {
             logVerbose('Skipping processing', filePath, 'Due to `metadata.publish == false`\n');
             const tocEntry = findTOCEntryFromFilepath(tableOfContents, filePath)
             if (tocEntry) {
@@ -456,7 +460,7 @@ async function process(filePath: string, templateHtml: string, { allFilesNames, 
 
         // metadata: `template`
         // Supports using a custom template instead of default template
-        if (metadata.template) {
+        if (metadata && metadata.template) {
             const defaultTemplatePath = path.join(getConfDir(config.parseDir), metadata.template);
             try {
                 templateHtml = await Deno.readTextFile(defaultTemplatePath);
