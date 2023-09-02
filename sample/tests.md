@@ -90,10 +90,11 @@ Test HTML embedding from https://developer.mozilla.org/en-US/docs/Learn/HTML/Tab
 </table>
 
 Regular image md syntax
-![](bumblebee-at-root.gif)
+![|80](bumblebee-at-root.gif)
 
 Auto import into obsidian
 ![[bumblebee-at-root.gif]]
 
+![|80](bumblebee.gif)
 Test external image
-![alt text](https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/Grosser_Panda.JPG/1200px-Grosser_Panda.JPG "Panda Title")
+![alt text|80](https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/Grosser_Panda.JPG/1200px-Grosser_Panda.JPG "Panda Title")

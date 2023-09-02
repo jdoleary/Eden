@@ -135,6 +135,10 @@
 - Even more https://www.11ty.dev/docs/#competitors
 - https://roam.garden/
 
+
+## Strategy
+Eden turns your markdown notes into a beautiful digital garden for publishing online built specifically to work with Obsidian notes.  It does not require any configuration and works right out-of-the-box.
+
 ## Benchmark
 https://www.zachleat.com/web/build-benchmark/#benchmark-results
 

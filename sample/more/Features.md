@@ -27,6 +27,7 @@
     - Example: Maggie Appleton's site, which has "Notes", "Essays", and "Patterns", among other collections of different objects
     - Support [markdown metadata](https://help.obsidian.md/Editing+and+formatting/Properties) 
 - 🔲 🍎Expandible/collapsible blocks
+- ✅ 🍎[Support sizing images](https://help.obsidian.md/Editing+and+formatting/Basic+formatting+syntax#External+images)
 - 🔲 Navigation: Support for vertical and horizontal nav, primary and secondary, floating navbar, nested or expanded megamenu navigation
 - 🔲 Sidenotes, in margin
     - https://www.gwern.net/Sidenotes

@@ -597,36 +597,52 @@ async function process(filePath: string, templateHtml: string, { allFilesNames, 
 
                     }
                 }
-                // !imageRelativePath.startsWith('http') ensures that links to online images are served as is
-                // otherwise, ensure that images exist locally. This is needed because some .md editors such as Obsidian
-                // have an Assets directory (stored in .obsidian/app.json `attachmentFolderPath`) that provide an implicit
-                // path, so if the markdown is just converted to html as is, the path will be broken
-                // `!await exists` ensures that the image doesn't exist as the url relative to the outDir, in which case we drop into this
-                // block to try to find it
-                if (!token.url.startsWith('http') && !await exists(path.join(getOutDir(config), token.url))) {
-                    // Important! Skip the next 2 tokens because we're going to replace them
-                    // Images have "start", "text", and "end" tokens.  Once the "start" is detected
-                    // we replace the next two
-                    if (mdTokens[i + 1].type == 'text') {
-                        // Note: the text tag is optional 
-                        // and may not exist if there is no text inside the `[TEXTHERE](image.png)` TEXTHERE area of the token
-                        // If it does exist, skip it with i++ since we'll be modifying the tag
-                        i++;
-                        if (mdTokens[i + 1].type != 'end') {
-                            console.error('Unexpected next tag, "text" tag was skipped but "end" tag was not found.', mdTokens[i + 1]);
-                            // revert skip
-                            i--;
-                        }
+                const possibleNextToken: Token | undefined = mdTokens[i + 1];
+                const possible2ndNextToken = mdTokens[i + 2];
+                let imgWidth;
+                let imgHeight;
+                if (possibleNextToken && possibleNextToken.type == 'text') {
+                    // Example matches
+                    // Portrait|640
+                    // Portrait|640x480
+                    const imageSizeRegex = /\|(\d+)x?(\d*)$/;
+                    const matches = possibleNextToken.content.match(imageSizeRegex);
+                    if (matches) {
+                        imgWidth = matches[1];
+                        imgHeight = matches[2];
                     }
-                    // Note: The "end" tag is REQUIRED and always expected.  It must exist and be skipped in order for the 
-                    // following image modification code to take place
-                    if (mdTokens[i + 1].type != 'end') {
-                        console.error('Unexpected next tag, could not skip image "start"\'s following "end" tag.', mdTokens[i + 1]);
-                    } else {
-                        // i++ skips the "end" tag since we are modifying the tag in this block
-                        i++;
-                        isTokenModified = true;
-                        let imageUrl = `/${token.url}`;
+                }
+                // Important! Skip the next 2 tokens because we're going to replace them
+                // Images have "start", "text", and "end" tokens.  Once the "start" is detected
+                // we replace the next two
+                if (possibleNextToken && possibleNextToken.type == 'text') {
+                    // Note: the text tag is optional 
+                    // and may not exist if there is no text inside the `[TEXTHERE](image.png)` TEXTHERE area of the token
+                    // If it does exist, skip it with i++ since we'll be modifying the tag
+                    i++;
+                    if (possible2ndNextToken.type != 'end') {
+                        console.error('Unexpected next tag, "text" tag was skipped but "end" tag was not found.', mdTokens[i + 1]);
+                        // revert skip
+                        i--;
+                    }
+                }
+                // Note: The "end" tag is REQUIRED and always expected.  It must exist and be skipped in order for the 
+                // following image modification code to take place
+                if (possible2ndNextToken && possible2ndNextToken.type != 'end') {
+                    console.error('Unexpected next tag, could not skip image "start"\'s following "end" tag.', mdTokens[i + 1]);
+                } else {
+                    // i++ skips the "end" tag since we are modifying the tag in this block
+                    i++;
+                    isTokenModified = true;
+                    // !imageRelativePath.startsWith('http') ensures that links to online images are served as is
+                    // otherwise, ensure that images exist locally. This is needed because some .md editors such as Obsidian
+                    // have an Assets directory (stored in .obsidian/app.json `attachmentFolderPath`) that provide an implicit
+                    // path, so if the markdown is just converted to html as is, the path will be broken
+                    // `!await exists` ensures that the image doesn't exist as the url relative to the outDir, in which case we drop into this
+                    // block to try to find it
+                    let imageUrl = token.url;
+                    if (!token.url.startsWith('http') && !await exists(path.join(getOutDir(config), token.url))) {
+                        imageUrl = `/${token.url}`;
                         let foundMissingImage = false;
                         for (const staticPath of config.staticServeDirs) {
                             const testPath = path.join(getOutDir(config), staticPath, token.url);
@@ -653,26 +669,14 @@ async function process(filePath: string, templateHtml: string, { allFilesNames, 
                                 console.error('⚠️ Missing image', imageUrl, 'check config staticServeDirs for missing directory.');
                             }
                         }
-                        modifiedMdTokens.push({
-                            type: 'start',
-                            tag: 'image',
-                            kind: 'inline',
-                            url: imageUrl,
-                            title: ''
-                        });
-                        modifiedMdTokens.push({
-                            type: 'text',
-                            content: '',
-                        });
-                        modifiedMdTokens.push({
-                            type: 'end',
-                            tag: 'image',
-                            kind: 'inline',
-                            url: imageUrl,
-                            title: ''
-                        });
 
                     }
+                    // All images get modified so that they can either have a modified imageUrl in the case where they are local and
+                    // had to be "found" or if they have an explicit width and/or height, they need that added
+                    modifiedMdTokens.push({
+                        type: 'html',
+                        content: `<img src="${imageUrl}" ${imgWidth ? `width="${imgWidth}px"` : ''} ${imgHeight ? `width="${imgHeight}px"` : ''}/>`
+                    })
 
                 }
 
