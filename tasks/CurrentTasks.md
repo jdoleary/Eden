@@ -6,13 +6,12 @@
         - The "why", explain the value prop
         - TODO
         - CTA
+- Change icon from deno dinosaur to something else
+    - http://www.angusj.com/resourcehacker/
 ---
 - Add Eden version number to generated manifest so that I can notify users how to migrate when version number changes only if they need to
 - Separate root template from content template
-- Support auto h1 headers based on filename (for obsidian)
 - add readme instructions in config dir?
-- Change icon from deno dinosaur to something else
-    - http://www.angusj.com/resourcehacker/
 - Add footer with app name and such
 - if the out dir goes inside of the obsidian directory it takes obsidian too long to start up (it's caching) so the out dir should be somewhere else
 - Would this program work with Notion too?? What other programs output .md files? Evernote?

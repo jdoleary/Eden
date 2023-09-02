@@ -25,7 +25,6 @@
 - 🔲 🌀Ability to create different object types, ontologies, and tags
     - Example: https://www.gwern.net/About#confidence-tags
     - Example: Maggie Appleton's site, which has "Notes", "Essays", and "Patterns", among other collections of different objects
-    - Support [markdown metadata](https://help.obsidian.md/Editing+and+formatting/Properties) 
 - 🔲 🍎Expandible/collapsible blocks
 - ✅ 🍎[Support sizing images](https://help.obsidian.md/Editing+and+formatting/Basic+formatting+syntax#External+images)
 - 🔲 Navigation: Support for vertical and horizontal nav, primary and secondary, floating navbar, nested or expanded megamenu navigation
@@ -35,7 +34,7 @@
 - 🔲 🌀Block-based, content as data, so the same piece of content can easily be transcluded in multiple places
     - Adding in dynamically updated bits of content into other bits of content
     - https://subpixel.space/entries/open-transclude/
-    - [Obsidian named block ids](https://help.obsidian.md/Linking+notes+and+files/Internal+links#Link+to+a+block+in+a+note)
+    - 🔑[Obsidian named block ids](https://help.obsidian.md/Linking+notes+and+files/Internal+links#Link+to+a+block+in+a+note)
 - 🔲 ❓Serve as or integrate with a headless or component content management system
 - 🔲 🌀Live link previews, infoboxes, and hover popups
 - 🔲 ❓Print-ready, capable of being exported to EPUB or PDF
