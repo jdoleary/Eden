@@ -51,8 +51,8 @@ export async function addContentsToTemplate(content: string, templateHtml: strin
         // If other page is in a different chapter, show the chapter before a ":"
         pagination += `${(previous && previous.pageName)
             ? `<a class="nextPrevButtons" href="\\${previous.relativePath}">← ${previous.parentDir !== currentPage?.parentDir
-                ? path.parse(previous.parentDir || '').name + ':'
-                : ''} ${previous.pageName}</a>`
+                ? path.parse(previous.parentDir || '').name + '/'
+                : ''}${previous.pageName}</a>`
             : `<a class="nextPrevButtons ${(metadata && metadata.title == 'Table of Contents') ? 'hidden' : ''}" href="${tableOfContentsURL}">Table of Contents</a>`}`;
         // Add pageNumber
         pagination += `<div class="pageNumber"><a href="${tableOfContentsURL}">${currentIndex + 1}</a></div>`;

@@ -24,7 +24,6 @@
     - Blocks that end in `^[\w\d]+` can be transcluded.  When a token is found that ends in that, keep iterating until you find the closing tag, then add all of those to a "block" object with the key of the transclusionid + the pagename just like how it is referenced in obsidian. Ex: Wisdom.md.  Also when it is generated, give the block the transclusion id so that the transcluded link to it can jump right to the block
 
 ## Bugs
-- Bug: Nested directories mess up in the Previous Button (see page "Armbar". Previous button says ": Locks")
 - Bug: ignoreDirs does fuzzy matching but should be exact, see tests in os.ts
 
 ## Enhancements
