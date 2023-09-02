@@ -27,6 +27,7 @@ import { logVerbose } from "./tool/console.ts";
 import { defaultHtmlTemplate, defaultStyles } from './htmlGenerators/htmlTemplate.ts';
 import { Backlinks, findBacklinks } from "./tool/backlinkFinder.ts";
 import { makeRSSFeed } from "./tool/rss-feed-maker.ts";
+import { timeAgoJs } from "./htmlGenerators/timeAgo.js";
 
 const VERSION = '0.1.0'
 
@@ -225,6 +226,13 @@ async function main() {
         console.log('Creating template in ', templatePath);
         await Deno.writeTextFile(templatePath, defaultHtmlTemplate);
     }
+
+    // Copy timeAgo.js
+    const timeAgoPath = path.join(getOutDir(config), 'timeAgo.js');
+    // if (!await exists(timeAgoPath)) {
+    console.log('Creating timeAgo.js in ', timeAgoPath);
+    await Deno.writeTextFile(timeAgoPath, timeAgoJs);
+    // }
     // Copy the default styles unless they already exist 
     // (which means they could be changed by the user in which case do not overwrite)
     const stylesPath = path.join(getConfDir(config.parseDir), stylesName)

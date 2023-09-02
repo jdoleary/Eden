@@ -11,6 +11,9 @@ export const defaultHtmlTemplate = `<!DOCTYPE html>
     <script>
         window.metadata = {{ metadata }};
     </script>
+    <!-- Optional script: converts any element with data-converttimeago to the format "X days/months/years ago" -->
+    <script src="timeAgo.js" defer></script>
+
 </head>
 
 <body class="{{pageType}}">

@@ -80,13 +80,13 @@ export async function addContentsToTemplate(content: string, templateHtml: strin
         try {
             const statInfo = await Deno.stat(path.join(config.parseDir, relativePath));
             if (statInfo.birthtime) {
-                content = content.replace('{{created}}', statInfo.birthtime?.toLocaleDateString() || '');
+                content = content.replace('{{created}}', `<span ${statInfo.birthtime ? `data-converttimeago="${statInfo.birthtime.getTime()}"` : ''}>${statInfo.birthtime?.toLocaleDateString()}</span>` || '');
                 const tocEntry = findTOCEntryFromFilepath(tableOfContents, filePath);
                 if (tocEntry) {
                     tocEntry.createdAt = statInfo.birthtime;
                 }
             }
-            content = content.replace('{{modified}}', statInfo.mtime?.toLocaleDateString() || '');
+            content = content.replace('{{modified}}', `<span ${statInfo.mtime ? `data-converttimeago="${statInfo.mtime.getTime()}"` : ''}>${statInfo.mtime?.toLocaleDateString()}</span>` || '');
         } catch (e) {
             console.error('❌ Err: Failed to get file stat for ', filePath);
         }
