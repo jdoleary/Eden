@@ -13,7 +13,7 @@
 - ✅ 🍎Metadata `publish`
 - ✅ 🍎Metadata define custom `template`
 - ✅ 🍎Metadata `type` like tags but singular.
-- 🔲  🍎Metadata `tags` should link to index pages
+- 🔲 🍎Metadata `tags` should link to index pages
 - 🔲 🔑🌀Custom Static Components (similar to shortcodes)
 - 🔲 🔑🌀Site search
     - make entire garden available in json like [Maggie Appleton's Garden.json](https://maggieappleton.com/_next/data/yUhDOUNEYA1W3PsJNBhvU/garden.json) This will be necessary to support homepage
@@ -34,6 +34,7 @@
 - 🔲 🌀Block-based, content as data, so the same piece of content can easily be transcluded in multiple places
     - Adding in dynamically updated bits of content into other bits of content
     - https://subpixel.space/entries/open-transclude/
+    - [Obsidian named block ids](https://help.obsidian.md/Linking+notes+and+files/Internal+links#Link+to+a+block+in+a+note)
 - 🔲 ❓Serve as or integrate with a headless or component content management system
 - 🔲 🌀Live link previews, infoboxes, and hover popups
 - 🔲 ❓Print-ready, capable of being exported to EPUB or PDF
@@ -41,6 +42,7 @@
 - 🔲 ⛰️Annotation support (or compatible with social annotation plugins)
 - 🔲 ⛰️Optimization: Optionally only process files that have changed to speed up compile time
 - 🔲 ⛰️Template Footer: with social links and link to rss.xml
+- 🔲 🍎[Link to a note using a metadata alias](https://help.obsidian.md/Linking+notes+and+files/Aliases#Link+to+a+note+using+an+alias)
 
 
 ```
