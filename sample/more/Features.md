@@ -1,3 +1,9 @@
+- 🔲 🌀Block-based, content as data, so the same piece of content can easily be transcluded in multiple places
+    - Adding in dynamically updated bits of content into other bits of content
+    - https://subpixel.space/entries/open-transclude/
+    - 🔑[Obsidian named block ids](https://help.obsidian.md/Linking+notes+and+files/Internal+links#Link+to+a+block+in+a+note)
+        - Note: Check that it works with ^652cd3
+- 🔲 🔑⛰️Index pages based on tags (example: [Maggie Appleton's Essays](https://maggieappleton.com/essays))
 - ✅ Breadcrumbs
 - ✅ Metadata Support
     - Tags
@@ -17,11 +23,11 @@
 - 🔲 🔑🌀Custom Static Components (similar to shortcodes)
 - 🔲 🔑🌀Site search
     - make entire garden available in json like [Maggie Appleton's Garden.json](https://maggieappleton.com/_next/data/yUhDOUNEYA1W3PsJNBhvU/garden.json) This will be necessary to support homepage
+- 🔲 🔑⛰️Backlinks should include optional context snippets
 - 🔲 🍎Metadata `thumbnail` for article for when it's displayed in an index page
 - 🔲 Embeddable content
     - ✅ Embeddable Youtube Videos
     - 🔲⛰️Embeddable Tweets
-- 🔲 🔑⛰️Index pages based on tags (example: [Maggie Appleton's Essays](https://maggieappleton.com/essays))
 - 🔲 🌀Ability to create different object types, ontologies, and tags
     - Example: https://www.gwern.net/About#confidence-tags
     - Example: Maggie Appleton's site, which has "Notes", "Essays", and "Patterns", among other collections of different objects
@@ -31,10 +37,6 @@
 - 🔲 Sidenotes, in margin
     - https://www.gwern.net/Sidenotes
 - 🔲 ⛰️Support syntax highlighting
-- 🔲 🌀Block-based, content as data, so the same piece of content can easily be transcluded in multiple places
-    - Adding in dynamically updated bits of content into other bits of content
-    - https://subpixel.space/entries/open-transclude/
-    - 🔑[Obsidian named block ids](https://help.obsidian.md/Linking+notes+and+files/Internal+links#Link+to+a+block+in+a+note)
 - 🔲 ❓Serve as or integrate with a headless or component content management system
 - 🔲 🌀Live link previews, infoboxes, and hover popups
 - 🔲 ❓Print-ready, capable of being exported to EPUB or PDF

@@ -1,13 +1,16 @@
 ## MVP Tasks
-- Better styling
+- Bug: All the files are "not found" when you change the project name in the config (with spaces)
+- Replace "Home" with app name
 - (MVP) Make mvp demo video and send to Zak
     - Try to drum up interest with a Discord server / mailing list for a "zero-config digital garden"
     - Video steps
         - The "why", explain the value prop
         - TODO
         - CTA
+        - Note: Always assume that a viewer might be seeing any video as their first video so reexplain the core ("this is the deep dive, but there's a simple way to do it if you don't want to customize") every video
 - Change icon from deno dinosaur to something else
     - http://www.angusj.com/resourcehacker/
+- Build rudimentary homepage based off of https://stephanango.com/
 ---
 - Add Eden version number to generated manifest so that I can notify users how to migrate when version number changes only if they need to
 - Separate root template from content template
