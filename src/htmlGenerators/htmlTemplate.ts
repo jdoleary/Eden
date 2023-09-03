@@ -18,7 +18,8 @@ export const defaultHtmlTemplate = `<!DOCTYPE html>
 
 <body class="{{pageType}}">
     <main>
-        <!--<nav> </nav>-->
+        <nav>
+        </nav>
         <article>
             <div id="article-content">
                 <div id="breadcrumbs">
@@ -84,7 +85,7 @@ body.type-directory #article-metadata {
     display: none;
 }
 nav {
-    height:82px;
+    height:60px;
 }
 .gray {
     color:gray;
