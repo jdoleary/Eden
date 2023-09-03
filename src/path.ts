@@ -19,7 +19,7 @@ export function getOutDir(config: Config): pathOSAbsolute {
     // outDirRoot needs to be scoped to a project name because if this exe is run from
     // cli it might generate the outDir where the exe lives rather than in the parseDir
     const isAbsolute = path.isAbsolute(config.outDirRoot);
-    const outDirPath = path.join(config.outDirRoot, config.projectName);
+    const outDirPath = path.join(config.outDirRoot, config.projectName).replaceAll(' ', '_');
     return isAbsolute
         ? outDirPath
         : path.resolve(outDirPath)
