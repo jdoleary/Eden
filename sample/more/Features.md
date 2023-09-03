@@ -3,7 +3,11 @@
     - https://subpixel.space/entries/open-transclude/
     - 🔑[Obsidian named block ids](https://help.obsidian.md/Linking+notes+and+files/Internal+links#Link+to+a+block+in+a+note)
         - Note: Check that it works with ^652cd3
-- 🔲 🔑⛰️Index pages based on tags (example: [Maggie Appleton's Essays](https://maggieappleton.com/essays))
+    - Implementation notes:
+        - done: record Block existance in the Page object and convert them to html with an `class` link so it can be queried later
+        - Give id'd blocks an html id so they can be referenced
+        - After all pages have been created as html, use another pass with `deno-dom` to find all blocks store their HTML in garden
+        - Then pass again and replace blocks as needed
 - ✅ Breadcrumbs
 - ✅ Metadata Support
     - Tags
@@ -20,6 +24,7 @@
 - ✅ 🍎Metadata define custom `template`
 - ✅ 🍎Metadata `type` like tags but singular.
 - ✅ 🍎Metadata `tags` should link to index pages
+- ✅ 🔑⛰️Index pages based on tags (example: [Maggie Appleton's Essays](https://maggieappleton.com/essays))
 - 🔲 🔑🌀Custom Static Components (similar to shortcodes)
 - 🔲 🔑🌀Site search
     - make entire garden available in json like [Maggie Appleton's Garden.json](https://maggieappleton.com/_next/data/yUhDOUNEYA1W3PsJNBhvU/garden.json) This will be necessary to support homepage
@@ -54,3 +59,5 @@
 *❓: Optional (unsure if this will be a final feature)
 *🔑: Key feature
 ```
+
+^f3edfd

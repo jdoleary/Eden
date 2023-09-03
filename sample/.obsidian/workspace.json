@@ -66,9 +66,57 @@
                 "source": false
               }
             }
+          },
+          {
+            "id": "7f51c9df3ecd66ec",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "names block ids.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "adb5d3968d79876b",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "names block ids.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "68d6b3d2559872ea",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "names block ids.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "28b33b6d7a8c7922",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "names block ids.md",
+                "mode": "source",
+                "source": false
+              }
+            }
           }
         ],
-        "currentTab": 4
+        "currentTab": 8
       }
     ],
     "direction": "vertical"
@@ -134,7 +182,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "tests.md",
+                "file": "names block ids.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -151,7 +199,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "tests.md",
+                "file": "names block ids.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -174,7 +222,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "tests.md"
+                "file": "names block ids.md"
               }
             }
           }
@@ -195,24 +243,29 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "5d85e27c95d088f9",
+  "active": "28b33b6d7a8c7922",
   "lastOpenFiles": [
+    "summary.md",
+    "test_names_block_ids.md",
+    "more/images.md",
+    "names block ids.md",
+    "more/Features.md",
+    "plain.md",
+    "test backlink.md",
+    "test paste image.md",
+    "test-properties.md",
+    "do-not-publish.md",
+    "Pasted image 20230903174037.png",
+    "tests.md",
     "testmd2web2.md",
     "testmd2web.md",
-    "test-properties.md",
-    "test backlink.md",
-    "summary.md",
-    "do-not-publish.md",
-    "plain.md",
     "Assets/bumblebee.gif",
     "JiuJitsuRainbow.png.md",
     "eden-md-config/template-page.html",
     "Assets/flower.png",
     "more/Metadata.md",
-    "tests.md",
     "eden-md-config/timeAgo.js",
     "bumblebee-at-root.gif",
-    "more/images.md",
     "Multi Space_Backlink$^.md",
     "md2web-config/template.html",
     "md2web-config/styles.css",
@@ -222,7 +275,6 @@
     "eden-md-config/styles.css",
     "eden-md-config/template.html",
     "eden-md-config/eden-md.config.json",
-    "eden-md-config",
-    "more/Features.md"
+    "eden-md-config"
   ]
 }
