@@ -1,4 +1,4 @@
-export const defaultHtmlTemplate = `<!DOCTYPE html>
+export const defaultHtmlTemplatePage = `<!DOCTYPE html>
 <html lang="en">
 
 <head>

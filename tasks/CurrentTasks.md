@@ -1,5 +1,8 @@
 ## MVP Tasks
 - Revise styling of basic template to make it more "my own"
+- New `Page` interface will be used for
+    - Homepage to make array of articles sorted by most recent
+    - Tag index pages
 - Bug: This syntax `![[Pasted image 20230729221843.png]]` didn't convert to an image but it works in obsidian
 - (MVP) Make mvp demo video and send to Zak
     - Try to drum up interest with a Discord server / mailing list for a "zero-config digital garden"
@@ -11,6 +14,8 @@
 - Change icon from deno dinosaur to something else
     - http://www.angusj.com/resourcehacker/
 - Build rudimentary homepage based off of https://stephanango.com/
+- Refactor all the various `allFilesNames` and `tableOfContents` to ultimately use the Garden object
+    - rss.xml should use Garden too instead of tableOfContents object
 ---
 - Add Eden version number to generated manifest so that I can notify users how to migrate when version number changes only if they need to
 - Separate root template from content template

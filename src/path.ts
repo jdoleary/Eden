@@ -39,7 +39,11 @@ const TEST_PARSE_DIR = 'C:/parseDir/';
 export function absoluteOsMdPathToWebPath(osPath: string, parseDir: string): pathWeb {
     // `'/' +`: Make absolute path so that deeply nested pages
     // can link out to non-relative paths
-    return '/' + path.relative(parseDir, osPath).replaceAll('\\', '/').replaceAll(' ', '_').split('.md').join('.html');
+    let webPath = '/' + path.relative(parseDir, osPath).replaceAll('\\', '/').replaceAll(' ', '_');
+    if (webPath.endsWith('.md')) {
+        webPath = webPath.split('.md').join('.html');
+    }
+    return webPath;
 }
 
 [

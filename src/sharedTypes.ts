@@ -1,15 +1,18 @@
 import { pathOSAbsolute, pathOSRelative, pathWeb } from "./path.ts";
 
 export const PROGRAM_NAME = 'eden-md';
-export const templateName = 'template.html';
+export const templateName = 'template-page.html';
 export const stylesName = 'styles.css';
 export const configDirName = `${PROGRAM_NAME}-config`
 export const configName = `${PROGRAM_NAME}.config.json`;
 export const tableOfContentsURL = '/index.html';
+export const tagsDirectoryName = 'tags';
 export interface Metadata {
     publish: boolean;
     template: string;
     tags: string[];
+    title: string;
+    subtitle: string;
 }
 export type TableOfContentsEntry = {
     originalFilePath?: pathOSAbsolute,
@@ -24,6 +27,24 @@ export type TableOfContentsEntry = {
     createdAt?: Date,
 };
 export type TableOfContents = TableOfContentsEntry[];
+
+// The data for a markdown page, to be stored in garden.json and used throughout the app
+// for fetching pages based on stats such as an array of the pages organized by most recently created
+export interface Page {
+    // webPath can be used as an `id` for Page since it is unique
+    webPath: pathWeb;
+    name: string;
+    contents: string;
+    metadata?: Metadata;
+    createdAt?: number; // Date millis
+    modifiedAt?: number; // Date millis
+}
+// Garden.json
+export interface Garden {
+    pages: Page[],
+    tags: Set<string>,
+
+}
 export interface FileName {
     name: string;
     webPath: pathWeb;

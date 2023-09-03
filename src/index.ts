@@ -15,16 +15,16 @@ import { copy } from "https://deno.land/std@0.195.0/fs/copy.ts";
 import { exists } from "https://deno.land/std@0.198.0/fs/exists.ts";
 import { html, tokens, Token } from "https://deno.land/x/rusty_markdown/mod.ts";
 import { parse } from "https://deno.land/std@0.194.0/flags/mod.ts";
-import { createDirectoryIndexFile } from "./htmlGenerators/indexFile.ts";
+import { createDirectoryIndexFile, createTagDirIndexFile, createTagIndexFile } from "./htmlGenerators/indexFile.ts";
 import { addContentsToTemplate, findTOCEntryFromFilepath } from "./htmlGenerators/useTemplate.ts";
 import { getDirs, getFiles } from "./os.ts";
 import { absoluteOsMdPathToWebPath, getConfDir, getOutDir, pageNameToPagePath, pathOSAbsolute, pathOSRelative, pathToPageName, pathWeb } from "./path.ts";
-import { Config, configName, FileName, Metadata, PROGRAM_NAME, stylesName, TableOfContents, TableOfContentsEntry, tableOfContentsURL, templateName } from "./sharedTypes.ts";
+import { Config, configName, FileName, Garden, Metadata, Page, PROGRAM_NAME, stylesName, TableOfContents, TableOfContentsEntry, tableOfContentsURL, tagsDirectoryName, templateName } from "./sharedTypes.ts";
 import { host } from "./tool/httpServer.ts";
 import { deploy, DeployableFile } from "./tool/publish.ts";
 import { extractMetadata } from "./tool/metadataParser.ts";
 import { logVerbose } from "./tool/console.ts";
-import { defaultHtmlTemplate, defaultStyles } from './htmlGenerators/htmlTemplate.ts';
+import { defaultHtmlTemplatePage, defaultStyles } from './htmlGenerators/htmlTemplate.ts';
 import { Backlinks, findBacklinks } from "./tool/backlinkFinder.ts";
 import { makeRSSFeed } from "./tool/rss-feed-maker.ts";
 import { timeAgoJs } from "./htmlGenerators/timeAgo.js";
@@ -224,7 +224,7 @@ async function main() {
     const templatePath = path.join(getConfDir(config.parseDir), templateName);
     if (cliFlags['overwrite-template'] || !await exists(templatePath)) {
         console.log('Creating template in ', templatePath);
-        await Deno.writeTextFile(templatePath, defaultHtmlTemplate);
+        await Deno.writeTextFile(templatePath, defaultHtmlTemplatePage);
     }
 
     // Copy timeAgo.js
@@ -316,20 +316,23 @@ async function main() {
         }
     }
 
-
+    const garden: Garden = {
+        pages: [],
+        tags: new Set()
+    }
 
     const convertingPerformanceStart = performance.now();
     console.log('Converting .md files to .html')
-    const processPromises: Promise<void>[] = [];
+    const processPromises: Promise<Page | undefined>[] = [];
     for await (const f of getFiles(allFilesPath, config)) {
         try {
-            processPromises.push(process(f, templateHtml, { allFilesNames, tableOfContents, config, backlinks }));
+            processPromises.push(process(f, templateHtml, { allFilesNames, tableOfContents, config, backlinks, garden }));
         } catch (e) {
             console.error('error in process', e);
         }
     }
     try {
-        await Promise.all(processPromises);
+        garden.pages = (await Promise.all(processPromises)).flatMap(x => x ? [x] : []);
     } catch (e) {
         console.error('Error while processing files', e);
     }
@@ -347,6 +350,19 @@ async function main() {
         return `<div>${indentHTML.join('')}<a href="${x.relativePath}">${x.pageName}</a></div>`;
     }).join(''), templateHtml, { config, tableOfContents, filePath: tocOutPath, relativePath: '', metadata: { title: 'Table of Contents' }, backlinks, isDir: true });
     await Deno.writeTextFile(tocOutPath, tableOfContentsHtml);
+
+    // Create tag index pages
+    // --
+    // Create parent dir for tag index pages
+    await Deno.mkdir(path.join(getOutDir(config), tagsDirectoryName), { recursive: true });
+    // Create tag index pages
+    const tagIndexPagePromies = [];
+    for (const tag of garden.tags.keys()) {
+        tagIndexPagePromies.push(createTagIndexFile(tag, garden, templateHtml, { tableOfContents, config, backlinks }));
+    }
+    await Promise.all(tagIndexPagePromies);
+    // Create index page for all tags
+    createTagDirIndexFile(garden, templateHtml, { tableOfContents, config, backlinks });
 
     // Create rss.xml
     if (config.rssInfo) {
@@ -407,7 +423,7 @@ main().catch(e => {
         prompt("Finished... Enter any key to exit.");
     }
 });
-async function process(filePath: string, templateHtml: string, { allFilesNames, tableOfContents, config, backlinks }: { allFilesNames: FileName[], tableOfContents: TableOfContents, config: Config, backlinks: Backlinks }) {
+async function process(filePath: string, templateHtml: string, { allFilesNames, tableOfContents, config, backlinks, garden }: { allFilesNames: FileName[], tableOfContents: TableOfContents, config: Config, backlinks: Backlinks, garden: Garden }): Promise<Page | undefined> {
     // Dev, test single file
     // if (filePath !== 'C:\\ObsidianJordanJiuJitsu\\JordanJiuJitsu\\Submissions\\Strangles\\Triangle.md') {
     //     return;
@@ -425,6 +441,7 @@ async function process(filePath: string, templateHtml: string, { allFilesNames, 
 
     if (path.parse(filePath).ext == '.md') {
         let fileContents = await Deno.readTextFile(filePath);
+        const relativePath = path.relative(config.parseDir, filePath);
         const obsidianStyleImageEmbedRegex = /!\[\[([^\^#\[\]*"/\\<>\n\r:|?]+)\]\]/g;
         const obsidianStyleBacklinkRegex = /\[\[([^\^#\[\]*"/\\<>\n\r:|?]+)\]\]/g;
         fileContents = fileContents.replaceAll(obsidianStyleImageEmbedRegex, '![$1]($1)');
@@ -452,6 +469,14 @@ async function process(filePath: string, templateHtml: string, { allFilesNames, 
 
         const extracted = extractMetadata(fileContents);
         const { metadata, metadataCharacterCount }: { metadata: Metadata | undefined, metadataCharacterCount: number } = extracted || { metadata: {}, metadataCharacterCount: 0 };
+
+        // Add tags to garden object
+        if (metadata && metadata.tags) {
+            metadata.tags.forEach(t => {
+                garden.tags.add(t);
+            })
+        }
+
 
         // metadata: `publish`
         // Supports omitting a document from being rendered
@@ -482,6 +507,33 @@ async function process(filePath: string, templateHtml: string, { allFilesNames, 
 
         // Remove metadata so it doesn't get converted into the html
         fileContents = fileContents.slice(metadataCharacterCount);
+
+        // Get file stat data on the harddrive
+        let createdAt;
+        let modifiedAt;
+        try {
+            const statInfo = await Deno.stat(path.join(config.parseDir, relativePath));
+            if (statInfo.birthtime) {
+                fileContents = fileContents.replace('{{created}}', `<span ${statInfo.birthtime ? `data-converttimeago="${statInfo.birthtime.getTime()}"` : ''}>${statInfo.birthtime?.toLocaleDateString()}</span>` || '');
+                createdAt = statInfo.birthtime;
+                const tocEntry = findTOCEntryFromFilepath(tableOfContents, filePath);
+                if (tocEntry) {
+                    tocEntry.createdAt = createdAt;
+                }
+            }
+            modifiedAt = statInfo.mtime;
+            fileContents = fileContents.replace('{{modified}}', `<span ${statInfo.mtime ? `data-converttimeago="${statInfo.mtime.getTime()}"` : ''}>${statInfo.mtime?.toLocaleDateString()}</span>` || '');
+        } catch (e) {
+            console.error('❌ Err: Failed to get file stat for ', filePath);
+        }
+        const page: Page = {
+            webPath: absoluteOsMdPathToWebPath(filePath, config.parseDir),
+            name: pathToPageName(filePath),
+            contents: fileContents,
+            metadata,
+            createdAt: createdAt?.getTime(),
+            modifiedAt: modifiedAt?.getTime()
+        }
 
         // Convert markdown to html
         const mdTokens = tokens(fileContents);
@@ -699,7 +751,6 @@ async function process(filePath: string, templateHtml: string, { allFilesNames, 
         htmlString = htmlString
             .replaceAll('%20', ' ');
 
-        const relativePath = path.relative(config.parseDir, filePath);
         htmlString = await addContentsToTemplate(htmlString, templateHtml, { config, tableOfContents, filePath, relativePath, metadata, backlinks, isDir: false });
 
         try {
@@ -720,8 +771,10 @@ async function process(filePath: string, templateHtml: string, { allFilesNames, 
         } catch (e) {
             console.error(e);
         }
+        return page;
     } else {
         logVerbose('non .md file types not handled yet:', filePath);
     }
     logVerbose('Done processing', filePath, '\n');
+    return undefined;
 }
