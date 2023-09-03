@@ -39,28 +39,6 @@ export async function addContentsToTemplate(content: string, templateHtml: strin
     } else {
         content = content.replace('{{backlinks}}', '');
     }
-    // Add footer "next" and "prev" buttons
-    const publishedTableOfContents = tableOfContents.filter(x => x.publish);
-    const currentPage = publishedTableOfContents.find(x => x.pageName == pageTitle);
-    const currentIndex = currentPage ? publishedTableOfContents.indexOf(currentPage) : -1;
-    let pagination = '';
-    if (currentIndex !== -1) {
-        const previous = publishedTableOfContents[currentIndex - 1];
-        pagination += `<div class="pagination flex space-between">`;
-        // Add next and previous buttons to page
-        // If other page is in a different chapter, show the chapter before a ":"
-        pagination += `${(previous && previous.pageName)
-            ? `<a class="nextPrevButtons" href="\\${previous.relativePath}">← ${previous.parentDir !== currentPage?.parentDir
-                ? path.parse(previous.parentDir || '').name + '/'
-                : ''}${previous.pageName}</a>`
-            : `<a class="nextPrevButtons ${(metadata && metadata.title == 'Table of Contents') ? 'hidden' : ''}" href="${tableOfContentsURL}">Table of Contents</a>`}`;
-        // Add pageNumber
-        pagination += `<div class="pageNumber"><a href="${tableOfContentsURL}">${currentIndex + 1}</a></div>`;
-        const next = publishedTableOfContents[currentIndex + 1];
-        pagination += `${next ? `<a class="nextPrevButtons" href="\\${next.relativePath}">${next.pageName} →</a>` : ''}`;
-        pagination += `</div>`;
-    }
-    content = content.replace('{{pagination}}', pagination);
 
     if (metadata) {
         // {{ metadata  }} has spaces due to formatter changing it

@@ -1,10 +1,11 @@
+
 body {
     font-size: 18px;
     background-color: #ffffff;
     font-family: 'Verdana', 'Helvetica', sans-serif;
     font-display: optional;
     margin: 0;
-    color: #313131;
+    color:#313131;
 }
 
 h1 {
@@ -15,34 +16,28 @@ h2 {
     font-size: 1.55em;
 }
 
-h1,
-h2,
-h3 {
-    margin: 0;
+h1,h2,h3 {
+    margin:0;
 }
 
 p {
-    /* Keep newlines just like obsidian does */
-    white-space: pre-wrap;
+   /* Keep newlines just like obsidian does */ 
+    white-space:pre-wrap;
 }
 
 /* directory index pages shouldn't show article metadata */
 body.type-directory #article-metadata {
     display: none;
 }
-
 nav {
-    height: 60px;
+    height:60px;
 }
-
 .gray {
-    color: gray;
+    color:gray;
 }
-
 .right-align {
-    text-align: right;
+    text-align:right;
 }
-
 .article-footer {
     background-color: #ffffff;
     padding: 3em;
@@ -50,15 +45,14 @@ nav {
 }
 
 #backlinks {
-    margin: 3em 0;
+    margin:3em 0;
 }
-
 .inline-icon {
-    height: 16px;
-    padding-right: 0.3em;
+    height:16px;
+    padding-right:0.3em;
     /* This must be declared explicitly because imgs default to centered and this needs
     to be inline*/
-    display: inline;
+    display:inline;
 }
 
 article {
@@ -82,8 +76,8 @@ a {
 
 img {
     max-width: 100%;
-    display: block;
-    margin: 0 auto;
+    display:block;
+    margin:0 auto;
 }
 
 ul {
@@ -128,11 +122,10 @@ main {
 }
 
 .breadcrumbs-item:first-child {
-    padding-left: 0;
+    padding-left:0;
 }
-
 .breadcrumbs-item {
-    padding: 0 0.5em;
+    padding:0 0.5em;
     /* allow the anchor tag to grow in size */
     display: block;
     text-decoration: none;
@@ -155,7 +148,7 @@ main {
 }
 
 .article-footer {
-    flex-direction: column;
+    flex-direction:column;
     position: sticky;
     width: 100%;
     bottom: 0;
@@ -189,13 +182,11 @@ main {
     transform: translateY(1px);
     box-shadow: inset 1px 1px 1px;
 }
-
 .pagination .nextPrevButtons:first-child {
-    margin-left: 0;
+    margin-left:0;
 }
-
 .pagination .nextPrevButtons:last-child {
-    margin-right: 0;
+    margin-right:0;
 }
 
 .pagination a {
@@ -218,19 +209,16 @@ main {
     cursor: pointer;
     border: none;
 }
-
-.responsive-iframe {
+.responsive-iframe{
     aspect-ratio: 16/9;
-    width: 100%;
-    height: 100%;
+    width:100%;
+    height:100%;
 }
-
 #article-tags {
-    display: flex;
-    gap: 1em;
+    display:flex;
+    gap:1em;
 }
-
 #article-metadata {
-    display: flex;
-    justify-content: space-between;
+    display:flex;
+    justify-content:space-between;
 }
