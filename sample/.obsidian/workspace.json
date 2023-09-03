@@ -197,18 +197,21 @@
   },
   "active": "5d85e27c95d088f9",
   "lastOpenFiles": [
-    "eden-md-config/timeAgo.js",
+    "testmd2web2.md",
     "testmd2web.md",
-    "JiuJitsuRainbow.png.md",
     "test-properties.md",
     "test backlink.md",
     "summary.md",
-    "testmd2web2.md",
-    "plain.md",
     "do-not-publish.md",
-    "bumblebee-at-root.gif",
-    "tests.md",
+    "plain.md",
+    "Assets/bumblebee.gif",
+    "JiuJitsuRainbow.png.md",
+    "eden-md-config/template-page.html",
+    "Assets/flower.png",
     "more/Metadata.md",
+    "tests.md",
+    "eden-md-config/timeAgo.js",
+    "bumblebee-at-root.gif",
     "more/images.md",
     "Multi Space_Backlink$^.md",
     "md2web-config/template.html",
@@ -220,8 +223,6 @@
     "eden-md-config/template.html",
     "eden-md-config/eden-md.config.json",
     "eden-md-config",
-    "Assets/flower.png",
-    "more/Features.md",
-    "Assets/bumblebee.gif"
+    "more/Features.md"
   ]
 }
