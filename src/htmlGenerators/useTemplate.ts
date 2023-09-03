@@ -21,7 +21,7 @@ export async function addContentsToTemplate(content: string, templateHtml: strin
     content = content.replace('{{title}}', `<title>${title}</title>`);
     let breadcrumbs = '';
     if (relativePath) {
-        breadcrumbs = [`<a href="${tableOfContentsURL}"' class="breadcrumbs-item">Home</a>`, ...relativePath.split(path.sep).map(currentPathStep => {
+        breadcrumbs = [`<a href="${tableOfContentsURL}"' class="breadcrumbs-item">${config.projectName || 'Home'}</a>`, ...relativePath.split(path.sep).map(currentPathStep => {
             const preUrl = relativePath.split(currentPathStep)[0];
             const url = path.join('/', preUrl, currentPathStep);
             if (path.parse(currentPathStep).name == title) {
