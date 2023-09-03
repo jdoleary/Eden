@@ -30,6 +30,7 @@ import { makeRSSFeed } from "./tool/rss-feed-maker.ts";
 import { timeAgoJs } from "./htmlGenerators/timeAgo.js";
 
 const VERSION = '0.1.0'
+const edenEmbed = 'eden-embed::';
 
 interface ManifestFiles {
     [filePath: string]: {
@@ -442,8 +443,15 @@ async function process(filePath: string, templateHtml: string, { allFilesNames, 
     if (path.parse(filePath).ext == '.md') {
         let fileContents = await Deno.readTextFile(filePath);
         const relativePath = path.relative(config.parseDir, filePath);
-        const obsidianStyleImageEmbedRegex = /!\[\[([^\^#\[\]*"/\\<>\n\r:|?]+)\]\]/g;
+        const obsidianStyleEmbedRegex = /!\[\[([^\^#\[\]*"/\\<>\n\r:|?]+)\]\]/g;
+        const obsidianStyleImageEmbedRegex = /!\[\[([^\^#\[\]*"/\\<>\n\r\s:|?]+\.[\w\d])\]\]/g;
         const obsidianStyleBacklinkRegex = /\[\[([^\^#\[\]*"/\\<>\n\r:|?]+)\]\]/g;
+        // Replace embed syntax with something that will be easily recognized later and parsed as
+        // a single token by rusty_markdown
+        // Note: This is wrapped in code backticks so that the `if block` that searches for it is more specific
+        // and more efficient
+        fileContents = fileContents.replaceAll(obsidianStyleEmbedRegex, `\`${edenEmbed}$1\``);
+        // Convert all obsidianImageEmbeds to markdown image format
         fileContents = fileContents.replaceAll(obsidianStyleImageEmbedRegex, '![$1]($1)');
         // Find existing obsidian-style backlinks (works even with case insensitive)
         const existingBacklinks = (fileContents.match(obsidianStyleBacklinkRegex) || []).filter((x, i, array) => {
@@ -532,7 +540,8 @@ async function process(filePath: string, templateHtml: string, { allFilesNames, 
             contents: fileContents,
             metadata,
             createdAt: createdAt?.getTime(),
-            modifiedAt: modifiedAt?.getTime()
+            modifiedAt: modifiedAt?.getTime(),
+            blockEmbeds: [],
         }
 
         // Convert markdown to html
@@ -543,6 +552,17 @@ async function process(filePath: string, templateHtml: string, { allFilesNames, 
             const token = mdTokens[i];
             if (!token) {
                 continue;
+            }
+            // Parse embeds to html token type
+            if (token.type == 'code' && token.content.startsWith(edenEmbed)) {
+                // Token is a block embed and must be handled specially
+                const embedPath = token.content.split(edenEmbed).join('');
+                page.blockEmbeds.push(embedPath);
+                // Change to html
+                // Later using deno-dom, this will be queried for by class and replaced with the html that it is referencing
+                // Note: Using class here because this is the many-to-one embed reference whereas the block itself will have the id
+                token.type = 'html';
+                token.content = `<div class="${edenEmbed}${embedPath}">![[${embedPath}]]</div>`;
             }
             if (lastToken && lastToken.type == 'start' && lastToken.tag == 'link' && lastToken.url.includes('http')) {
                 if (token.type == 'text' || token.type == 'html') {

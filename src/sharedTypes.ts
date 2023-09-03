@@ -38,6 +38,7 @@ export interface Page {
     metadata?: Metadata;
     createdAt?: number; // Date millis
     modifiedAt?: number; // Date millis
+    blockEmbeds: string[];
 }
 // Garden.json
 export interface Garden {
