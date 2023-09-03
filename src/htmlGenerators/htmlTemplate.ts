@@ -18,8 +18,7 @@ export const defaultHtmlTemplate = `<!DOCTYPE html>
 
 <body class="{{pageType}}">
     <main>
-        <nav>
-        </nav>
+        <!--<nav> </nav>-->
         <article>
             <div id="article-content">
                 <div id="breadcrumbs">
