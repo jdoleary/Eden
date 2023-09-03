@@ -1,6 +1,10 @@
 ## MVP Tasks
-- Bug: All the files are "not found" when you change the project name in the config (with spaces)
-- Replace "Home" with app name
+- Revise styling of basic template to make it more "my own"
+- (MVP) IMPORTANT Bug: File not found `404 http://localhost:8000/jiu_jitsu_journal.html`
+    - Publish false page is still showing up in pagination
+        - THis is because publish false is set inside of `process()` so if the file comes after it won't be flagged yet
+        - This might be memory intensive but I need to add the file contents to garden.json anyway so maybe I just parse the metadata before `process()` and hold onto it.  I'll have to see how memory intensive it is.
+- Bug: This syntax `![[Pasted image 20230729221843.png]]` didn't convert to an image but it works in obsidian
 - (MVP) Make mvp demo video and send to Zak
     - Try to drum up interest with a Discord server / mailing list for a "zero-config digital garden"
     - Video steps
