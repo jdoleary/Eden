@@ -1,5 +1,6 @@
 ## MVP Tasks
-- Big Bug: `- Wisdom` is not being selected properly when there is another li after it with a newline between
+- Big Bug: `- Wisdom` is not being selected properly when there is another li after it with a newline between. Shown in current tests/embedBlocksSource.md
+
 - Bug: transclusion edge case `![[Features#^f3edfd]]` in test_names_block_ids.md
     - Note: Check that it works with ^652cd3
 - Revise styling of basic template to make it more "my own"
