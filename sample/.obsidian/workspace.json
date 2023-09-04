@@ -109,14 +109,50 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "more/Features.md",
+                "file": "test_names_block_ids.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "fee0d0c76acbdc4a",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "test_names_block_ids.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "424026cd3e38d253",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "test_names_block_ids.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "076128551a483581",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "more/images.md",
                 "mode": "source",
                 "source": false
               }
             }
           }
         ],
-        "currentTab": 8
+        "currentTab": 11
       }
     ],
     "direction": "vertical"
@@ -182,7 +218,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "more/Features.md",
+                "file": "more/images.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -199,7 +235,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "more/Features.md",
+                "file": "more/images.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -222,7 +258,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "more/Features.md"
+                "file": "more/images.md"
               }
             }
           }
@@ -243,13 +279,14 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "28b33b6d7a8c7922",
+  "active": "076128551a483581",
   "lastOpenFiles": [
     "test_names_block_ids.md",
-    "more/images.md",
-    "names block ids.md",
     "summary.md",
     "more/Features.md",
+    "tests",
+    "more/images.md",
+    "names block ids.md",
     "plain.md",
     "test backlink.md",
     "test paste image.md",
@@ -274,7 +311,6 @@
     "bumblebee 1.gif",
     "eden-md-config/styles.css",
     "eden-md-config/template.html",
-    "eden-md-config/eden-md.config.json",
-    "eden-md-config"
+    "eden-md-config/eden-md.config.json"
   ]
 }
