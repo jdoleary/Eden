@@ -1,4 +1,6 @@
 ## MVP Tasks
+- Bug: transclusion edge case `![[Features#^f3edfd]]` in test_names_block_ids.md
+- Bug: `Checkout`` is turning into a link to /tags/About.html somehow
 - Revise styling of basic template to make it more "my own"
 - New `Page` interface will be used for
     - Homepage to make array of articles sorted by most recent

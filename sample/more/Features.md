@@ -1,14 +1,3 @@
-- 🔲 🌀Block-based, content as data, so the same piece of content can easily be transcluded in multiple places
-    - Adding in dynamically updated bits of content into other bits of content
-    - https://subpixel.space/entries/open-transclude/
-    - 🔑[Obsidian named block ids](https://help.obsidian.md/Linking+notes+and+files/Internal+links#Link+to+a+block+in+a+note)
-        - Note: Check that it works with ^652cd3
-    - Implementation notes:
-        - done: record Block existance in the Page object and convert them to html with an `class` link so it can be queried later
-        - dom: After all pages have been created as html, use another pass with `deno-dom` to find all blocks store their HTML in garden
-            - and give them html ids so they can be linked directly to
-        - todo: actually loop all outputted html to run editDOM's processBlock.. on them
-        - todo: Then pass again and replace blocks as needed
 - ✅ Breadcrumbs
 - ✅ Metadata Support
     - Tags
@@ -26,6 +15,11 @@
 - ✅ Metadata `type` like tags but singular.
 - ✅ Metadata `tags` should link to index pages
 - ✅ Index pages based on tags (example: [Maggie Appleton's Essays](https://maggieappleton.com/essays))
+- ✅ Block-based, content as data, so the same piece of content can easily be transcluded in multiple places
+    - Adding in dynamically updated bits of content into other bits of content
+    - https://subpixel.space/entries/open-transclude/
+    - 🔑[Obsidian named block ids](https://help.obsidian.md/Linking+notes+and+files/Internal+links#Link+to+a+block+in+a+note)
+        - Note: Check that it works with ^652cd3
 - 🔲 Custom Static Components (similar to shortcodes)
 - 🔲 Site search
     - make entire garden available in json like [Maggie Appleton's Garden.json](https://maggieappleton.com/_next/data/yUhDOUNEYA1W3PsJNBhvU/garden.json) This will be necessary to support homepage
