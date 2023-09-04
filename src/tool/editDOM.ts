@@ -36,13 +36,11 @@ export function processBlockElementsWithID(html: string, pageName: string, garde
           // Remove id tag
           innerHTML = innerHTML.replace(match[0], '');
           if (innerHTML == '' && el.previousElementSibling) {
-            // console.log('jtest', el.previousElementSibling.outerHTML);
             // Handle special case (tests/embedBlocksSource#^f3edfd) where
             // the block id is on it's own line and is referencing a previous code block
             innerHTML = el.previousElementSibling.outerHTML || innerHTML;
             el.previousElementSibling.setAttribute('id', id);
           } else {
-            // console.log('jtest el', `id:${id}`, el.innerHTML, 'OUTER', el.outerHTML, `${id}`, '\n\n----\n\n');
             el.setAttribute('id', id);
           }
           // Add the block to the garden

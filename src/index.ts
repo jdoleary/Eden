@@ -324,7 +324,7 @@ async function main() {
     }
 
     const convertingPerformanceStart = performance.now();
-    console.log('Converting .md files to .html')
+    console.log('Converting .md files to .html...')
     const processPromises: Promise<Page | undefined>[] = [];
     for await (const f of getFiles(allFilesPath, config)) {
         try {
@@ -373,6 +373,8 @@ async function main() {
         await Deno.writeTextFile(rssOutPath, rssXML);
     }
 
+    const startTranscludingEmbeddableBlocks = performance.now();
+    console.log('Transcluding embeddable blocks...');
     // Iterate all .html files to find embed blocks and add the blocks' html into the garden object
     // TODO make async
     for (const { name, webPath, metadata } of garden.pages) {
@@ -409,6 +411,7 @@ async function main() {
             console.error('Error replacing embed block ref', e);
         }
     }
+    console.log('✅ Finished transcluding embeddable blocks', performance.now() - startTranscludingEmbeddableBlocks, 'milliseconds.');
 
 
     if (cliFlags.publish) {
