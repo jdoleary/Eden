@@ -257,4 +257,13 @@ main {
     display:flex;
     justify-content:space-between;
 }
+.embed-block {
+    border-left: 0.2em solid grey;
+    padding-left: 1em;
+}
+.feint-link {
+    opacity:0.2;
+    color:black;
+    font-size:0.7em;
+}
 `
