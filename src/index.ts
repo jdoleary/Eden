@@ -602,6 +602,19 @@ async function process(filePath: string, templateHtml: string, { allFilesNames, 
             if (!token) {
                 continue;
             }
+            // if true, prevents token from just being added, unchanged to modifiedMdTokens list
+            let isTokenModified = false;
+            // Process softBreaks as newlines like Obsidian does
+            // https://spec.commonmark.org/0.29/#softbreak
+            if (token.type == 'softBreak') {
+                isTokenModified = true;
+                modifiedMdTokens.push({
+                    type: 'html',
+                    content: '<br>'
+                });
+                continue;
+
+            }
             // TODO: This may need to be removed if I find a better solution for 
             // block embedding
             // if (token.type == 'text') {
@@ -637,8 +650,6 @@ async function process(filePath: string, templateHtml: string, { allFilesNames, 
             //         }
             //     }
             // }
-            // if true, prevents token from just being added, unchanged to modifiedMdTokens list
-            let isTokenModified = false;
             // Parse embeds to html token type
             if (token.type == 'code' && token.content.startsWith(edenEmbed)) {
                 isTokenModified = true;
