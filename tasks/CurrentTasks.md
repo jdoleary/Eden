@@ -1,5 +1,4 @@
 ## MVP Tasks
-- Big Bug: `^f3edfd` is selecting for the entire document somehow
 - Big Bug: `- Wisdom` is not being selected properly when there is another li after it with a newline between
 - Bug: transclusion edge case `![[Features#^f3edfd]]` in test_names_block_ids.md
     - Note: Check that it works with ^652cd3
