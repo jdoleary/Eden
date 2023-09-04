@@ -49,7 +49,7 @@ export async function addContentsToTemplate(content: string, templateHtml: strin
     content = content.replace('{{metadata:title}}', `<h1>${metadata && metadata.title ? metadata.title : title}</h1>`);
     content = content.replace('{{metadata:subtitle}}', metadata && metadata.subtitle ? `<h2 class="gray">${metadata.subtitle}</h2>` : '');
     // Even if tags don't exist, it should still be an empty div so that the createdAt timestamps stay on the right side of the flex
-    content = content.replace('{{metadata:tags}}', metadata && metadata.tags ? `<div id="article-tags">${metadata.tags.map((tag: string) => `<a href="${path.join('/', tagsDirectoryName, `${tag}.html`).replaceAll(' ', '_')}">${tag}</span>`).join('')}</div>` : '<div></div>');
+    content = content.replace('{{metadata:tags}}', metadata && metadata.tags ? `<div id="article-tags">${metadata.tags.map((tag: string) => `<a href="${path.join('/', tagsDirectoryName, `${tag}.html`).replaceAll(' ', '_')}">${tag}</a>`).join('')}</div>` : '<div></div>');
 
     content = content.replace('{{pageType}}', isDir ? 'type-directory' : 'type-page');
 
