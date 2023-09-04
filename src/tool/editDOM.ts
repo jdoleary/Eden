@@ -1,5 +1,5 @@
 import { DOMParser, Element, Node } from "https://deno.land/x/deno_dom/deno-dom-wasm.ts";
-import { Garden, edenEmbed, embedPathDataKey } from "../sharedTypes.ts";
+import { Garden, edenEmbedClassName, embedPathDataKey } from "../sharedTypes.ts";
 
 // Returns undefined if nothing changed
 export function processBlockElementsWithID(html: string, pageName: string, garden: Garden): string | undefined {
@@ -15,21 +15,23 @@ export function processBlockElementsWithID(html: string, pageName: string, garde
   // with an ID'd element and add that block to the garden
   for (const node of nodes) {
     if (node.nodeType === Node.ELEMENT_NODE) {
-      const blockEmbedIdRegex = /\^([\w\d]*)/;
+      const blockEmbedIdRegex = /\^([\w\d]*)(?:\n|$)/;
       const el = (node as Element);
+      if (el.classList.contains(edenEmbedClassName)) {
+        // Do not match edenEmbed blocks which are referencing an embed block and are
+        // not embeddable blocks themselves
+        continue;
+      }
       let match = el.firstChild?.textContent.match(blockEmbedIdRegex);
       if (!match) {
         match = el.lastChild?.textContent.match(blockEmbedIdRegex);
-        // console.log('jtest', el.lastChild?.textContent);
       }
       if (match) {
         // id is without "^"
         const id = match[1];
         if (id) {
           changedHTML = true;
-          // const divWithId = document.createElement('div');
-          const blockId = pageName + '#^' + id
-          // divWithId.id = blockId;
+          const blockId = pageName + '#^' + id;
           let innerHTML = el.innerHTML;
           // Remove id tag
           innerHTML = innerHTML.replace(match[0], '');
@@ -45,9 +47,6 @@ export function processBlockElementsWithID(html: string, pageName: string, garde
           }
           // Add the block to the garden
           garden.blocks[blockId] = innerHTML;
-          // Replace the paragraph with an id'd div so that it can be linked to
-          // divWithId.innerHTML = innerHTML;
-          // el.replaceWith(divWithId);
         }
       }
     }
@@ -67,7 +66,7 @@ export function embedBlocks(html: string, garden: Garden): string | undefined {
     return undefined;
   }
   let changedHTML = false;
-  const toReplaceWithEmbedBlocks = document.querySelectorAll("." + edenEmbed);
+  const toReplaceWithEmbedBlocks = document.querySelectorAll("." + edenEmbedClassName);
   for (const node of toReplaceWithEmbedBlocks) {
     if (node.nodeType === Node.ELEMENT_NODE) {
       {

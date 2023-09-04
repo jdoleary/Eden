@@ -19,7 +19,7 @@ import { createDirectoryIndexFile, createTagDirIndexFile, createTagIndexFile } f
 import { addContentsToTemplate, findTOCEntryFromFilepath } from "./htmlGenerators/useTemplate.ts";
 import { getDirs, getFiles } from "./os.ts";
 import { absoluteOsMdPathToWebPath, getConfDir, getOutDir, pageNameToPagePath, pathOSAbsolute, pathOSRelative, pathToPageName, pathWeb } from "./path.ts";
-import { Config, configName, edenEmbed, embedPathDataKey, FileName, Garden, Metadata, Page, PROGRAM_NAME, stylesName, TableOfContents, TableOfContentsEntry, tableOfContentsURL, tagsDirectoryName, templateName } from "./sharedTypes.ts";
+import { Config, configName, edenEmbedClassName, embedPathDataKey, FileName, Garden, Metadata, Page, PROGRAM_NAME, stylesName, TableOfContents, TableOfContentsEntry, tableOfContentsURL, tagsDirectoryName, templateName } from "./sharedTypes.ts";
 import { host } from "./tool/httpServer.ts";
 import { deploy, DeployableFile } from "./tool/publish.ts";
 import { extractMetadata } from "./tool/metadataParser.ts";
@@ -498,7 +498,7 @@ async function process(filePath: string, templateHtml: string, { allFilesNames, 
         // a single token by rusty_markdown
         // Note: This is wrapped in code backticks so that the `if block` that searches for it is more specific
         // and more efficient
-        fileContents = fileContents.replaceAll(obsidianStyleEmbedRegex, `\`${edenEmbed}$1$2\``);
+        fileContents = fileContents.replaceAll(obsidianStyleEmbedRegex, `\`${edenEmbedClassName}$1$2\``);
         // Convert all obsidianImageEmbeds to markdown image format
         fileContents = fileContents.replaceAll(obsidianStyleImageEmbedRegex, '![$1]($1)');
         // Find existing obsidian-style backlinks (works even with case insensitive)
@@ -650,17 +650,17 @@ async function process(filePath: string, templateHtml: string, { allFilesNames, 
             //     }
             // }
             // Parse embeds to html token type
-            if (token.type == 'code' && token.content.startsWith(edenEmbed)) {
+            if (token.type == 'code' && token.content.startsWith(edenEmbedClassName)) {
                 isTokenModified = true;
                 // Token is a block embed and must be handled specially
-                const embedPath = token.content.split(edenEmbed).join('');
+                const embedPath = token.content.split(edenEmbedClassName).join('');
                 page.blockEmbeds.push(embedPath);
                 // Change to html
                 // Later using deno-dom, this will be queried for by class and replaced with the html that it is referencing
                 // Note: Using class here because this is the many-to-one embed reference whereas the block itself will have the id
                 modifiedMdTokens.push({
                     type: 'html',
-                    content: `<div class="${edenEmbed}" data-${embedPathDataKey}="${embedPath}">${embedPath}</div>`
+                    content: `<div class="${edenEmbedClassName}" data-${embedPathDataKey}="${embedPath}">${embedPath}</div>`
                 });
             }
             if (lastToken && lastToken.type == 'start' && lastToken.tag == 'link' && lastToken.url.includes('http')) {
