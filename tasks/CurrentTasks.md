@@ -1,10 +1,9 @@
 ## MVP Tasks
 - Bug: transclusion edge case `![[Features#^f3edfd]]` in test_names_block_ids.md
+    - Note: Check that it works with ^652cd3
 - Revise styling of basic template to make it more "my own"
-- New `Page` interface will be used for
-    - Homepage to make array of articles sorted by most recent
-    - Tag index pages
 - Bug: This syntax `![[Pasted image 20230729221843.png]]` didn't convert to an image but it works in obsidian
+- Add snapshot testing and make a tests folder with markdown files for each feature with metadata labeling the snapshot purpose
 - (MVP) Make mvp demo video and send to Zak
     - Try to drum up interest with a Discord server / mailing list for a "zero-config digital garden"
     - Video steps
@@ -28,8 +27,7 @@
     - Validate the idea
 - Sign & notorize app on mac
     - https://developer.apple.com/forums/thread/130379
-- Transclusion
-    - Blocks that end in `^[\w\d]+` can be transcluded.  When a token is found that ends in that, keep iterating until you find the closing tag, then add all of those to a "block" object with the key of the transclusionid + the pagename just like how it is referenced in obsidian. Ex: Wisdom.md.  Also when it is generated, give the block the transclusion id so that the transcluded link to it can jump right to the block
+- Refactor footgun: `!metadata.publish is true when publish is just undefined, in which case it should default to true, not falsey`
 
 ## Bugs
 - Bug: Markdown parser doesn't recognize images with ' ' spaces in filename in image md format e.g. `![](url with spaces)`

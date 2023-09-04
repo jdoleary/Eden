@@ -375,7 +375,10 @@ async function main() {
 
     // Iterate all .html files to find embed blocks and add the blocks' html into the garden object
     // TODO make async
-    for (const { name, webPath } of allFilesNames) {
+    for (const { name, webPath, metadata } of garden.pages) {
+        if (metadata && metadata.publish === false) {
+            continue;
+        }
         // TODO exclude --publish: false files from allFilesNames
         try {
             const filePath = path.join(getOutDir(config), webPath);
@@ -391,7 +394,10 @@ async function main() {
 
     // Iterate all .html files to replace embed block references with the block content 
     // TODO make async
-    for (const { name, webPath } of allFilesNames) {
+    for (const { name, webPath, metadata } of garden.pages) {
+        if (metadata && metadata.publish === false) {
+            continue;
+        }
         try {
             const filePath = path.join(getOutDir(config), webPath);
             const fileContent = await Deno.readTextFile(filePath);
@@ -401,7 +407,7 @@ async function main() {
                 console.log('jtest success blocks', name);
             }
         } catch (e) {
-            console.error('Error populating garden.blocks', e);
+            console.error('Error replacing embed block ref', e);
         }
     }
 
