@@ -9,31 +9,36 @@ export function processBlockElementsWithID(html: string, pageName: string, garde
   }
   let changedHTML = false;
 
-  const paragraphs = document.querySelectorAll("p");
+  const nodes = document.querySelectorAll("*");
   // In Obsidian blocks are paragraphs, so search all blocks,
   // find ones that end in a blockEmbedId, replace the element
   // with an ID'd element and add that block to the garden
-  for (const p of paragraphs) {
-    if (p.nodeType === Node.ELEMENT_NODE) {
-      const blockEmbedIdRegex = /\s\^([\w\d]*)$/;
-      const match = p.textContent.match(blockEmbedIdRegex);
+  for (const node of nodes) {
+    if (node.nodeType === Node.ELEMENT_NODE) {
+      const blockEmbedIdRegex = /\^([\w\d]*)/;
+      const match = node.textContent.match(blockEmbedIdRegex);
       if (match) {
-        // id is without "^" and leading space
+        // id is without "^"
         const id = match[1];
         if (id) {
           changedHTML = true;
-          // console.log('jtest', (p as Element).innerHTML);
+          const el = (node as Element);
           const divWithId = document.createElement('div');
           const blockId = pageName + '#^' + id
           divWithId.id = blockId;
-          let innerHTML = (p as Element).innerHTML;
+          let innerHTML = el.innerHTML;
           // Remove id tag
           innerHTML = innerHTML.replace(match[0], '');
+          if (innerHTML == '') {
+            // Handle special case (tests/embedBlocksSource#^f3edfd) where
+            // the block id is on it's own line and is referencing a previous code block
+            innerHTML = el.previousElementSibling?.outerHTML || innerHTML;
+          }
           // Add the block to the garden
           garden.blocks[blockId] = innerHTML;
           // Replace the paragraph with an id'd div so that it can be linked to
           divWithId.innerHTML = innerHTML;
-          (p as Element).replaceWith(divWithId);
+          el.replaceWith(divWithId);
         }
       }
     }
