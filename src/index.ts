@@ -404,7 +404,6 @@ async function main() {
             const newFileContent = embedBlocks(fileContent, garden);
             if (newFileContent) {
                 await Deno.writeTextFile(filePath, newFileContent);
-                console.log('jtest success blocks', name);
             }
         } catch (e) {
             console.error('Error replacing embed block ref', e);
