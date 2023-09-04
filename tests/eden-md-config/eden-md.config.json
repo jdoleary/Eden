@@ -1,0 +1,13 @@
+{
+  "projectName": "test-snapshot-output",
+  "outDirRoot": "eden-md-out",
+  "parseDir": "C:/git/eden-markdown/tests/",
+  "ignoreDirs": [
+    "node_modules",
+    ".obsidian"
+  ],
+  "staticServeDirs": [
+    "Assets"
+  ],
+  "logVerbose": false
+}

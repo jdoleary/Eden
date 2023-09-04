@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    {{title}}
+    <!-- <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet"> -->
+    <link rel="stylesheet" href="/styles.css">
+    <script>
+        window.metadata = {{ metadata }};
+    </script>
+    <!-- Optional script: converts any element with data-converttimeago to the format "X days/months/years ago" -->
+    <script src="/timeAgo.js" defer></script>
+
+</head>
+
+<body class="{{pageType}}">
+    <main>
+        <nav>
+        </nav>
+        <article>
+            <div id="article-content">
+                <div id="breadcrumbs">
+                    {{breadcrumbs}}
+                </div>
+                {{metadata:title}}
+                {{metadata:subtitle}}
+                <hr>
+                <div id="article-metadata">
+                    {{metadata:tags}}
+                    <div class="gray right-align">
+                        <div>Created {{created}}</div>
+                        <div>Last modified {{modified}}</div>
+                    </div>
+                </div>
+                {{content}}
+            </div>
+            <div id="article-footer">
+                <div id="backlinks">
+                    {{backlinks}}
+                </div>
+            </div>
+        </article>
+        <footer>
+        </footer>
+    </main>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</body>
+
+</html>
