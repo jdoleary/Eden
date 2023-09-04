@@ -9,7 +9,7 @@ export function processBlockElementsWithID(html: string, pageName: string, garde
   }
   let changedHTML = false;
 
-  const nodes = document.querySelectorAll("*");
+  const nodes = document.body.querySelectorAll("*");
   // In Obsidian blocks are paragraphs, so search all blocks,
   // find ones that end in a blockEmbedId, replace the element
   // with an ID'd element and add that block to the garden
