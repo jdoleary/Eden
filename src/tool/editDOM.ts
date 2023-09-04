@@ -1,7 +1,7 @@
 import { DOMParser, Element, Node } from "https://deno.land/x/deno_dom/deno-dom-wasm.ts";
-import { Garden } from "../sharedTypes.ts";
+import { Garden, edenEmbed, embedPath } from "../sharedTypes.ts";
 
-export function processBlockElementsWithID(html: string, garden: Garden): string {
+export function processBlockElementsWithID(html: string, pageName: string, garden: Garden): string {
   const document = new DOMParser().parseFromString(html, "text/html");
   if (!document) {
     return html;
@@ -19,14 +19,15 @@ export function processBlockElementsWithID(html: string, garden: Garden): string
         // id is without "^" and leading space
         const id = match[1];
         if (id) {
-          console.log((p as Element).innerHTML);
+          // console.log('jtest', (p as Element).innerHTML);
           const divWithId = document.createElement('div');
-          divWithId.id = 'pageName' + id;
+          const blockId = pageName + '#^' + id
+          divWithId.id = blockId;
           let innerHTML = (p as Element).innerHTML;
           // Remove id tag
           innerHTML = innerHTML.replace(match[0], '');
           // Add the block to the garden
-          garden.blocks[id] = innerHTML;
+          garden.blocks[blockId] = innerHTML;
           // Replace the paragraph with an id'd div so that it can be linked to
           divWithId.innerHTML = innerHTML;
           (p as Element).replaceWith(divWithId);
@@ -37,4 +38,35 @@ export function processBlockElementsWithID(html: string, garden: Garden): string
 
   // Return the modified html
   return document?.documentElement?.outerHTML || html;
+}
+
+export function embedBlocks(html: string, garden: Garden): string {
+  const document = new DOMParser().parseFromString(html, "text/html");
+  if (!document) {
+    return html;
+  }
+  const toReplaceWithEmbedBlocks = document.querySelectorAll("." + edenEmbed);
+  for (const node of toReplaceWithEmbedBlocks) {
+    if (node.nodeType === Node.ELEMENT_NODE) {
+      {
+        const el = node as Element;
+        // Note: .data isn't in deno-dom yet
+        const embedId = el.attributes.getNamedItem('data-embed-path')?.value;
+        console.log('jtest embedId', embedId);
+        if (embedId) {
+          const block = garden.blocks[embedId];
+          console.log('jtest block', block);
+          if (block) {
+            const div = document.createElement('div');
+            div.innerHTML = block;
+            el.replaceWith(div);
+          }
+        }
+      }
+    }
+  }
+
+  // Return the modified html
+  return document?.documentElement?.outerHTML || html;
+
 }

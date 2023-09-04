@@ -19,7 +19,7 @@ import { createDirectoryIndexFile, createTagDirIndexFile, createTagIndexFile } f
 import { addContentsToTemplate, findTOCEntryFromFilepath } from "./htmlGenerators/useTemplate.ts";
 import { getDirs, getFiles } from "./os.ts";
 import { absoluteOsMdPathToWebPath, getConfDir, getOutDir, pageNameToPagePath, pathOSAbsolute, pathOSRelative, pathToPageName, pathWeb } from "./path.ts";
-import { Config, configName, FileName, Garden, Metadata, Page, PROGRAM_NAME, stylesName, TableOfContents, TableOfContentsEntry, tableOfContentsURL, tagsDirectoryName, templateName } from "./sharedTypes.ts";
+import { Config, configName, edenEmbed, FileName, Garden, Metadata, Page, PROGRAM_NAME, stylesName, TableOfContents, TableOfContentsEntry, tableOfContentsURL, tagsDirectoryName, templateName } from "./sharedTypes.ts";
 import { host } from "./tool/httpServer.ts";
 import { deploy, DeployableFile } from "./tool/publish.ts";
 import { extractMetadata } from "./tool/metadataParser.ts";
@@ -30,7 +30,6 @@ import { makeRSSFeed } from "./tool/rss-feed-maker.ts";
 import { timeAgoJs } from "./htmlGenerators/timeAgo.js";
 
 const VERSION = '0.1.0'
-const edenEmbed = 'eden-embed::';
 
 interface ManifestFiles {
     [filePath: string]: {
@@ -612,7 +611,7 @@ async function process(filePath: string, templateHtml: string, { allFilesNames, 
                 // Note: Using class here because this is the many-to-one embed reference whereas the block itself will have the id
                 modifiedMdTokens.push({
                     type: 'html',
-                    content: `<div class="${edenEmbed}" data-embed-path="${embedPath}">${embedPath}</div>`
+                    content: `<div class="${edenEmbed}" data-${embedPath}="${embedPath}">${embedPath}</div>`
                 });
             }
             if (lastToken && lastToken.type == 'start' && lastToken.tag == 'link' && lastToken.url.includes('http')) {

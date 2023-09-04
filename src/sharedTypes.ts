@@ -7,6 +7,9 @@ export const configDirName = `${PROGRAM_NAME}-config`
 export const configName = `${PROGRAM_NAME}.config.json`;
 export const tableOfContentsURL = '/index.html';
 export const tagsDirectoryName = 'tags';
+export const edenEmbed = 'eden-embed';
+// For use in data attribute, hence the "-"
+export const embedPath = 'embedpath';
 export interface Metadata {
     publish: boolean;
     template: string;
