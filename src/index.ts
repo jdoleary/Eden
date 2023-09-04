@@ -319,7 +319,8 @@ async function main() {
 
     const garden: Garden = {
         pages: [],
-        tags: new Set()
+        tags: new Set(),
+        blocks: {}
     }
 
     const convertingPerformanceStart = performance.now();
@@ -443,14 +444,24 @@ async function process(filePath: string, templateHtml: string, { allFilesNames, 
     if (path.parse(filePath).ext == '.md') {
         let fileContents = await Deno.readTextFile(filePath);
         const relativePath = path.relative(config.parseDir, filePath);
-        const obsidianStyleEmbedRegex = /!\[\[([^\^#\[\]*"/\\<>\n\r:|?]+)\]\]/g;
+        // const obsidianStyleEmbedRegex = /!\[\[([^\^#\[\]*"/\\<>\n\r:|?]+)\]\]/g;
+        // Matches
+        // ![[Features#^f3edfd]]
+        // ![[images 2 again#^be171d]]
+        // ![[test embed]]
+        const obsidianStyleEmbedRegex = /!\[\[([^\^#\[\]*"/\\<>\n\r:|?]+)(\#\^[\w\d]+)?\]\]/g;
+        // Matches
+        // ![[image.png]]
+        // ![[image.webm]]
         const obsidianStyleImageEmbedRegex = /!\[\[([^\^#\[\]*"/\\<>\n\r\s:|?]+\.[\w\d])\]\]/g;
+        // Matches
+        // [[backlink]]
         const obsidianStyleBacklinkRegex = /\[\[([^\^#\[\]*"/\\<>\n\r:|?]+)\]\]/g;
         // Replace embed syntax with something that will be easily recognized later and parsed as
         // a single token by rusty_markdown
         // Note: This is wrapped in code backticks so that the `if block` that searches for it is more specific
         // and more efficient
-        fileContents = fileContents.replaceAll(obsidianStyleEmbedRegex, `\`${edenEmbed}$1\``);
+        fileContents = fileContents.replaceAll(obsidianStyleEmbedRegex, `\`${edenEmbed}$1$2\``);
         // Convert all obsidianImageEmbeds to markdown image format
         fileContents = fileContents.replaceAll(obsidianStyleImageEmbedRegex, '![$1]($1)');
         // Find existing obsidian-style backlinks (works even with case insensitive)
@@ -553,16 +564,56 @@ async function process(filePath: string, templateHtml: string, { allFilesNames, 
             if (!token) {
                 continue;
             }
+            // TODO: This may need to be removed if I find a better solution for 
+            // block embedding
+            // if (token.type == 'text') {
+            //     const blockEmbedIdRegex = /\s\^([\w\d]*)$/;
+            //     const blockEmbedId = token.content.match(blockEmbedIdRegex)
+            //     if (blockEmbedId) {
+            //         console.log('jtest embed', blockEmbedId);
+            //         // Now find the starting block and the ending block
+            //         let startingBlock = undefined;
+            //         for (let ti = i - 1; ti >= 0; ti--) {
+            //             const testToken = mdTokens[ti];
+            //             if (testToken && testToken.type == 'start' && testToken.tag == 'paragraph') {
+            //                 startingBlock = testToken;
+            //                 break;
+            //             }
+            //         }
+            //         let endingBlock = undefined;
+            //         for (let ti = i + 1; ti < mdTokens.length; ti++) {
+            //             const testToken = mdTokens[ti];
+            //             if (testToken && testToken.type == 'end' && testToken.tag == 'paragraph') {
+            //                 endingBlock = testToken;
+            //                 break;
+            //             }
+
+
+            //         }
+            //         if (startingBlock && endingBlock) {
+            //             // Change to html so that it can be referenced via an id (the embed block id)
+            //             // TODO what if it's an image
+            //             // startingBlock.type
+            //             // startingBlock.
+
+            //         }
+            //     }
+            // }
+            // if true, prevents token from just being added, unchanged to modifiedMdTokens list
+            let isTokenModified = false;
             // Parse embeds to html token type
             if (token.type == 'code' && token.content.startsWith(edenEmbed)) {
+                isTokenModified = true;
                 // Token is a block embed and must be handled specially
                 const embedPath = token.content.split(edenEmbed).join('');
                 page.blockEmbeds.push(embedPath);
                 // Change to html
                 // Later using deno-dom, this will be queried for by class and replaced with the html that it is referencing
                 // Note: Using class here because this is the many-to-one embed reference whereas the block itself will have the id
-                token.type = 'html';
-                token.content = `<div class="${edenEmbed}${embedPath}">![[${embedPath}]]</div>`;
+                modifiedMdTokens.push({
+                    type: 'html',
+                    content: `<div class="${edenEmbed}" data-embed-path="${embedPath}">${embedPath}</div>`
+                });
             }
             if (lastToken && lastToken.type == 'start' && lastToken.tag == 'link' && lastToken.url.includes('http')) {
                 if (token.type == 'text' || token.type == 'html') {
@@ -578,61 +629,6 @@ async function process(filePath: string, templateHtml: string, { allFilesNames, 
                     // Add the icon of the website before the link for user convenience
                     token.content = `<img class="inline-icon" src="https://s2.googleusercontent.com/s2/favicons?domain=${origin}"/>` + token.content;
                 }
-            }
-            // if true, prevents token from just being added, unchanged to modifiedMdTokens list
-            let isTokenModified = false;
-            // TODO Process custom html tags
-            // Feature: Auto Backlinks
-            // Search the text for any text that matches a filename and make it a backlink
-            if (token.type == 'text') {
-                for (const { name, webPath } of allFilesNames) {
-                    if (name == path.parse(filePath).name) {
-                        // Don't link to self
-                        continue;
-                    }
-                    if (token.content.includes(name)) {
-                        // Make backlink:
-                        // Set isTokenModified so the current token won't be added
-                        // since it must now be split
-                        isTokenModified = true;
-                        const splitToken = token.content.split(name);
-                        const url = webPath;
-
-                        for (let i = 0; i < splitToken.length; i++) {
-                            const splitInstance = splitToken[i];
-                            // backlink between each split instance
-                            if (i > 0) {
-                                modifiedMdTokens.push({
-                                    type: 'start',
-                                    tag: 'link',
-                                    kind: 'inline',
-                                    url,
-                                    title: ''
-                                });
-                                modifiedMdTokens.push({
-                                    type: 'html',
-                                    content: `<span id="${name}">${name}</span>`
-                                });
-                                modifiedMdTokens.push({
-                                    type: 'end',
-                                    tag: 'link',
-                                    kind: 'inline',
-                                    url,
-                                    title: ''
-                                });
-                            }
-
-                            // re-add the text that was around the keyword
-                            modifiedMdTokens.push({
-                                type: 'text',
-                                content: splitInstance
-                            });
-
-                        }
-
-                    }
-                }
-
             }
             // Embed images:
             if (token.type == 'start' && token.tag == 'image') {
