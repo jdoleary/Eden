@@ -44,6 +44,8 @@ export interface Page {
 export interface Garden {
     pages: Page[],
     tags: Set<string>,
+    // Html blocks key'd by id
+    blocks: { [blockId: string]: string };
 
 }
 export interface FileName {
