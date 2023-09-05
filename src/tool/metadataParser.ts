@@ -12,7 +12,7 @@ function* searchInParts(string: string) {
 }
 
 // Note: modifies fileContents to remove metadata string
-export function extractMetadata(fileContents: string): { metadata: any, metadataCharacterCount: number } | null {
+export function extractMetadata(fileContents: string): { metadata: any | null, metadataCharacterCount: number } {
     const stringSearcher = searchInParts(fileContents);
     let hasMetaData = null;
     let countEndDashes = 0;
@@ -27,7 +27,7 @@ export function extractMetadata(fileContents: string): { metadata: any, metadata
             } else {
                 hasMetaData = false;
                 // Do not keep looking for metadata
-                return null;
+                return { metadata: null, metadataCharacterCount: 0 };
             }
         }
         let dashesAddedThisLoop = 0;
@@ -42,7 +42,9 @@ export function extractMetadata(fileContents: string): { metadata: any, metadata
                     try {
                         return { metadata: parse(yaml), metadataCharacterCount: charactersToRemove };
                     } catch (e) {
-                        console.error('❌ Error parsing metadata', e);
+                        if (Deno.env.get('MODE') !== 'test') {
+                            console.error('❌ Error parsing metadata', e);
+                        }
                     }
                 }
             } else {
@@ -51,7 +53,7 @@ export function extractMetadata(fileContents: string): { metadata: any, metadata
         }
         metadata += v;
     }
-    return null;
+    return { metadata: null, metadataCharacterCount: 0 };
 }
 
 
