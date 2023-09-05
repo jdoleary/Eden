@@ -11,6 +11,7 @@ window.useLogVerbose = false;
 window.firstRun = false;
 
 import * as path from "https://deno.land/std@0.177.0/path/mod.ts";
+import { assertSnapshot } from "https://deno.land/std@0.201.0/testing/snapshot.ts";
 import { copy } from "https://deno.land/std@0.195.0/fs/copy.ts";
 import { exists } from "https://deno.land/std@0.198.0/fs/exists.ts";
 import { html, tokens, Token } from "https://deno.land/x/rusty_markdown/mod.ts";
@@ -395,8 +396,22 @@ async function main() {
     if (cliFlags.preview) {
         host(getOutDir(config));
     }
+
+    if (Deno.env.get('MODE') == 'test') {
+        Deno.test("snapshot: garden", async function (t): Promise<void> {
+            await assertSnapshot(t, garden);
+        });
+        for (const { webPath } of allFilesNames) {
+            const outContents = await Deno.readTextFile(path.join(getOutDir(config), webPath));
+            Deno.test(`snapshot: ${webPath}`, async function (t): Promise<void> {
+                await assertSnapshot(t, outContents);
+            });
+
+        }
+
+    }
 }
-main().catch(e => {
+await main().catch(e => {
     console.error(e);
 }).then(() => {
     // If there are no args, this exe was probably executed via a double-click,

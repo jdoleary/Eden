@@ -1,0 +1,218 @@
+export const snapshot = {};
+
+snapshot[`snapshot: garden 1`] = `
+{
+  blocks: {
+    "embedBlocksSource#^6cc5d9": "Apple ",
+    "embedBlocksSource#^8fb9e2": "Line of Text<br>Checkout [[Features]] to see what it can do and what it's going to do!  ",
+    "embedBlocksSource#^993417": "Wisdom ",
+    "embedBlocksSource#^be171d": 'Image<br><img src="/Assets/bumblebee.gif"> ',
+    "embedBlocksSource#^f3edfd": "<pre><code>*🍎: Low-hanging fruit (easy and fast to complete)
+*⛰️: Medium Difficulty
+*🌀: Complex (may take longer to implement)
+*❓: Optional (unsure if this will be a final feature)
+*🔑: Key feature
+</code></pre>",
+  },
+  pages: [
+    {
+      blockEmbeds: [
+        "embedBlocksSource#^f3edfd",
+        "embedBlocksSource#^8fb9e2",
+        "embedBlocksSource#^be171d",
+        "embedBlocksSource#^993417",
+      ],
+      contents: "\`eden-embedembedBlocksSource#^f3edfd\`
+
+\`eden-embedembedBlocksSource#^8fb9e2\`
+
+\`eden-embedembedBlocksSource#^be171d\`
+
+\`eden-embedembedBlocksSource#^993417\`
+",
+      createdAt: 1693831732518,
+      metadata: null,
+      modifiedAt: 1693840711486,
+      name: "embedBlocks",
+      webPath: "/embedBlocks.html",
+    },
+    {
+      blockEmbeds: [],
+      contents: "Code block
+\`\`\`
+*🍎: Low-hanging fruit (easy and fast to complete)
+*⛰️: Medium Difficulty
+*🌀: Complex (may take longer to implement)
+*❓: Optional (unsure if this will be a final feature)
+*🔑: Key feature
+\`\`\`
+
+^f3edfd
+
+Line of Text
+Checkout [[Features]] to see what it can do and what it's going to do!  ^8fb9e2
+
+
+Image
+![A bee harvesting pollen](/Assets/bumblebee.gif \\"A bee harvesting pollen\\") ^be171d
+
+List
+- Wisdom ^993417
+	- Apple ^6cc5d9
+	- Orange [Google](https://google.com)
+	- Pear
+
+- This line must be present because somehow it causes the previous \\"- Wisdom\\" line to be wrapped in a \`<p>\` which interferes with the embedding. I may just have to replace the markdown parser",
+      createdAt: 1693831759468,
+      metadata: null,
+      modifiedAt: 1693841644379,
+      name: "embedBlocksSource",
+      webPath: "/embedBlocksSource.html",
+    },
+  ],
+  tags: Set(0) {},
+}
+`;
+
+snapshot[`snapshot: /embedBlocks.html 1`] = `
+\`<html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>embedBlocks</title>
+</head>
+
+<body class="type-page">
+    <main>
+        <div id="breadcrumbs">
+            <a href="/index.html" class="breadcrumbs-item">test-snapshot-output</a>
+        </div>
+        <h1>embedBlocks</h1>
+        
+        <hr>
+        <div id="article-metadata">
+            <div></div>
+            <div>Created <span data-converttimeago="1693831732518">9/4/2023</span></div>
+            <div>Last modified <span data-converttimeago="1693840711486">9/4/2023</span></div>
+        </div>
+        <p></p><div>
+            <div class="embed-block">
+            <pre><code>*🍎: Low-hanging fruit (easy and fast to complete)
+*⛰️: Medium Difficulty
+*🌀: Complex (may take longer to implement)
+*❓: Optional (unsure if this will be a final feature)
+*🔑: Key feature
+</code></pre>
+              
+            <div>
+            <a href="/embedBlocksSource.html#f3edfd" class="feint-link"> embedBlocksSource#^f3edfd </a>
+            </div>
+              
+            </div>
+              </div><p></p>
+<p></p><div>
+            <div class="embed-block">
+            Line of Text<br>Checkout [[Features]] to see what it can do and what it's going to do!  
+              
+            <div>
+            <a href="/embedBlocksSource.html#8fb9e2" class="feint-link"> embedBlocksSource#^8fb9e2 </a>
+            </div>
+              
+            </div>
+              </div><p></p>
+<p></p><div>
+            <div class="embed-block">
+            Image<br><img src="/Assets/bumblebee.gif"> 
+              
+            <div>
+            <a href="/embedBlocksSource.html#be171d" class="feint-link"> embedBlocksSource#^be171d </a>
+            </div>
+              
+            </div>
+              </div><p></p>
+<p></p><div>
+            <div class="embed-block">
+            Wisdom 
+              
+            <div>
+            <a href="/embedBlocksSource.html#993417" class="feint-link"> embedBlocksSource#^993417 </a>
+            </div>
+              
+            </div>
+              </div><p></p>
+
+        
+        <div id="article-footer">
+            <div id="backlinks">
+                
+            </div>
+        </div>
+        
+        <footer>
+        </footer>
+    </main>
+
+
+</body></html>\`
+`;
+
+snapshot[`snapshot: /embedBlocksSource.html 1`] = `
+\`<html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>embedBlocksSource</title>
+</head>
+
+<body class="type-page">
+    <main>
+        <div id="breadcrumbs">
+            <a href="/index.html" class="breadcrumbs-item">test-snapshot-output</a>
+        </div>
+        <h1>embedBlocksSource</h1>
+        
+        <hr>
+        <div id="article-metadata">
+            <div></div>
+            <div>Created <span data-converttimeago="1693831759468">9/4/2023</span></div>
+            <div>Last modified <span data-converttimeago="1693841644379">9/4/2023</span></div>
+        </div>
+        <p>Code block</p>
+<pre id="f3edfd"><code>*🍎: Low-hanging fruit (easy and fast to complete)
+*⛰️: Medium Difficulty
+*🌀: Complex (may take longer to implement)
+*❓: Optional (unsure if this will be a final feature)
+*🔑: Key feature
+</code></pre>
+<p>^f3edfd</p>
+<p id="8fb9e2">Line of Text<br>Checkout [[Features]] to see what it can do and what it's going to do!  ^8fb9e2</p>
+<p id="be171d">Image<br><img src="/Assets/bumblebee.gif"> ^be171d</p>
+<p>List</p>
+<ul>
+<li>
+<p id="993417">Wisdom ^993417</p>
+<ul>
+<li id="6cc5d9">Apple ^6cc5d9</li>
+<li>Orange <a href="https://google.com"><img class="inline-icon" src="https://s2.googleusercontent.com/s2/favicons?domain=https://google.com">Google</a></li>
+<li>Pear</li>
+</ul>
+</li>
+<li>
+<p>This line must be present because somehow it causes the previous "- Wisdom" line to be wrapped in a <code>&lt;p&gt;</code> which interferes with the embedding. I may just have to replace the markdown parser</p>
+</li>
+</ul>
+
+        
+        <div id="article-footer">
+            <div id="backlinks">
+                <h4>Backlinks</h4><div><a href="/embedBlocks.html#embedBlocksSource">embedBlocks</a></div><div><a href="/embedBlocks.html#embedBlocksSource">embedBlocks</a></div><div><a href="/embedBlocks.html#embedBlocksSource">embedBlocks</a></div><div><a href="/embedBlocks.html#embedBlocksSource">embedBlocks</a></div>
+            </div>
+        </div>
+        
+        <footer>
+        </footer>
+    </main>
+
+
+</body></html>\`
+`;
