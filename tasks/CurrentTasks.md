@@ -5,7 +5,6 @@
     - Note: Check that it works with ^652cd3
 - Revise styling of basic template to make it more "my own"
 - Bug: This syntax `![[Pasted image 20230729221843.png]]` didn't convert to an image but it works in obsidian
-- Add snapshot testing and make a tests folder with markdown files for each feature with metadata labeling the snapshot purpose
 - (MVP) Make mvp demo video and send to Zak
     - Try to drum up interest with a Discord server / mailing list for a "zero-config digital garden"
     - Video steps

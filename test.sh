@@ -1,4 +1,8 @@
-# Update snapshots
-# MODE=test deno test --allow-all C:/git/eden-markdown/src/main.ts -- --update --parseDir C:/git/eden-markdown/test/
 # Test without updating snapshots
-MODE=test deno test --allow-all C:/git/eden-markdown/src/main.ts --  --parseDir C:/git/eden-markdown/test/
+MODE=test deno test --allow-all src/main.ts -- --parseDir test/
+
+# Update snapshots
+# MODE=test deno test --allow-all src/main.ts --parseDir test/ -- --update
+
+# Preview test dir
+# deno run --allow-all src/main.ts --parseDir test/ --preview && start http://localhost:8000/Table_of_Contents.html

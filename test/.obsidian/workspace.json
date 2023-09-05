@@ -13,13 +13,50 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "embedBlocksSource.md",
+                "file": "embedBlocks/imageWithId.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "ab69de7ad7e7f4af",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "embedBlocks/imageWithId.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "41a4071c04911c39",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "embedBlocks/listWithId.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "78a123a4b4a39b67",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "embedBlocks/embedList.md",
                 "mode": "source",
                 "source": false
               }
             }
           }
-        ]
+        ],
+        "currentTab": 3
       }
     ],
     "direction": "vertical"
@@ -85,7 +122,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "embedBlocksSource.md",
+                "file": "embedBlocks/embedList.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +139,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "embedBlocksSource.md",
+                "file": "embedBlocks/embedList.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +162,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "embedBlocksSource.md"
+                "file": "embedBlocks/embedList.md"
               }
             }
           }
@@ -146,8 +183,16 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "ad6ad5dbe9e3b4e9",
+  "active": "78a123a4b4a39b67",
   "lastOpenFiles": [
+    "embedBlocks/listWithId.md",
+    "embedBlocks/embedList.md",
+    "embedBlocks/embedLinesOfText.md",
+    "embedBlocks/imageWithId.md",
+    "embedBlocks/embedImage.md",
+    "embedBlocks/embedCodeBlock.md",
+    "embedBlocks/codeBlockWithId.md",
+    "embedBlocks/embedBlocks.md",
     "embedBlocks.md",
     "embedBlocksSource.md",
     "summary.md"
