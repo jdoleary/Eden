@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    {{title}}
+</head>
+
+<body class="{{pageType}}">
+    <main>
+        <div id="breadcrumbs">
+            {{breadcrumbs}}
+        </div>
+        {{metadata:title}}
+        {{metadata:subtitle}}
+        <hr>
+        <div id="article-metadata">
+            {{metadata:tags}}
+            <div>Created {{created}}</div>
+            <div>Last modified {{modified}}</div>
+        </div>
+        {{content}}
+        </div>
+        <div id="article-footer">
+            <div id="backlinks">
+                {{backlinks}}
+            </div>
+        </div>
+        </article>
+        <footer>
+        </footer>
+    </main>
+</body>
+
+</html>
