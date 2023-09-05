@@ -126,7 +126,7 @@ async function main() {
         // Keep obsidian attachmentFolderPath as static serve dir
         config.staticServeDirs = [...config.staticServeDirs, ...staticServeDirs]
     } catch (e) {
-        console.log('Caught: Manifest non-existant or corrupt', e);
+        console.log('Caught: Config file non-existant or corrupt', e);
         return;
     }
     logVerbose('Got config:', config);
