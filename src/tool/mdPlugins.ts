@@ -19,7 +19,7 @@ export default function plugins(md: MarkdownIt, config: Config) {
         md.renderer.rules.code_inline = function (tokens, idx, options, env, self) {
             const token = tokens[idx];
             const content = token.content;
-            if (content) {
+            if (content && content.startsWith(edenEmbedClassName)) {
                 // Token is a block embed and must be handled specially
                 const embedPath = token.content.split(edenEmbedClassName).join('');
 
