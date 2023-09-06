@@ -58,7 +58,7 @@ export function processBlockElementsWithID(html: string, pageName: string, garde
 }
 
 // Returns undefined if nothing changed
-export function embedBlocks(html: string, garden: Garden): string | undefined {
+export function embedBlocks(html: string, garden: Garden, webPath: string): string | undefined {
   const document = new DOMParser().parseFromString(html, "text/html");
   if (!document) {
     return undefined;
@@ -72,26 +72,34 @@ export function embedBlocks(html: string, garden: Garden): string | undefined {
         // Note: .data isn't in deno-dom yet
         const embedId = el.attributes.getNamedItem(`data-${embedPathDataKey}`)?.value;
         if (embedId) {
-          const block = garden.blocks[embedId];
-          if (block) {
-            changedHTML = true;
-            const div = document.createElement('div');
-            const [pageName, embedBlockId] = embedId.split('#^');
-            const linkPage = garden.pages.find(page => page.name == pageName);
-            const linkEl = linkPage ? `
+          if (embedId.includes('#^')) {
+
+            const block = garden.blocks[embedId];
+            if (block) {
+              changedHTML = true;
+              const div = document.createElement('div');
+              const [pageName, embedBlockId] = embedId.split('#^');
+              const linkPage = garden.pages.find(page => page.name == pageName);
+              const linkEl = linkPage ? `
             <div>
             <a href="${linkPage.webPath}#${embedBlockId}" class="feint-link"> ${embedId} </a>
             </div>
               `: '';
-            div.innerHTML = `
+              div.innerHTML = `
             <div class= "embed-block">
             ${block}
               ${linkEl}
             </div>
               `;
-            el.replaceWith(div);
+              el.replaceWith(div);
+            } else {
+              console.warn(`WARN: ${webPath}: Missing embed block for ${embedId}`);
+            }
           } else {
-            console.log('Missing embed block for ', embedId);
+            // it is embedding an entire file
+            // `todo: Support embedding entire file.`
+            console.warn('TODO: Support embedding entire file.  Needed for', webPath);
+
           }
         }
       }

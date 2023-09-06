@@ -1,8 +1,5 @@
 ## MVP Tasks
-- Big Bug: `- Wisdom` is not being selected properly when there is another li after it with a newline between. Shown in current tests/embedBlocksSource.md
-
-- Bug: transclusion edge case `![[Features#^f3edfd]]` in test_names_block_ids.md
-    - Note: Check that it works with ^652cd3
+- search for `todo: Support embedding entire file.`
 - Revise styling of basic template to make it more "my own"
 - Bug: This syntax `![[Pasted image 20230729221843.png]]` didn't convert to an image but it works in obsidian
 - (MVP) Make mvp demo video and send to Zak

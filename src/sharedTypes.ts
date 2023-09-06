@@ -41,6 +41,8 @@ export interface Page {
     metadata?: Metadata;
     createdAt?: number; // Date millis
     modifiedAt?: number; // Date millis
+    // blockEmbeds not yet implemented, see 
+    // `// TODO find out how to pass page` in mdPlugins.ts
     blockEmbeds: string[];
 }
 // Garden.json

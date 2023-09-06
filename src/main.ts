@@ -10,11 +10,12 @@ window.useLogVerbose = false;
 // Initialize to false, will be set later in execution
 window.firstRun = false;
 
+// @deno-types="../types/markdown-it/index.d.ts"
+import MarkdownIt from "https://esm.sh/markdown-it@13.0.1";
 import * as path from "https://deno.land/std@0.177.0/path/mod.ts";
 import { assertSnapshot } from "https://deno.land/std@0.201.0/testing/snapshot.ts";
 import { copy } from "https://deno.land/std@0.195.0/fs/copy.ts";
 import { exists } from "https://deno.land/std@0.198.0/fs/exists.ts";
-import { html, tokens, Token } from "https://deno.land/x/rusty_markdown/mod.ts";
 import { parse } from "https://deno.land/std@0.194.0/flags/mod.ts";
 import { createDirectoryIndexFile, createTagDirIndexFile, createTagIndexFile } from "./htmlGenerators/indexFile.ts";
 import { addContentsToTemplate, findTOCEntryFromFilepath } from "./htmlGenerators/useTemplate.ts";
@@ -31,6 +32,7 @@ import { makeRSSFeed } from "./tool/rss-feed-maker.ts";
 import { timeAgoJs } from "./htmlGenerators/timeAgo.js";
 import { embedBlocks, processBlockElementsWithID } from "./tool/editDOM.ts";
 import { getCliFlagOptions, rawCLIFlagOptions } from "./cliOptions.ts";
+import plugins from "./tool/mdPlugins.ts";
 
 const VERSION = '0.1.0'
 
@@ -133,6 +135,11 @@ async function main() {
     logVerbose('Got config:', config);
     console.log(`Converting files in "${parseDir}" to website files at "${getOutDir(config)}"`);
 
+    const markdownIt = new MarkdownIt({
+        html: true,
+        linkify: true,
+    });
+    plugins(markdownIt, config);
 
     if (!config.parseDir || !config.outDirRoot) {
         console.error('❌ Config is invalid', config);
@@ -273,7 +280,7 @@ async function main() {
     const processPromises: Promise<Page | undefined>[] = [];
     for await (const f of getFiles(allFilesPath, config)) {
         try {
-            processPromises.push(process(f, templateHtml, { allFilesNames, tableOfContents, config, backlinks, garden }));
+            processPromises.push(process(f, templateHtml, { allFilesNames, tableOfContents, config, backlinks, garden, markdownIt }));
         } catch (e) {
             console.error('error in process', e);
         }
@@ -348,7 +355,7 @@ async function main() {
         try {
             const filePath = path.join(getOutDir(config), webPath);
             const fileContent = await Deno.readTextFile(filePath);
-            const newFileContent = embedBlocks(fileContent, garden);
+            const newFileContent = embedBlocks(fileContent, garden, webPath);
             if (newFileContent) {
                 await Deno.writeTextFile(filePath, newFileContent);
             }
@@ -424,7 +431,7 @@ await main().catch(e => {
         prompt("Finished... Enter any key to exit.");
     }
 });
-async function process(filePath: string, templateHtml: string, { allFilesNames, tableOfContents, config, backlinks, garden }: { allFilesNames: FileName[], tableOfContents: TableOfContents, config: Config, backlinks: Backlinks, garden: Garden }): Promise<Page | undefined> {
+async function process(filePath: string, templateHtml: string, { allFilesNames, tableOfContents, config, backlinks, garden, markdownIt }: { allFilesNames: FileName[], tableOfContents: TableOfContents, config: Config, backlinks: Backlinks, garden: Garden, markdownIt: MarkdownIt }): Promise<Page | undefined> {
     // Dev, test single file
     // if (filePath !== 'C:\\ObsidianJordanJiuJitsu\\JordanJiuJitsu\\Submissions\\Strangles\\Triangle.md') {
     //     return;
@@ -457,7 +464,8 @@ async function process(filePath: string, templateHtml: string, { allFilesNames, 
         // [[backlink]]
         const obsidianStyleBacklinkRegex = /\[\[([^\^#\[\]*"/\\<>\n\r:|?]+)\]\]/g;
         // Replace embed syntax with something that will be easily recognized later and parsed as
-        // a single token by rusty_markdown
+        // a single token by rusty_markdown (note: As of 2023.09.06 rusty_markdown has been replaced with markdown-it
+        // so there may be a better way to do this)
         // Note: This is wrapped in code backticks so that the `if block` that searches for it is more specific
         // and more efficient
         fileContents = fileContents.replaceAll(obsidianStyleEmbedRegex, `\`${edenEmbedClassName}$1$2\``);
@@ -554,226 +562,7 @@ async function process(filePath: string, templateHtml: string, { allFilesNames, 
             blockEmbeds: [],
         }
 
-        // Convert markdown to html
-        const mdTokens = tokens(fileContents);
-        const modifiedMdTokens: Token[] = [];
-        let lastToken = undefined;
-        for (let i = 0; i < mdTokens.length; i++) {
-            const token = mdTokens[i];
-            if (!token) {
-                continue;
-            }
-            // if true, prevents token from just being added, unchanged to modifiedMdTokens list
-            let isTokenModified = false;
-            // Process softBreaks as newlines like Obsidian does
-            // https://spec.commonmark.org/0.29/#softbreak
-            if (token.type == 'softBreak') {
-                isTokenModified = true;
-                modifiedMdTokens.push({
-                    type: 'html',
-                    content: '<br>'
-                });
-                continue;
-
-            }
-            // TODO: This may need to be removed if I find a better solution for 
-            // block embedding
-            // if (token.type == 'text') {
-            //     const blockEmbedIdRegex = /\s\^([\w\d]*)$/;
-            //     const blockEmbedId = token.content.match(blockEmbedIdRegex)
-            //     if (blockEmbedId) {
-            //         console.log('jtest embed', blockEmbedId);
-            //         // Now find the starting block and the ending block
-            //         let startingBlock = undefined;
-            //         for (let ti = i - 1; ti >= 0; ti--) {
-            //             const testToken = mdTokens[ti];
-            //             if (testToken && testToken.type == 'start' && testToken.tag == 'paragraph') {
-            //                 startingBlock = testToken;
-            //                 break;
-            //             }
-            //         }
-            //         let endingBlock = undefined;
-            //         for (let ti = i + 1; ti < mdTokens.length; ti++) {
-            //             const testToken = mdTokens[ti];
-            //             if (testToken && testToken.type == 'end' && testToken.tag == 'paragraph') {
-            //                 endingBlock = testToken;
-            //                 break;
-            //             }
-
-
-            //         }
-            //         if (startingBlock && endingBlock) {
-            //             // Change to html so that it can be referenced via an id (the embed block id)
-            //             // TODO what if it's an image
-            //             // startingBlock.type
-            //             // startingBlock.
-
-            //         }
-            //     }
-            // }
-            // Parse embeds to html token type
-            if (token.type == 'code' && token.content.startsWith(edenEmbedClassName)) {
-                isTokenModified = true;
-                // Token is a block embed and must be handled specially
-                const embedPath = token.content.split(edenEmbedClassName).join('');
-                page.blockEmbeds.push(embedPath);
-                // Change to html
-                // Later using deno-dom, this will be queried for by class and replaced with the html that it is referencing
-                // Note: Using class here because this is the many-to-one embed reference whereas the block itself will have the id
-                modifiedMdTokens.push({
-                    type: 'html',
-                    content: `<div class="${edenEmbedClassName}" data-${embedPathDataKey}="${embedPath}">${embedPath}</div>`
-                });
-            }
-            if (lastToken && lastToken.type == 'start' && lastToken.tag == 'link' && lastToken.url.includes('http')) {
-                if (token.type == 'text' || token.type == 'html') {
-                    token.type = 'html';
-                    const url = new URL(lastToken.url);
-                    let origin = url.origin;
-
-                    // Special case: handle missing favicon for youtu.be
-                    if (origin === 'https://youtu.be') {
-                        origin = 'https://youtube.com';
-                    }
-
-                    // Add the icon of the website before the link for user convenience
-                    token.content = `<img class="inline-icon" src="https://s2.googleusercontent.com/s2/favicons?domain=${origin}"/>` + token.content;
-                }
-            }
-            // Embed images:
-            if (token.type == 'start' && token.tag == 'image') {
-                // Implement youtube and twitter special embeds (Obsidian Syntax)
-                if (token.url.startsWith('http')) {
-                    // Youtube regex matches the following:
-                    // https://youtu.be/
-                    // http://youtu.be/
-                    // https://youtube.com/
-                    // http://youtube.com/
-                    // https://youtu.be/aFBp0cZ79bQ?si=rdrrNxhVlJWzHpVw
-                    // https://www.youtube.com/watch?v=aFBp0cZ79bQ
-                    const youtubeRegex = /^https?:\/\/(www\.)?youtu\.?be(.com)?\/(watch\?v=)?(\w*)/;
-                    const youtubeMatch = token.url.match(youtubeRegex);
-                    const youtubeVideoId = youtubeMatch && youtubeMatch[4];
-                    if (youtubeVideoId) {
-                        // Important! Skip the next 2 tokens because we're going to replace them
-                        // Images have "start", "text", and "end" tokens.  Once the "start" is detected
-                        // we replace the next two
-                        if (mdTokens[i + 1].type == 'text') {
-                            // Note: the text tag is optional 
-                            // and may not exist if there is no text inside the `[TEXTHERE](image.png)` TEXTHERE area of the token
-                            // If it does exist, skip it with i++ since we'll be modifying the tag
-                            i++;
-                            if (mdTokens[i + 1].type != 'end') {
-                                console.error('Unexpected next tag, "text" tag was skipped but "end" tag was not found.', mdTokens[i + 1]);
-                                // revert skip
-                                i--;
-                            }
-                        }
-                        if (mdTokens[i + 1].type != 'end') {
-                            console.error('Unexpected next tag, could not skip image "start"\'s following "end" tag.', mdTokens[i + 1]);
-                        } else {
-                            // i++ skips the "end" tag since we are modifying the tag in this block
-                            i++;
-                            isTokenModified = true;
-                            modifiedMdTokens.push({
-                                type: 'html',
-                                content: `<iframe class="responsive-iframe" src="https://www.youtube.com/embed/${youtubeVideoId}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`
-                            });
-                        }
-
-                    }
-                }
-                const possibleNextToken: Token | undefined = mdTokens[i + 1];
-                const possible2ndNextToken = mdTokens[i + 2];
-                let imgWidth;
-                let imgHeight;
-                if (possibleNextToken && possibleNextToken.type == 'text') {
-                    // Example matches
-                    // Portrait|640
-                    // Portrait|640x480
-                    const imageSizeRegex = /\|(\d+)x?(\d*)$/;
-                    const matches = possibleNextToken.content.match(imageSizeRegex);
-                    if (matches) {
-                        imgWidth = matches[1];
-                        imgHeight = matches[2];
-                    }
-                }
-                // Important! Skip the next 2 tokens because we're going to replace them
-                // Images have "start", "text", and "end" tokens.  Once the "start" is detected
-                // we replace the next two
-                if (possibleNextToken && possibleNextToken.type == 'text') {
-                    // Note: the text tag is optional 
-                    // and may not exist if there is no text inside the `[TEXTHERE](image.png)` TEXTHERE area of the token
-                    // If it does exist, skip it with i++ since we'll be modifying the tag
-                    i++;
-                    if (possible2ndNextToken.type != 'end') {
-                        console.error('Unexpected next tag, "text" tag was skipped but "end" tag was not found.', mdTokens[i + 1]);
-                        // revert skip
-                        i--;
-                    }
-                }
-                // Note: The "end" tag is REQUIRED and always expected.  It must exist and be skipped in order for the 
-                // following image modification code to take place
-                if (possible2ndNextToken && possible2ndNextToken.type != 'end') {
-                    console.error('Unexpected next tag, could not skip image "start"\'s following "end" tag.', mdTokens[i + 1]);
-                } else {
-                    // i++ skips the "end" tag since we are modifying the tag in this block
-                    i++;
-                    isTokenModified = true;
-                    // !imageRelativePath.startsWith('http') ensures that links to online images are served as is
-                    // otherwise, ensure that images exist locally. This is needed because some .md editors such as Obsidian
-                    // have an Assets directory (stored in .obsidian/app.json `attachmentFolderPath`) that provide an implicit
-                    // path, so if the markdown is just converted to html as is, the path will be broken
-                    // `!await exists` ensures that the image doesn't exist as the url relative to the outDir, in which case we drop into this
-                    // block to try to find it
-                    let imageUrl = token.url;
-                    if (!token.url.startsWith('http') && !await exists(path.join(getOutDir(config), token.url))) {
-                        imageUrl = `/${token.url}`;
-                        let foundMissingImage = false;
-                        for (const staticPath of config.staticServeDirs) {
-                            const testPath = path.join(getOutDir(config), staticPath, token.url);
-                            if (await exists(testPath)) {
-                                // path.posix is needed because this is now a webPath
-                                imageUrl = `/${path.posix.join(staticPath, token.url)}`;
-                                foundMissingImage = true;
-                                break;
-                            }
-                        }
-                        if (!foundMissingImage) {
-                            // Obsidian by default puts drag-n-dropped images in the root,
-                            // if the image is not found in any of the staticServeDirs but 
-                            // it is in the parseDir root
-                            // then copy it to the root of the outDir
-                            const pathAtParseRoot = path.join(config.parseDir, token.url);
-                            if (await exists(pathAtParseRoot)) {
-                                const newOutPath = path.join(getOutDir(config), token.url);
-                                await copy(pathAtParseRoot, newOutPath);
-                                // Convert to a relative path for web serve root
-                                imageUrl = `/${token.url}`;
-                                foundMissingImage = true;
-                            } else {
-                                console.error('⚠️ Missing image', imageUrl, 'check config staticServeDirs for missing directory.');
-                            }
-                        }
-
-                    }
-                    // All images get modified so that they can either have a modified imageUrl in the case where they are local and
-                    // had to be "found" or if they have an explicit width and/or height, they need that added
-                    modifiedMdTokens.push({
-                        type: 'html',
-                        content: `<img src="${imageUrl}" ${imgWidth ? `width="${imgWidth}px"` : ''} ${imgHeight ? `width="${imgHeight}px"` : ''}/>`
-                    })
-
-                }
-
-            }
-            if (!isTokenModified) {
-                modifiedMdTokens.push(token);
-            }
-            lastToken = token;
-
-        }
-        let htmlString = html(modifiedMdTokens);
+        let htmlString = markdownIt.render(fileContents);
         htmlString = htmlString
             .replaceAll('%20', ' ');
 
