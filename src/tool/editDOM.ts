@@ -40,6 +40,16 @@ export function processBlockElementsWithID(html: string, pageName: string, garde
             // the block id is on it's own line and is referencing a previous code block
             innerHTML = el.previousElementSibling.outerHTML || innerHTML;
             el.previousElementSibling.setAttribute('id', id);
+          } else if (el.parentElement && ['LI', 'UL'].includes(el.parentElement.tagName)) {
+            // Special case: Handle embedding <ul> and <li> so they render correctly
+            if (el.parentElement.tagName == 'LI') {
+              innerHTML = el.parentElement.innerHTML;
+            } else {
+              // <ul>'s need to use outerHTML so that the <ul> is embedded else the <li> will
+              // embed on it's own and be at the same level of its <li> children which should be on the next level
+              innerHTML = el.parentElement.outerHTML;
+            }
+            el.parentElement.setAttribute('id', id);
           } else {
             el.setAttribute('id', id);
           }
