@@ -32,7 +32,7 @@ export const defaultHtmlTemplatePage = `<!DOCTYPE html>
                     {{metadata:tags}}
                     <div class="gray right-align">
                         <div>Created {{created}}</div>
-                        <div>Last modified {{modified}}</div>
+                        <div>Updated {{modified}}</div>
                     </div>
                 </div>
                 {{content}}
