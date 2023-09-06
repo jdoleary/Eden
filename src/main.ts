@@ -325,6 +325,10 @@ async function main() {
         await Deno.writeTextFile(rssOutPath, rssXML);
     }
 
+    // Create garden.json
+    const gardenOutPath = path.join(getOutDir(config), 'garden.json');
+    await Deno.writeTextFile(gardenOutPath, JSON.stringify(garden, null, 2));
+
     const startTranscludingEmbeddableBlocks = performance.now();
     console.log('Transcluding embeddable blocks...');
     // Iterate all .html files to find embed blocks and add the blocks' html into the garden object
