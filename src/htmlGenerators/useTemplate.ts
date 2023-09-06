@@ -40,11 +40,9 @@ export async function addContentsToTemplate(content: string, templateHtml: strin
         content = content.replace('{{backlinks}}', '');
     }
 
-    if (metadata) {
-        // {{ metadata  }} has spaces due to formatter changing it
-        // TODO find a better way to add this to the head rather than replace
-        content = content.replace('{{ metadata }}', JSON.stringify(metadata) || '{}');
-    }
+    // {{ metadata  }} has spaces due to formatter changing it
+    // TODO find a better way to add this to the head rather than replace
+    content = content.replace('{{ metadata }}', JSON.stringify(metadata) || '{}');
 
     content = content.replace('{{metadata:title}}', `<h1>${metadata && metadata.title ? metadata.title : title}</h1>`);
     content = content.replace('{{metadata:subtitle}}', metadata && metadata.subtitle ? `<h2 class="gray">${metadata.subtitle}</h2>` : '');
