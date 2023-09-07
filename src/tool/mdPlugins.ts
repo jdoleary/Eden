@@ -10,6 +10,28 @@ import { copySync } from "https://deno.land/std@0.195.0/fs/copy.ts";
 
 export default function plugins(md: MarkdownIt, config: Config) {
 
+    // {
+    //     // Remember old renderer, if overridden, or proxy to default renderer
+    //     const defaultRender = md.renderer.rules.text || function (tokens, idx, options, env, self) {
+    //         return self.renderToken(tokens, idx, options);
+    //     };
+
+    //     md.renderer.rules.text = function (tokens, idx, options, env, self) {
+    //         const token = tokens[idx];
+    //         const content = token.content;
+    //         if (content) {
+    //             if (mdImageEmbedRegex.test(content)) {
+    //                 const renderOverride = md.renderer.rules.image ? md.renderer.rules.image : defaultRender;
+    //                 console.log('jtest content', content, token, idx)
+    // // TODO: Handle images with spaces
+    //                 return renderOverride(tokens, idx, options, env, self);
+    //             }
+
+    //         }
+    //         return defaultRender(tokens, idx, options, env, self);
+    //     }
+
+    // }
     {
         // Remember old renderer, if overridden, or proxy to default renderer
         const defaultRender = md.renderer.rules.code_inline || function (tokens, idx, options, env, self) {

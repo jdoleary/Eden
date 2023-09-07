@@ -49,7 +49,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "test_embed_page/Page to be embedded with own embed.md",
+                "file": "more/Features.md",
                 "mode": "source",
                 "source": false
               }
@@ -132,7 +132,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "test_embed_page/Page to be embedded with own embed.md",
+                "file": "more/Features.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -149,7 +149,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "test_embed_page/Page to be embedded with own embed.md",
+                "file": "more/Features.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -172,7 +172,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "test_embed_page/Page to be embedded with own embed.md"
+                "file": "more/Features.md"
               }
             }
           }
@@ -195,17 +195,17 @@
   },
   "active": "8a54603d13374e4b",
   "lastOpenFiles": [
+    "more/images.md",
+    "markdown-it refactor.md",
+    "test_embed_page/Page to be embedded with own embed.md",
     "test_embed_page/embedder.md",
     "test_embed_page/Page to be embedded.md",
-    "test_embed_page/Page to be embedded with own embed.md",
-    "markdown-it refactor.md",
     "test_embed_page",
     "Pasted image 20230903174037.png",
     "names block ids.md",
     "test_embed_entire_file.md",
     "tests.md",
     "summary.md",
-    "more/images.md",
     "test_names_block_ids.md",
     "more/Features.md",
     "tests",

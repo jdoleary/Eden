@@ -1,4 +1,5 @@
 ## MVP Tasks
+- test against commonmark spec: `![foo ![bar](/url)](/url2)` https://spec.commonmark.org/0.30/#images
 - Revise styling of basic template to make it more "my own"
 - (MVP) Make mvp demo video and send to Zak
     - Try to drum up interest with a Discord server / mailing list for a "zero-config digital garden"
@@ -29,6 +30,7 @@
 - Bug: markdown-it thinks that an obsidian embed syntax inside inline-code block is an embed and not code.  See `names block ids`
 - Bug: markdown-it doesn't recognize images with ' ' spaces in filename in image md format e.g. `![](url with spaces)` or `![[url with spaces]]`
     - This happens with pasted images in obsidian
+    - See // TODO: handle images with spaces
 - Bug: ignoreDirs does fuzzy matching but should be exact, see tests in os.ts
 
 ## Enhancements

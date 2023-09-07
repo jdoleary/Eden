@@ -444,6 +444,7 @@ await main().catch(e => {
 async function process(filePath: string, templateHtml: string, { allFilesNames, tableOfContents, config, backlinks, garden, markdownIt }: { allFilesNames: FileName[], tableOfContents: TableOfContents, config: Config, backlinks: Backlinks, garden: Garden, markdownIt: MarkdownIt }): Promise<Page | undefined> {
     // Dev, test single file
     // if (filePath !== 'C:\\ObsidianJordanJiuJitsu\\JordanJiuJitsu\\Core Concepts.md') {
+    // if (filePath !== 'C:\\git\\eden-markdown\\sample\\markdown-it refactor.md') {
     //     return;
     // }
 
