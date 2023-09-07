@@ -1,20 +1,20 @@
 ## MVP Tasks
-- Revise styling of basic template to make it more "my own"
-- (MVP) Make mvp demo video and send to Zak
+- **Revise styling of basic template to make it more "my own"**
+- **(MVP) Make mvp demo video and send to Zak**
     - Try to drum up interest with a Discord server / mailing list for a "zero-config digital garden"
     - Video steps
         - The "why", explain the value prop
         - TODO
         - CTA
         - Note: Always assume that a viewer might be seeing any video as their first video so reexplain the core ("this is the deep dive, but there's a simple way to do it if you don't want to customize") every video
-- Change icon from deno dinosaur to something else
+- **Change icon from deno dinosaur to something else**
     - http://www.angusj.com/resourcehacker/
-- Build rudimentary homepage based off of https://stephanango.com/
+- **Build rudimentary homepage based off of https://stephanango.com/**
+---
 - TODO support ` ![[wikilink#Header]] for headers`
     - https://publish.obsidian.md/hub/04+-+Guides%2C+Workflows%2C+%26+Courses/Guides/Markdown+Syntax#Obsidian's+Custom+markdown+syntax
 - Refactor all the various `allFilesNames` and `tableOfContents` to ultimately use the Garden object
     - rss.xml should use Garden too instead of tableOfContents object
----
 - Support callouts: https://publish.obsidian.md/hub/04+-+Guides%2C+Workflows%2C+%26+Courses/Guides/Markdown+Syntax#Callouts
 - Separate root template from content template
 - add readme instructions in config dir?

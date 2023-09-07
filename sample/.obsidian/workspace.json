@@ -56,6 +56,18 @@
             }
           },
           {
+            "id": "9697d621dc4c5dde",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "callout.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
             "id": "9ae852d2b31b48cc",
             "type": "leaf",
             "state": {
@@ -66,7 +78,7 @@
             }
           }
         ],
-        "currentTab": 3
+        "currentTab": 4
       }
     ],
     "direction": "vertical"
@@ -132,7 +144,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "more/Features.md",
+                "file": "callout.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -149,7 +161,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "more/Features.md",
+                "file": "callout.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -172,7 +184,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "more/Features.md"
+                "file": "callout.md"
               }
             }
           }
@@ -193,8 +205,12 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "8a54603d13374e4b",
+  "active": "9697d621dc4c5dde",
   "lastOpenFiles": [
+    "eden-md-config/eden-md.config.json",
+    "eden-md-config/eden-md.config.old.json",
+    "more/Features.md",
+    "callout.md",
     "more/images.md",
     "markdown-it refactor.md",
     "test_embed_page/Page to be embedded with own embed.md",
@@ -207,7 +223,6 @@
     "tests.md",
     "summary.md",
     "test_names_block_ids.md",
-    "more/Features.md",
     "tests",
     "plain.md",
     "test backlink.md",
@@ -229,7 +244,6 @@
     "md2web-config/md2web.config.json",
     "md2web-config",
     "bumblebee 1.gif",
-    "eden-md-config/styles.css",
-    "eden-md-config/template.html"
+    "eden-md-config/styles.css"
   ]
 }
