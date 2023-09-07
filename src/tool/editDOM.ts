@@ -1,5 +1,7 @@
 import { DOMParser, Element, Node } from "https://deno.land/x/deno_dom/deno-dom-wasm.ts";
-import { Garden, edenEmbedClassName, embedPathDataKey } from "../sharedTypes.ts";
+import { Config, Garden, edenEmbedClassName, embedPathDataKey } from "../sharedTypes.ts";
+import * as path from "https://deno.land/std@0.177.0/path/mod.ts";
+import { getOutDir } from "../path.ts";
 
 // Returns undefined if nothing changed
 export function processBlockElementsWithID(html: string, pageName: string, garden: Garden): string | undefined {
@@ -71,7 +73,7 @@ export function processBlockElementsWithID(html: string, pageName: string, garde
 }
 
 // Returns undefined if nothing changed
-export function embedBlocks(html: string, garden: Garden, webPath: string): string | undefined {
+export function embedBlocks(html: string, garden: Garden, webPath: string, config: Config): string | undefined {
   const document = new DOMParser().parseFromString(html, "text/html");
   if (!document) {
     return undefined;
@@ -110,8 +112,27 @@ export function embedBlocks(html: string, garden: Garden, webPath: string): stri
             }
           } else {
             // it is embedding an entire file
-            // `todo: Support embedding entire file.`
-            console.warn('TODO: Support embedding entire file.  Needed for', webPath);
+            const foundPage = garden.pages.find(p => p.name == embedId);
+            if (foundPage) {
+              const pageContent = Deno.readTextFileSync(path.join(getOutDir(config), foundPage.webPath))
+              const document = new DOMParser().parseFromString(pageContent, "text/html");
+              if (document) {
+                const embedPageEl = document.getElementById('article-content')
+                if (embedPageEl) {
+                  changedHTML = true;
+                  el.classList.add('embed-block')
+                  el.appendChild(embedPageEl);
+                }
+              }
+              if (!changedHTML) {
+                console.warn(`WARN: Failed to embed entire page. embedId: ${embedId}.`)
+              }
+
+            } else {
+              console.warn(`WARN: Failed to embed entire page: Could not find associated page. embedId: ${embedId}.`)
+              changedHTML = true;
+              el.remove();
+            }
 
           }
         }

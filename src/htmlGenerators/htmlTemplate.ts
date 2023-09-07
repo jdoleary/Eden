@@ -21,7 +21,7 @@ export const defaultHtmlTemplatePage = `<!DOCTYPE html>
         <nav>
         </nav>
         <article>
-            <div id="article-content">
+            <div id="article-main">
                 <div id="breadcrumbs">
                     {{breadcrumbs}}
                 </div>
@@ -35,7 +35,9 @@ export const defaultHtmlTemplatePage = `<!DOCTYPE html>
                         <div>Updated {{modified}}</div>
                     </div>
                 </div>
-                {{content}}
+                <div id="article-content">
+                    {{content}}
+                </div>
             </div>
             <div id="article-footer">
                 <div id="backlinks">

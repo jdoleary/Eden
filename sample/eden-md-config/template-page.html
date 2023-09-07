@@ -21,7 +21,7 @@
         <nav>
         </nav>
         <article>
-            <div id="article-content">
+            <div id="article-main">
                 <div id="breadcrumbs">
                     {{breadcrumbs}}
                 </div>
@@ -32,10 +32,12 @@
                     {{metadata:tags}}
                     <div class="gray right-align">
                         <div>Created {{created}}</div>
-                        <div>Last modified {{modified}}</div>
+                        <div>Updated {{modified}}</div>
                     </div>
                 </div>
-                {{content}}
+                <div id="article-content">
+                    {{content}}
+                </div>
             </div>
             <div id="article-footer">
                 <div id="backlinks">

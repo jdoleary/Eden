@@ -1,7 +1,5 @@
 ## MVP Tasks
-- search for `todo: Support embedding entire file.`
 - Revise styling of basic template to make it more "my own"
-- Bug: This syntax `![[Pasted image 20230729221843.png]]` didn't convert to an image but it works in obsidian
 - (MVP) Make mvp demo video and send to Zak
     - Try to drum up interest with a Discord server / mailing list for a "zero-config digital garden"
     - Video steps
@@ -28,7 +26,8 @@
 - Refactor footgun: `!metadata.publish is true when publish is just undefined, in which case it should default to true, not falsey`
 
 ## Bugs
-- Bug: Markdown parser doesn't recognize images with ' ' spaces in filename in image md format e.g. `![](url with spaces)`
+- Bug: markdown-it thinks that an obsidian embed syntax inside inline-code block is an embed and not code.  See `names block ids`
+- Bug: markdown-it doesn't recognize images with ' ' spaces in filename in image md format e.g. `![](url with spaces)` or `![[url with spaces]]`
     - This happens with pasted images in obsidian
 - Bug: ignoreDirs does fuzzy matching but should be exact, see tests in os.ts
 

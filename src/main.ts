@@ -33,7 +33,7 @@ import { timeAgoJs } from "./htmlGenerators/timeAgo.js";
 import { embedBlocks, processBlockElementsWithID } from "./tool/editDOM.ts";
 import { getCliFlagOptions, rawCLIFlagOptions } from "./cliOptions.ts";
 import plugins from "./tool/mdPlugins.ts";
-import { obsidianStyleBacklinkRegex, obsidianStyleEmbedBlockRegex, obsidianStyleEmbedFileRegex, obsidianStyleImageEmbedRegex } from "./tool/regexCollection.ts";
+import { obsidianStyleBacklinkRegex, obsidianStyleEmbedBlockRegex, obsidianStyleEmbedFileRegex, obsidianStyleEmbedPageRegex } from "./tool/regexCollection.ts";
 
 const VERSION = '0.1.0'
 
@@ -365,7 +365,7 @@ async function main() {
         try {
             const filePath = path.join(getOutDir(config), webPath);
             const fileContent = await Deno.readTextFile(filePath);
-            const newFileContent = embedBlocks(fileContent, garden, webPath);
+            const newFileContent = embedBlocks(fileContent, garden, webPath, config);
             if (newFileContent) {
                 await Deno.writeTextFile(filePath, newFileContent);
             }
@@ -469,8 +469,7 @@ async function process(filePath: string, templateHtml: string, { allFilesNames, 
         // Note: This is wrapped in code backticks so that the `if block` that searches for it is more specific
         // and more efficient
         fileContents = fileContents.replaceAll(obsidianStyleEmbedBlockRegex, `\`${edenEmbedClassName}$1$2\``);
-        // Convert all obsidianImageEmbeds to markdown image format
-        fileContents = fileContents.replaceAll(obsidianStyleImageEmbedRegex, '![$1]($1)');
+        fileContents = fileContents.replaceAll(obsidianStyleEmbedPageRegex, `\`${edenEmbedClassName}$1\``);
         // Find existing obsidian-style backlinks (works even with case insensitive)
         const existingBacklinks = (fileContents.match(obsidianStyleBacklinkRegex) || []).filter((x, i, array) => {
             // Filter for unique tags

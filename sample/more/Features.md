@@ -1,5 +1,5 @@
 - ✅ Breadcrumbs
-- ✅ Metadata Support
+- ✅ Metadata Support ^9d270c
     - Tags
     - Created Date
     - Last Edited Date

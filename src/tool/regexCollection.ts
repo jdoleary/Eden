@@ -14,11 +14,13 @@ export const youtubeRegex = /^https?:\/\/(www\.)?youtu\.?be(.com)?\/(watch\?v=)?
 export const imageSizeRegex = /\|(\d+)x?(\d*)$/;
 
 // Matches
-// ![[Features]]
+// ![[panda.png]]
+// ![[image.png]]
+// ![[image.webm]]
 export const obsidianStyleEmbedFileRegex = /!\[\[([^\^#\[\]*"/\\<>\n\r:|?]+\.[\w\d]+)\]\]/g;
 
 // Matches
-// ![[panda.png]]
+// ![[Features]]
 export const obsidianStyleEmbedPageRegex = /!\[\[([^\^#\[\]*"/\\<>\n\r:|?]+)\]\]/g;
 
 // Matches
@@ -26,11 +28,6 @@ export const obsidianStyleEmbedPageRegex = /!\[\[([^\^#\[\]*"/\\<>\n\r:|?]+)\]\]
 // ![[images 2 again#^be171d]]
 // ![[test embed]]
 export const obsidianStyleEmbedBlockRegex = /!\[\[([^\^#\[\]*"/\\<>\n\r:|?]+)(\#\^[\w\d]+)\]\]/g;
-
-// Matches
-// ![[image.png]]
-// ![[image.webm]]
-export const obsidianStyleImageEmbedRegex = /!\[\[([^\^#\[\]*"/\\<>\n\r\s:|?]+\.[\w\d])\]\]/g;
 
 // Matches
 // [[backlink]]
