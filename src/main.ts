@@ -33,6 +33,7 @@ import { timeAgoJs } from "./htmlGenerators/timeAgo.js";
 import { embedBlocks, processBlockElementsWithID } from "./tool/editDOM.ts";
 import { getCliFlagOptions, rawCLIFlagOptions } from "./cliOptions.ts";
 import plugins from "./tool/mdPlugins.ts";
+import { obsidianStyleBacklinkRegex, obsidianStyleEmbedBlockRegex, obsidianStyleEmbedFileRegex, obsidianStyleImageEmbedRegex } from "./tool/regexCollection.ts";
 
 const VERSION = '0.1.0'
 
@@ -442,7 +443,7 @@ await main().catch(e => {
 });
 async function process(filePath: string, templateHtml: string, { allFilesNames, tableOfContents, config, backlinks, garden, markdownIt }: { allFilesNames: FileName[], tableOfContents: TableOfContents, config: Config, backlinks: Backlinks, garden: Garden, markdownIt: MarkdownIt }): Promise<Page | undefined> {
     // Dev, test single file
-    // if (filePath !== 'C:\\ObsidianJordanJiuJitsu\\JordanJiuJitsu\\Submissions\\Strangles\\Triangle.md') {
+    // if (filePath !== 'C:\\ObsidianJordanJiuJitsu\\JordanJiuJitsu\\Core Concepts.md') {
     //     return;
     // }
 
@@ -459,25 +460,15 @@ async function process(filePath: string, templateHtml: string, { allFilesNames, 
     if (path.parse(filePath).ext == '.md') {
         let fileContents = await Deno.readTextFile(filePath);
         const relativePath = path.relative(config.parseDir, filePath);
-        // const obsidianStyleEmbedRegex = /!\[\[([^\^#\[\]*"/\\<>\n\r:|?]+)\]\]/g;
-        // Matches
-        // ![[Features#^f3edfd]]
-        // ![[images 2 again#^be171d]]
-        // ![[test embed]]
-        const obsidianStyleEmbedRegex = /!\[\[([^\^#\[\]*"/\\<>\n\r:|?]+)(\#\^[\w\d]+)?\]\]/g;
-        // Matches
-        // ![[image.png]]
-        // ![[image.webm]]
-        const obsidianStyleImageEmbedRegex = /!\[\[([^\^#\[\]*"/\\<>\n\r\s:|?]+\.[\w\d])\]\]/g;
-        // Matches
-        // [[backlink]]
-        const obsidianStyleBacklinkRegex = /\[\[([^\^#\[\]*"/\\<>\n\r:|?]+)\]\]/g;
-        // Replace embed syntax with something that will be easily recognized later and parsed as
+        // Replace embed file syntax with markdown image format
+        fileContents = fileContents.replaceAll(obsidianStyleEmbedFileRegex, '![$1]($1)');
+
+        // Replace embed block syntax with something that will be easily recognized later and parsed as
         // a single token by rusty_markdown (note: As of 2023.09.06 rusty_markdown has been replaced with markdown-it
         // so there may be a better way to do this)
         // Note: This is wrapped in code backticks so that the `if block` that searches for it is more specific
         // and more efficient
-        fileContents = fileContents.replaceAll(obsidianStyleEmbedRegex, `\`${edenEmbedClassName}$1$2\``);
+        fileContents = fileContents.replaceAll(obsidianStyleEmbedBlockRegex, `\`${edenEmbedClassName}$1$2\``);
         // Convert all obsidianImageEmbeds to markdown image format
         fileContents = fileContents.replaceAll(obsidianStyleImageEmbedRegex, '![$1]($1)');
         // Find existing obsidian-style backlinks (works even with case insensitive)
