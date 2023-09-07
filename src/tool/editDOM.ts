@@ -40,8 +40,11 @@ export function processBlockElementsWithID(html: string, pageName: string, garde
             // the block id is on it's own line and is referencing a previous code block
             innerHTML = el.previousElementSibling.outerHTML || innerHTML;
             el.previousElementSibling.setAttribute('id', id);
-          } else if (el.parentElement && ['LI', 'UL'].includes(el.parentElement.tagName)) {
-            // Special case: Handle embedding <ul> and <li> so they render correctly
+          } else if (el.tagName == 'P' && el.parentElement && ['LI', 'UL'].includes(el.parentElement.tagName)) {
+            // Special case: Handle embedding <ul> and <li> when their first line is a <p> and
+            // they have more ul or li children.
+            // This block ensures that the <p> doesn't render alone as the whole embedded block and the
+            // rest of the children come with it
             if (el.parentElement.tagName == 'LI') {
               innerHTML = el.parentElement.innerHTML;
             } else {
