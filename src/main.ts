@@ -60,13 +60,18 @@ async function main() {
         console.log('Please send feedback, questions, or bug reports to jdoleary@gmail.com or Twitter:@nestfall\n');
 
         // Check for updates
-        // updateUrl is coming from https://github.com/jdoleary/spellmasons-server-hub (I'm just reusing a server that I'm hosting for spellmasons)
-        const updateUrl = 'https://server-hub-d2b2v.ondigitalocean.app/md2webUpdate';
-        const res = await fetch(updateUrl);
-        const updateData = await res.json();
-        const [MAJOR_UPDATE, MINOR_UPDATE, PATCH_UPDATE] = updateData.version.split('.');
-        if (MAJOR_UPDATE !== MAJOR || MINOR_UPDATE !== MINOR || PATCH_UPDATE !== PATCH) {
-            console.log(`🎁 Update available: ${VERSION}->${updateData.version}\n${updateData.updateUrl}\n${updateData.message}\n\n`);
+        try {
+
+            // updateUrl is coming from https://github.com/jdoleary/spellmasons-server-hub (I'm just reusing a server that I'm hosting for spellmasons)
+            const updateUrl = 'https://server-hub-d2b2v.ondigitalocean.app/md2webUpdate';
+            const res = await fetch(updateUrl);
+            const updateData = await res.json();
+            const [MAJOR_UPDATE, MINOR_UPDATE, PATCH_UPDATE] = updateData.version.split('.');
+            if (MAJOR_UPDATE !== MAJOR || MINOR_UPDATE !== MINOR || PATCH_UPDATE !== PATCH) {
+                console.log(`🎁 Update available: ${VERSION}->${updateData.version}\n${updateData.updateUrl}\n${updateData.message}\n\n`);
+            }
+        } catch (e) {
+            console.warn('WARN: Unable to check for updates', e);
         }
     }
     if (cliFlags.h || cliFlags.help) {
