@@ -100,6 +100,7 @@ async function main() {
     const projectName = `my-digital-garden`;
     const config: Config = {
         projectName,
+        edenVersion: VERSION,
         outDirRoot: `${PROGRAM_NAME}-out`,
         parseDir,
         ignoreDirs: [

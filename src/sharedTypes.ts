@@ -59,6 +59,8 @@ export interface FileName {
 }
 export interface Config {
     projectName: string;
+    // The version number of Eden that was used to generate this config
+    edenVersion: string;
     parseDir: pathOSAbsolute;
     // If relative this path is relative to the currentWorkingDirectory 
     // Otherwise it is absolute

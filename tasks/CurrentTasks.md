@@ -1,5 +1,4 @@
 ## MVP Tasks
-- test against commonmark spec: `![foo ![bar](/url)](/url2)` https://spec.commonmark.org/0.30/#images
 - Revise styling of basic template to make it more "my own"
 - (MVP) Make mvp demo video and send to Zak
     - Try to drum up interest with a Discord server / mailing list for a "zero-config digital garden"
@@ -11,10 +10,12 @@
 - Change icon from deno dinosaur to something else
     - http://www.angusj.com/resourcehacker/
 - Build rudimentary homepage based off of https://stephanango.com/
+- TODO support ` ![[wikilink#Header]] for headers`
+    - https://publish.obsidian.md/hub/04+-+Guides%2C+Workflows%2C+%26+Courses/Guides/Markdown+Syntax#Obsidian's+Custom+markdown+syntax
 - Refactor all the various `allFilesNames` and `tableOfContents` to ultimately use the Garden object
     - rss.xml should use Garden too instead of tableOfContents object
 ---
-- Add Eden version number to generated manifest so that I can notify users how to migrate when version number changes only if they need to
+- Support callouts: https://publish.obsidian.md/hub/04+-+Guides%2C+Workflows%2C+%26+Courses/Guides/Markdown+Syntax#Callouts
 - Separate root template from content template
 - add readme instructions in config dir?
 - Add footer with app name and such
@@ -25,6 +26,8 @@
 - Sign & notorize app on mac
     - https://developer.apple.com/forums/thread/130379
 - Refactor footgun: `!metadata.publish is true when publish is just undefined, in which case it should default to true, not falsey`
+## Tasks
+- test against commonmark spec: `![foo ![bar](/url)](/url2)` https://spec.commonmark.org/0.30/#images
 
 ## Bugs
 - Bug: markdown-it thinks that an obsidian embed syntax inside inline-code block is an embed and not code.  See `names block ids`

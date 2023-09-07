@@ -1,5 +1,6 @@
 {
   "projectName": "sample-digital-garden",
+  "edenVersion": "0.1.0",
   "outDirRoot": "eden-md-out",
   "parseDir": "C:/git/eden-markdown/sample/",
   "ignoreDirs": [
