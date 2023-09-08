@@ -17,25 +17,28 @@
 </head>
 
 <body class="{{pageType}}">
-    <header>Header</header>
+    <header>
+        <div id="breadcrumbs">
+            {{breadcrumbs}}
+        </div>
+        {{metadata:title}}
+        {{metadata:subtitle}}
+        <hr>
+        <div id="article-metadata">
+            {{metadata:tags}}
+            <div class="gray right-align">
+                <div>Created {{created}}</div>
+                <div>Updated {{modified}}</div>
+            </div>
+        </div>
+    </header>
     <nav>
-    toc
+        <div id="nav-aligner">
+            {{nav}}
+        </div>
     </nav>
     <article>
         <div id="article-main">
-            <div id="breadcrumbs">
-                {{breadcrumbs}}
-            </div>
-            {{metadata:title}}
-            {{metadata:subtitle}}
-            <hr>
-            <div id="article-metadata">
-                {{metadata:tags}}
-                <div class="gray right-align">
-                    <div>Created {{created}}</div>
-                    <div>Updated {{modified}}</div>
-                </div>
-            </div>
             <div id="article-content">
                 {{content}}
             </div>
@@ -47,10 +50,9 @@
         </div>
     </article>
     <aside>
-    aside
     </aside>
     <footer>
-    Footer
+        {{footer}}
     </footer>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

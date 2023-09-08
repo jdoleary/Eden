@@ -17,7 +17,21 @@ export const defaultHtmlTemplatePage = `<!DOCTYPE html>
 </head>
 
 <body class="{{pageType}}">
-    <header>Header</header>
+    <header>
+        <div id="breadcrumbs">
+            {{breadcrumbs}}
+        </div>
+        {{metadata:title}}
+        {{metadata:subtitle}}
+        <hr>
+        <div id="article-metadata">
+            {{metadata:tags}}
+            <div class="gray right-align">
+                <div>Created {{created}}</div>
+                <div>Updated {{modified}}</div>
+            </div>
+        </div>
+    </header>
     <nav>
         <div id="nav-aligner">
             {{nav}}
@@ -25,19 +39,6 @@ export const defaultHtmlTemplatePage = `<!DOCTYPE html>
     </nav>
     <article>
         <div id="article-main">
-            <div id="breadcrumbs">
-                {{breadcrumbs}}
-            </div>
-            {{metadata:title}}
-            {{metadata:subtitle}}
-            <hr>
-            <div id="article-metadata">
-                {{metadata:tags}}
-                <div class="gray right-align">
-                    <div>Created {{created}}</div>
-                    <div>Updated {{modified}}</div>
-                </div>
-            </div>
             <div id="article-content">
                 {{content}}
             </div>
@@ -74,9 +75,7 @@ body {
 }
 
 header {
-    grid-column: 1 / 4;
-    background-color: #333;
-    color: white;
+    grid-column: 2;
 }
 
 nav {
@@ -137,9 +136,8 @@ aside {
 }
 
 footer {
-    grid-column: 1 / 4;
-    background-color: #333;
-    color: white;
+    grid-column: 2;
+    padding-bottom:4em;
 }
 /* End holy grail layout*/
 
