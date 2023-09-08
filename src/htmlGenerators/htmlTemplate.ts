@@ -70,9 +70,6 @@ body {
 }
 /* Holy Grail Layout styling */
 body {
-    display: grid;
-    grid-template-rows: auto 1fr auto;
-    grid-template-columns: 1fr 3fr 1fr;
     height: 100vh;
 }
 
@@ -83,6 +80,7 @@ header {
 }
 
 nav {
+    display:none;
     grid-row: 2;
     grid-column: 1;
 }
@@ -91,11 +89,39 @@ nav {
     width:280px;
     margin-left:auto;
 }
+/* min width is the 800 of the article + the 280 of the nav aligner*/
+@media screen and (min-width: 1080px) {
+    nav {
+        display: block;
+    }
+    div#breadcrumbs {
+        display:none;
+    }
+    article {
+        max-width: 100%;
+        width: 800px;
+    }
+    body {
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        grid-template-columns: 1fr 800px 1fr;
+    }
+}
 
 article {
     grid-row: 2;
     grid-column: 2;
     background-color: #f5f5f5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding:0 1em;
+    background-color: #ffffff;
+    width:100%;
+    height: 100%;
+    box-sizing: border-box;
+    /* So small pages will grow to full height */
+    flex: 1;
 }
 
 aside {
@@ -161,19 +187,6 @@ body.type-directory #article-metadata {
     display:inline;
 }
 
-article {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding:0 1em;
-    background-color: #ffffff;
-    max-width: 100%;
-    width: 800px;
-    height: 100%;
-    box-sizing: border-box;
-    /* So small pages will grow to full height */
-    flex: 1;
-}
 
 /* Only show underline on hover like how google does it */
 a:hover {
