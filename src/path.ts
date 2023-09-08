@@ -68,7 +68,7 @@ export function absoluteOsMdPathToWebPath(osPath: string, parseDir: string): pat
 // For example, see tests above
 export function pageNameToPagePath(relativePath: string, name: string, extension = '.html'): pathWeb {
     // .filter removes leading and trailing separators
-    return [...relativePath.split(path.sep).filter(x => !!x), (path.basename(name, path.extname(name)) + extension).toLowerCase()].join(WEB_PATH_SEPARATOR).replaceAll(' ', '_')
+    return [...relativePath.split(path.sep).filter(x => !!x), (path.basename(name, path.extname(name)) + extension)].join(WEB_PATH_SEPARATOR).replaceAll(' ', '_')
 }
 
 

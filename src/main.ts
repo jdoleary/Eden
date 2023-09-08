@@ -301,7 +301,7 @@ async function main() {
     const processPromises: Promise<Page | undefined>[] = [];
     for await (const f of getFiles(allFilesPath, config)) {
         try {
-            processPromises.push(process(f, templateHtml, { allFilesNames, tableOfContents, nav, config, backlinks, garden, markdownIt }));
+            processPromises.push(process(f, { allFilesNames, tableOfContents, nav, config, backlinks, garden, markdownIt }));
         } catch (e) {
             console.error('error in process', e);
         }
@@ -312,6 +312,17 @@ async function main() {
         console.error('Error while processing files', e);
     }
     console.log('✅ Finished converting .md to .html in', performance.now() - convertingPerformanceStart, 'milliseconds.');
+
+    // Now that all pages have been processed, remove unpublished pages from nav
+    removeHiddenPages(nav, garden);
+
+    // Output all pages now that nav has had hidden pages removed:
+    const outputPagePromises: Promise<void>[] = [];
+    for (const page of garden.pages) {
+        outputPagePromises.push(outputPage(page, templateHtml, { allFilesNames, tableOfContents, nav, config, backlinks, garden, markdownIt }))
+
+    }
+    await Promise.all(outputPagePromises);
 
     logVerbose('Table of Contents:', tableOfContents);
     // Create table of contents
@@ -349,7 +360,7 @@ ${Array.from(garden.tags).map(t => `<a href="${getWebPathOfTag(t)}">${t}</a>`).j
 <h4>Latest</h4>
 <a href="${latestPage.webPath}"><h3>${latestPage.name}</h3></a>
 <div>${new Date(latestPage.createdAt as number).toDateString()}</div>
-<div>${latestPage.contents.slice(0, 100)}...</div>
+<div>${latestPage.metadata?.summary || ''}</div>
 ${tagsHtml}
 <hr>
 <h4>Pages </h4>
@@ -386,6 +397,10 @@ ${tagsHtml}
 
     // Create garden.json
     const gardenOutPath = path.join(getOutDir(config), 'garden.json');
+    // Sanitize garden of _internal
+    for (const page of garden.pages) {
+        delete page._internal;
+    }
     await Deno.writeTextFile(gardenOutPath, JSON.stringify(garden, null, 2));
 
     const startTranscludingEmbeddableBlocks = performance.now();
@@ -494,7 +509,7 @@ await main().catch(e => {
         prompt("Finished... Enter any key to exit.");
     }
 });
-async function process(filePath: string, templateHtml: string, { allFilesNames, tableOfContents, nav, config, backlinks, garden, markdownIt }: { allFilesNames: FileName[], tableOfContents: TableOfContents, nav: NavItem[], config: Config, backlinks: Backlinks, garden: Garden, markdownIt: MarkdownIt }): Promise<Page | undefined> {
+async function process(filePath: string, { allFilesNames, tableOfContents, nav, config, backlinks, garden, markdownIt }: { allFilesNames: FileName[], tableOfContents: TableOfContents, nav: NavItem[], config: Config, backlinks: Backlinks, garden: Garden, markdownIt: MarkdownIt }): Promise<Page | undefined> {
     // Dev, test single file
     // if (filePath !== 'C:\\ObsidianJordanJiuJitsu\\JordanJiuJitsu\\Core Concepts.md') {
     // if (filePath !== 'C:\\git\\eden-markdown\\sample\\markdown-it refactor.md') {
@@ -570,20 +585,6 @@ async function process(filePath: string, templateHtml: string, { allFilesNames, 
             return;
         }
 
-        // metadata: `template`
-        // Supports using a custom template instead of default template
-        if (metadata && metadata.template) {
-            const defaultTemplatePath = path.join(getConfDir(config.parseDir), metadata.template);
-            try {
-                templateHtml = await Deno.readTextFile(defaultTemplatePath);
-            } catch (_) {
-                // Use default demplate
-                console.warn(`Custom template ${metadata.template} not found.  Check for the existence of ${defaultTemplatePath}`);
-            }
-
-
-        }
-
         // Remove metadata so it doesn't get converted into the html
         fileContents = fileContents.slice(metadataCharacterCount);
 
@@ -605,39 +606,22 @@ async function process(filePath: string, templateHtml: string, { allFilesNames, 
         } catch (e) {
             console.error('❌ Err: Failed to get file stat for ', filePath);
         }
-        const page: Page = {
-            webPath: absoluteOsMdPathToWebPath(filePath, config.parseDir),
-            name: pathToPageName(filePath),
-            contents: fileContents,
-            metadata,
-            createdAt: createdAt?.getTime(),
-            modifiedAt: modifiedAt?.getTime(),
-            blockEmbeds: [],
-        }
 
         let htmlString = markdownIt.render(fileContents);
         htmlString = htmlString
             .replaceAll('%20', ' ');
 
-        htmlString = await addContentsToTemplate(htmlString, templateHtml, { config, tableOfContents, nav, filePath, relativePath, metadata, backlinks, isDir: false });
-
-        try {
-            // Get the new path
-            const outPath = path.join(getOutDir(config), relativePath);
-            // Make the directory that the file will end up in
-            await Deno.mkdir(path.parse(outPath).dir, { recursive: true });
-            // Rename the file as .html
-            // .replaceAll: Replace all spaces with underscores, so they become valid html paths
-            // Note: Even though pageNameToPagePath returns `pathWeb` that is the path that we use 
-            // for the htmlOutPath which is relative to the `ourDir` because that is the path that
-            // it WILL become on the web (even though it's being saved to the harddrive now).
-            const htmlOutPath = pageNameToPagePath(path.dirname(outPath), outPath);
-            // Write the file
-            await Deno.writeTextFile(htmlOutPath, htmlString);
-
-            logVerbose('Written', htmlOutPath);
-        } catch (e) {
-            console.error(e);
+        const page: Page = {
+            webPath: absoluteOsMdPathToWebPath(filePath, config.parseDir),
+            name: pathToPageName(filePath),
+            contents: htmlString,
+            metadata,
+            createdAt: createdAt?.getTime(),
+            modifiedAt: modifiedAt?.getTime(),
+            blockEmbeds: [],
+            _internal: {
+                filePath
+            }
         }
         return page;
     } else {
@@ -645,4 +629,45 @@ async function process(filePath: string, templateHtml: string, { allFilesNames, 
     }
     logVerbose('Done processing', filePath, '\n');
     return undefined;
+}
+
+async function outputPage(page: Page, templateHtml: string, { allFilesNames, tableOfContents, nav, config, backlinks, garden, markdownIt }: { allFilesNames: FileName[], tableOfContents: TableOfContents, nav: NavItem[], config: Config, backlinks: Backlinks, garden: Garden, markdownIt: MarkdownIt }): Promise<void> {
+    if (!page._internal) {
+        console.error('Page missing _internal');
+        return;
+    }
+    const relativePath = path.relative(config.parseDir, page._internal.filePath);
+
+    // metadata: `template`
+    // Supports using a custom template instead of default template
+    if (page.metadata && page.metadata.template) {
+        const defaultTemplatePath = path.join(getConfDir(config.parseDir), page.metadata.template);
+        try {
+            templateHtml = await Deno.readTextFile(defaultTemplatePath);
+        } catch (_) {
+            // Use default demplate
+            console.warn(`Custom template ${page.metadata.template} not found.  Check for the existence of ${defaultTemplatePath}`);
+        }
+    }
+
+    const htmlString = await addContentsToTemplate(page.contents, templateHtml, { config, tableOfContents, nav, filePath: page._internal.filePath, relativePath, metadata: page.metadata, backlinks, isDir: false });
+
+    try {
+        // Get the new path
+        const outPath = path.join(getOutDir(config), relativePath);
+        // Make the directory that the file will end up in
+        await Deno.mkdir(path.parse(outPath).dir, { recursive: true });
+        // Rename the file as .html
+        // .replaceAll: Replace all spaces with underscores, so they become valid html paths
+        // Note: Even though pageNameToPagePath returns `pathWeb` that is the path that we use 
+        // for the htmlOutPath which is relative to the `ourDir` because that is the path that
+        // it WILL become on the web (even though it's being saved to the harddrive now).
+        const htmlOutPath = pageNameToPagePath(path.dirname(outPath), outPath);
+        // Write the file
+        await Deno.writeTextFile(htmlOutPath, htmlString);
+
+        logVerbose('Written', htmlOutPath);
+    } catch (e) {
+        console.error(e);
+    }
 }

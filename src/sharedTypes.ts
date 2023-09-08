@@ -46,6 +46,10 @@ export interface Page {
     // blockEmbeds not yet implemented, see 
     // `// TODO find out how to pass page` in mdPlugins.ts
     blockEmbeds: string[];
+    // For use within Eden only, will not be outputted to garden.json
+    _internal?: {
+        filePath: string;
+    }
 }
 // Garden.json
 export interface Garden {

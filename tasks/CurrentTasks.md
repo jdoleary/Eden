@@ -1,7 +1,5 @@
 ## MVP Tasks
-- remove toc from homepage
 - Replace all usages of tableOfContents with garden
-- **Revise styling of basic template to make it more "my own"**
 - **(MVP) Make mvp demo video and send to Zak**
     - Try to drum up interest with a Discord server / mailing list for a "zero-config digital garden"
     - Video steps
