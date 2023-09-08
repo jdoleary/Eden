@@ -10,12 +10,13 @@
 - ✅ Support embeddable images
 - ✅ Website icons next to external links (Like this: [Youtube](https://youtube.com))
 - ✅ ️Built-in rss feed support (automatically creates `/rss.xml`)
-- ✅ Metadata `publish`
+- ✅ Metadata `hidden`: prevents publishing the page
 - ✅ Metadata define custom `template`
 - ✅ Metadata `type` like tags but singular.
 - ✅ Metadata `tags` should link to index pages
 - ✅ Index pages based on tags (example: [Maggie Appleton's Essays](https://maggieappleton.com/essays))
 - ✅ [Support sizing images](https://help.obsidian.md/Editing+and+formatting/Basic+formatting+syntax#External+images)
+- ✅ Navigation: Support for vertical and horizontal nav depending on screen size.  Collapsable sections
 - ✅ 🔑Block Embedding
     - Block-based, content as data, so the same piece of content can easily be transcluded in multiple places
         - Adding in dynamically updated bits of content into other bits of content
@@ -23,17 +24,17 @@
         - 🔑[Obsidian named block ids](https://help.obsidian.md/Linking+notes+and+files/Internal+links#Link+to+a+block+in+a+note)
 - 🔲 Custom Static Components (similar to shortcodes)
 - 🔲 Site search
-    - make entire garden available in json like [Maggie Appleton's Garden.json](https://maggieappleton.com/_next/data/yUhDOUNEYA1W3PsJNBhvU/garden.json) This will be necessary to support homepage
+    - ✅ make entire garden available in json at /garden.json for advanced usage 
 - 🔲 🔑⛰️Backlinks should include optional context snippets
 - 🔲 🍎Metadata `thumbnail` for article for when it's displayed in an index page
 - 🔲 Embeddable content
     - ✅ Embeddable Youtube Videos
+    - ✅ Embeddable Vimeo Videos
     - 🔲⛰️Embeddable Tweets
 - 🔲 🌀Ability to create different object types, ontologies, and tags
     - Example: https://www.gwern.net/About#confidence-tags
     - Example: Maggie Appleton's site, which has "Notes", "Essays", and "Patterns", among other collections of different objects
 - 🔲 🍎Expandible/collapsible blocks
-- 🔲 Navigation: Support for vertical and horizontal nav, primary and secondary, floating navbar, nested or expanded megamenu navigation
 - 🔲 Sidenotes, in margin
     - https://www.gwern.net/Sidenotes
 - 🔲 ⛰️Support syntax highlighting
@@ -43,7 +44,8 @@
 - 🔲 ⛰️Customizable header (like https://maggieappleton.com/) that works with transclusion.
 - 🔲 ⛰️Annotation support (or compatible with social annotation plugins)
 - 🔲 ⛰️Optimization: Optionally only process files that have changed to speed up compile time
-- 🔲 ⛰️Template Footer: with social links and link to rss.xml
+- 🔲 ⛰️Template Footer: with social links
+    - ✅ link to rss.xml
 - 🔲 🍎[Link to a note using a metadata alias](https://help.obsidian.md/Linking+notes+and+files/Aliases#Link+to+a+note+using+an+alias)
 
 
