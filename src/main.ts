@@ -372,7 +372,7 @@ ${tagsHtml}
     createTagDirIndexFile(garden, templateHtml, { tableOfContents, config, backlinks });
 
     // Create rss.xml
-    if (config.rssInfo) {
+    if (config.rssInfo && config.rssInfo.homepage !== 'https://example.com') {
         const rssOutPath = path.join(getOutDir(config), 'rss.xml');
         const rssXML = makeRSSFeed(tableOfContents, config.rssInfo);
         await Deno.writeTextFile(rssOutPath, rssXML);

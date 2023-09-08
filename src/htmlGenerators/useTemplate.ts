@@ -73,9 +73,9 @@ export async function addContentsToTemplate(content: string, templateHtml: strin
     content = content.replace('{{nav}}', nav ? navHTML(nav, relativePath.split(path.SEP)) : '');
     // Add footer
     let footerHTML = ``;
-    if (config.rssInfo) {
+    if (config.rssInfo && config.rssInfo.homepage !== 'https://example.com') {
         footerHTML += `
-        <a href="/rss.xml">RSS</a>`;
+        <a href="/rss.xml">RSS Feed</a>`;
     }
     content = content.replace('{{footer}}', footerHTML);
 
