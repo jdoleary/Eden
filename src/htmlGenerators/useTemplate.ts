@@ -2,10 +2,11 @@ import * as path from "https://deno.land/std@0.177.0/path/mod.ts";
 import { Config, TableOfContents, TableOfContentsEntry, tableOfContentsURL, tagsDirectoryName } from "../sharedTypes.ts";
 import { Backlinks } from "../tool/backlinkFinder.ts";
 import { absoluteOsMdPathToWebPath, pathOSAbsolute } from "../path.ts";
+import { NavItem, navHTML } from "../tool/navigation.ts";
 
 // Takes a string that contains html with template designators (e.g. {{content}}) and fills all the templates
-export async function addContentsToTemplate(content: string, templateHtml: string, { config, tableOfContents, filePath, relativePath, metadata, backlinks, isDir }: {
-    config: Config, tableOfContents: TableOfContents, filePath: string, relativePath: string, metadata: any, backlinks: Backlinks, isDir: boolean
+export async function addContentsToTemplate(content: string, templateHtml: string, { config, tableOfContents, nav, filePath, relativePath, metadata, backlinks, isDir }: {
+    config: Config, tableOfContents: TableOfContents, nav?: NavItem[], filePath: string, relativePath: string, metadata: any, backlinks: Backlinks, isDir: boolean
 }): Promise<string> {
     const pageTitle = (relativePath.split('\\').slice(-1)[0] || '').replaceAll('.md', '');
 
@@ -67,6 +68,9 @@ export async function addContentsToTemplate(content: string, templateHtml: strin
             console.error('❌ Err: Failed to get file stat for ', filePath);
         }
     }
+
+    // Add nav
+    content = content.replace('{{nav}}', nav ? navHTML(nav, relativePath.split(path.SEP)) : '');
 
     return content;
 

@@ -34,6 +34,7 @@ import { embedBlocks, processBlockElementsWithID } from "./tool/editDOM.ts";
 import { getCliFlagOptions, rawCLIFlagOptions } from "./cliOptions.ts";
 import plugins from "./tool/mdPlugins.ts";
 import { obsidianStyleBacklinkRegex, obsidianStyleEmbedBlockRegex, obsidianStyleEmbedFileRegex, obsidianStyleEmbedPageRegex } from "./tool/regexCollection.ts";
+import { NavItem, findNavItem } from "./tool/navigation.ts";
 
 const VERSION = '0.1.0'
 
@@ -245,22 +246,34 @@ async function main() {
     const backlinks = await findBacklinks(getFiles(allFilesPath, config), allFilesNames, config.parseDir);
 
     // Create index file for each directory
+    const nav: NavItem[] = [];
     for await (const d of getDirs(allFilesPath, config)) {
         const directoryPathSegment: pathOSRelative = path.relative(config.parseDir, d.dir).replaceAll(' ', '_');
         const pageNameSteps = directoryPathSegment.split('\\');
         const indent = pageNameSteps.length;
         const pageName = pathToPageName(directoryPathSegment);
+        const parentNavItem = findNavItem(nav, pageNameSteps.slice(0, -1));
+        const dirNavItem: NavItem = { name: pageName, isDir: true, webPath: '/' + path.join(pageNameSteps.join('/'), 'index.html'), children: [] };
+        if (parentNavItem) {
+            parentNavItem.children.push(dirNavItem)
+        } else {
+            nav.push(dirNavItem);
+        }
         tableOfContents.push({ indent, pageName, relativePath: directoryPathSegment, isDir: true, publish: true });
         // Add files to table of contents for use later for "next" and "prev" buttons to know order of pages
         for (const content of d.contents) {
             if (content.isFile) {
                 if (content.name.endsWith('.md')) {
+                    const name = content.name.replace('.md', '')
+                    const relativePath = pageNameToPagePath(directoryPathSegment, content.name);
+                    dirNavItem.children.push({ name, isDir: false, webPath: '/' + relativePath, children: [] });
                     tableOfContents.push({
                         originalFilePath: path.normalize(path.join(d.dir, content.name)),
                         indent: indent + 1,
                         parentDir: d.dir,
-                        pageName: content.name.replace('.md', ''),
-                        relativePath: pageNameToPagePath(directoryPathSegment, content.name), isDir: false,
+                        pageName: name,
+                        relativePath,
+                        isDir: false,
                         // Defaults to true until it is changed later when the file's metadata is processed
                         publish: true
                     });
@@ -287,7 +300,7 @@ async function main() {
     const processPromises: Promise<Page | undefined>[] = [];
     for await (const f of getFiles(allFilesPath, config)) {
         try {
-            processPromises.push(process(f, templateHtml, { allFilesNames, tableOfContents, config, backlinks, garden, markdownIt }));
+            processPromises.push(process(f, templateHtml, { allFilesNames, tableOfContents, nav, config, backlinks, garden, markdownIt }));
         } catch (e) {
             console.error('error in process', e);
         }
@@ -309,7 +322,7 @@ async function main() {
         // -1 sets the top level pages flush with the left hand side
         const indentHTML: string[] = Array(x.indent - 1).fill('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
         return `<div>${indentHTML.join('')}<a href="${x.relativePath}">${x.pageName}</a></div>`;
-    }).join(''), templateHtml, { config, tableOfContents, filePath: tocOutPath, relativePath: '', metadata: { title: 'Table of Contents' }, backlinks, isDir: true });
+    }).join(''), templateHtml, { config, tableOfContents, nav, filePath: tocOutPath, relativePath: '', metadata: { title: 'Table of Contents' }, backlinks, isDir: true });
     await Deno.writeTextFile(tocOutPath, tableOfContentsHtml);
 
     // Create Homepage
@@ -321,14 +334,17 @@ async function main() {
         const sortedPages = garden.pages.filter(p => !!p.createdAt).sort((p1, p2) => (p2.createdAt || 0) - (p1.createdAt || 0))
         const latestPage = sortedPages[0];
         // `.createdAt as number` because createdAt is guarunteed to exist due to above .filter on garden.pages
+        const tagsHtml = garden.tags.size > 0 ? `
+        <hr>
+<h4> Tags </h4>
+${Array.from(garden.tags).map(t => `<a href="${getWebPathOfTag(t)}">${t}</a>`).join('<span>, </span>')}
+        `: '';
         homepageContents += `
 <h4>Latest</h4>
 <a href="${latestPage.webPath}"><h3>${latestPage.name}</h3></a>
 <div>${new Date(latestPage.createdAt as number).toDateString()}</div>
 <div>${latestPage.contents.slice(0, 100)}...</div>
-<hr>
-<h4> Tags </h4>
-${Array.from(garden.tags).map(t => `<a href="${getWebPathOfTag(t)}">${t}</a>`).join('<span>, </span>')}
+${tagsHtml}
 <hr>
 <h4>Pages </h4>
 <table>
@@ -339,7 +355,7 @@ ${Array.from(garden.tags).map(t => `<a href="${getWebPathOfTag(t)}">${t}</a>`).j
             `
     }
     const homepageOutPath = path.join(getOutDir(config), homepagePath);
-    const homepageHTML = await addContentsToTemplate(homepageContents, templateHtml, { config, tableOfContents, filePath: homepageOutPath, relativePath: '', metadata: { title: config.projectName }, backlinks, isDir: true });
+    const homepageHTML = await addContentsToTemplate(homepageContents, templateHtml, { config, tableOfContents, nav, filePath: homepageOutPath, relativePath: '', metadata: { title: config.projectName }, backlinks, isDir: true });
     await Deno.writeTextFile(homepageOutPath, homepageHTML);
 
     // Create tag index pages
@@ -472,7 +488,7 @@ await main().catch(e => {
         prompt("Finished... Enter any key to exit.");
     }
 });
-async function process(filePath: string, templateHtml: string, { allFilesNames, tableOfContents, config, backlinks, garden, markdownIt }: { allFilesNames: FileName[], tableOfContents: TableOfContents, config: Config, backlinks: Backlinks, garden: Garden, markdownIt: MarkdownIt }): Promise<Page | undefined> {
+async function process(filePath: string, templateHtml: string, { allFilesNames, tableOfContents, nav, config, backlinks, garden, markdownIt }: { allFilesNames: FileName[], tableOfContents: TableOfContents, nav: NavItem[], config: Config, backlinks: Backlinks, garden: Garden, markdownIt: MarkdownIt }): Promise<Page | undefined> {
     // Dev, test single file
     // if (filePath !== 'C:\\ObsidianJordanJiuJitsu\\JordanJiuJitsu\\Core Concepts.md') {
     // if (filePath !== 'C:\\git\\eden-markdown\\sample\\markdown-it refactor.md') {
@@ -597,7 +613,7 @@ async function process(filePath: string, templateHtml: string, { allFilesNames, 
         htmlString = htmlString
             .replaceAll('%20', ' ');
 
-        htmlString = await addContentsToTemplate(htmlString, templateHtml, { config, tableOfContents, filePath, relativePath, metadata, backlinks, isDir: false });
+        htmlString = await addContentsToTemplate(htmlString, templateHtml, { config, tableOfContents, nav, filePath, relativePath, metadata, backlinks, isDir: false });
 
         try {
             // Get the new path

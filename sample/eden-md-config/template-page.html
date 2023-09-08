@@ -17,37 +17,41 @@
 </head>
 
 <body class="{{pageType}}">
-    <main>
-        <nav>
-        </nav>
-        <article>
-            <div id="article-main">
-                <div id="breadcrumbs">
-                    {{breadcrumbs}}
-                </div>
-                {{metadata:title}}
-                {{metadata:subtitle}}
-                <hr>
-                <div id="article-metadata">
-                    {{metadata:tags}}
-                    <div class="gray right-align">
-                        <div>Created {{created}}</div>
-                        <div>Updated {{modified}}</div>
-                    </div>
-                </div>
-                <div id="article-content">
-                    {{content}}
+    <header>Header</header>
+    <nav>
+    toc
+    </nav>
+    <article>
+        <div id="article-main">
+            <div id="breadcrumbs">
+                {{breadcrumbs}}
+            </div>
+            {{metadata:title}}
+            {{metadata:subtitle}}
+            <hr>
+            <div id="article-metadata">
+                {{metadata:tags}}
+                <div class="gray right-align">
+                    <div>Created {{created}}</div>
+                    <div>Updated {{modified}}</div>
                 </div>
             </div>
-            <div id="article-footer">
-                <div id="backlinks">
-                    {{backlinks}}
-                </div>
+            <div id="article-content">
+                {{content}}
             </div>
-        </article>
-        <footer>
-        </footer>
-    </main>
+        </div>
+        <div id="article-footer">
+            <div id="backlinks">
+                {{backlinks}}
+            </div>
+        </div>
+    </article>
+    <aside>
+    aside
+    </aside>
+    <footer>
+    Footer
+    </footer>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 </body>

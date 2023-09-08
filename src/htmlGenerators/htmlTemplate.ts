@@ -17,37 +17,42 @@ export const defaultHtmlTemplatePage = `<!DOCTYPE html>
 </head>
 
 <body class="{{pageType}}">
-    <main>
-        <nav>
-        </nav>
-        <article>
-            <div id="article-main">
-                <div id="breadcrumbs">
-                    {{breadcrumbs}}
-                </div>
-                {{metadata:title}}
-                {{metadata:subtitle}}
-                <hr>
-                <div id="article-metadata">
-                    {{metadata:tags}}
-                    <div class="gray right-align">
-                        <div>Created {{created}}</div>
-                        <div>Updated {{modified}}</div>
-                    </div>
-                </div>
-                <div id="article-content">
-                    {{content}}
+    <header>Header</header>
+    <nav>
+        <div id="nav-aligner">
+            {{nav}}
+        </div>
+    </nav>
+    <article>
+        <div id="article-main">
+            <div id="breadcrumbs">
+                {{breadcrumbs}}
+            </div>
+            {{metadata:title}}
+            {{metadata:subtitle}}
+            <hr>
+            <div id="article-metadata">
+                {{metadata:tags}}
+                <div class="gray right-align">
+                    <div>Created {{created}}</div>
+                    <div>Updated {{modified}}</div>
                 </div>
             </div>
-            <div id="article-footer">
-                <div id="backlinks">
-                    {{backlinks}}
-                </div>
+            <div id="article-content">
+                {{content}}
             </div>
-        </article>
-        <footer>
-        </footer>
-    </main>
+        </div>
+        <div id="article-footer">
+            <div id="backlinks">
+                {{backlinks}}
+            </div>
+        </div>
+    </article>
+    <aside>
+    </aside>
+    <footer>
+    Footer
+    </footer>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 </body>
@@ -63,6 +68,54 @@ body {
     margin: 0;
     color:#313131;
 }
+/* Holy Grail Layout styling */
+body {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    grid-template-columns: 1fr 3fr 1fr;
+    height: 100vh;
+}
+
+header {
+    grid-column: 1 / 4;
+    background-color: #333;
+    color: white;
+}
+
+nav {
+    grid-row: 2;
+    grid-column: 1;
+}
+#nav-aligner {
+    /* Keep the nav right aligned */
+    width:280px;
+    margin-left:auto;
+}
+
+article {
+    grid-row: 2;
+    grid-column: 2;
+    background-color: #f5f5f5;
+}
+
+aside {
+    display:none;
+    grid-row: 2;
+    grid-column: 3;
+}
+
+@media screen and (min-width: 1050px) {
+    aside {
+        display:block;
+    }
+}
+
+footer {
+    grid-column: 1 / 4;
+    background-color: #333;
+    color: white;
+}
+/* End holy grail layout*/
 
 h1 {
     font-size: 2.5em;
@@ -84,9 +137,6 @@ p {
 /* directory index pages shouldn't show article metadata */
 body.type-directory #article-metadata {
     display: none;
-}
-nav {
-    height:60px;
 }
 .gray {
     color:gray;
@@ -112,6 +162,10 @@ nav {
 }
 
 article {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding:0 1em;
     background-color: #ffffff;
     max-width: 100%;
     width: 800px;
@@ -140,14 +194,6 @@ ul {
     padding-left: 16px;
 }
 
-main {
-    display: flex;
-    flex-direction: column;
-    /* Must be min-height so main can grow beyond 100vh if page is long like "Funnel_of_Control.html" */
-    min-height: 100vh;
-    align-items: center;
-}
-
 #breadcrumbs {
     display: flex;
     flex-wrap: wrap;
@@ -163,19 +209,6 @@ main {
     content: "";
 }
 
-
-@media screen and (min-width: 1050px) {
-    main {
-        display: flex;
-    }
-
-    article {
-        display: flex;
-        flex-direction: column;
-        /* Make the nextPrev buttons appear at the bottom */
-        justify-content: space-between;
-    }
-}
 
 .breadcrumbs-item:first-child {
     padding-left:0;
@@ -268,4 +301,31 @@ main {
     color:black;
     font-size:0.7em;
 }
+/* Collapsable nav styling */
+
+details {
+}
+
+summary {
+    font-weight: bold;
+    cursor: pointer;
+}
+
+summary::-webkit-details-marker {
+    color: #aaa;
+}
+
+details[open] {
+}
+
+details[open] summary {
+}
+
+nav ul {
+    list-style-type: disc;
+    padding-left: 20px;
+    margin:0;
+}
+
+/* End Collapsable nav styling */
 `

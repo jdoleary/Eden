@@ -7,6 +7,44 @@ body {
     margin: 0;
     color:#313131;
 }
+/* Holy Grail Layout styling */
+body {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    grid-template-columns: 1fr 3fr 1fr;
+    height: 100vh;
+}
+
+header {
+    grid-column: 1 / 4;
+    background-color: #333;
+    color: white;
+}
+
+nav {
+    grid-row: 2;
+    grid-column: 1;
+    background-color: #ddd;
+}
+
+article {
+    grid-row: 2;
+    grid-column: 2;
+    background-color: #f5f5f5;
+}
+
+aside {
+    grid-row: 2;
+    grid-column: 3;
+    background-color: #ddd;
+}
+
+footer {
+    grid-column: 1 / 4;
+    background-color: #333;
+    color: white;
+}
+/* End holy grail layout*/
 
 h1 {
     font-size: 2.5em;
@@ -56,6 +94,9 @@ nav {
 }
 
 article {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     background-color: #ffffff;
     max-width: 100%;
     width: 800px;
@@ -82,14 +123,6 @@ img {
 
 ul {
     padding-left: 16px;
-}
-
-main {
-    display: flex;
-    flex-direction: column;
-    /* Must be min-height so main can grow beyond 100vh if page is long like "Funnel_of_Control.html" */
-    min-height: 100vh;
-    align-items: center;
 }
 
 #breadcrumbs {

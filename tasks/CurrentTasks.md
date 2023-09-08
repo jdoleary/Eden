@@ -1,4 +1,6 @@
 ## MVP Tasks
+- remove toc from homepage
+- Replace all usages of tableOfContents with garden
 - **Revise styling of basic template to make it more "my own"**
 - **(MVP) Make mvp demo video and send to Zak**
     - Try to drum up interest with a Discord server / mailing list for a "zero-config digital garden"
@@ -7,7 +9,7 @@
         - TODO
         - CTA
         - Note: Always assume that a viewer might be seeing any video as their first video so reexplain the core ("this is the deep dive, but there's a simple way to do it if you don't want to customize") every video
-- **Change icon from deno dinosaur to something else**
+- **Change .exe icon from deno dinosaur to something else**
     - http://www.angusj.com/resourcehacker/
 ---
 - TODO support ` ![[wikilink#Header]] for headers`
