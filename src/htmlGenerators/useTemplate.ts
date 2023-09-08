@@ -1,7 +1,7 @@
 import * as path from "https://deno.land/std@0.177.0/path/mod.ts";
 import { Config, TableOfContents, TableOfContentsEntry, tableOfContentsURL, tagsDirectoryName } from "../sharedTypes.ts";
 import { Backlinks } from "../tool/backlinkFinder.ts";
-import { absoluteOsMdPathToWebPath, pathOSAbsolute } from "../path.ts";
+import { absoluteOsMdPathToWebPath, getOutDir, pathOSAbsolute } from "../path.ts";
 import { NavItem, navHTML } from "../tool/navigation.ts";
 
 // Takes a string that contains html with template designators (e.g. {{content}}) and fills all the templates
@@ -50,7 +50,8 @@ export async function addContentsToTemplate(content: string, templateHtml: strin
     // Even if tags don't exist, it should still be an empty div so that the createdAt timestamps stay on the right side of the flex
     content = content.replace('{{metadata:tags}}', metadata && metadata.tags ? `<div id="article-tags">${metadata.tags.map((tag: string) => `<a href="${path.join('/', tagsDirectoryName, `${tag}.html`).replaceAll(' ', '_')}">${tag}</a>`).join('')}</div>` : '<div></div>');
 
-    content = content.replace('{{pageType}}', isDir ? 'type-directory' : 'type-page');
+    const isHomepage = filePath == path.join(getOutDir(config), 'index.html');
+    content = content.replace('{{pageType}}', isHomepage ? 'type-homepage' : isDir ? 'type-directory' : 'type-page');
 
     if (!isDir) {
         // Get file stat data on the harddrive

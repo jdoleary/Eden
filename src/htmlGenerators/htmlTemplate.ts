@@ -377,4 +377,15 @@ nav ul {
 }
 
 /* End Collapsable nav styling */
+body.type-homepage #article-header {
+    /* Cannot be display:none or else it will mess up the grid, so just hide it via visibility and height*/
+    visibility:hidden;
+    height:0;
+    margin:0;
+    padding:0;
+}
+body.type-homepage h4 {
+    /* Make sure the first h4 aligns with the <nav>*/
+    margin-top:0;
+}
 `
