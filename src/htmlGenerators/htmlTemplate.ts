@@ -375,6 +375,9 @@ nav ul {
     padding-left: 6px;
     margin:0;
 }
+nav li a.currentPage {
+    font-weight:bold;
+}
 
 /* End Collapsable nav styling */
 body.type-homepage #article-header {

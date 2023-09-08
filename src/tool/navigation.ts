@@ -31,7 +31,8 @@ function navToHTML(item: NavItem, path?: string[]): string {
         return '';
     }
     if (!item.children.length) {
-        return `<li><a href="${item.webPath}">${item.name}</a></li>`;
+        const isCurrentPage = (path?.[0] || '').includes(item.name);
+        return `<li><a href="${item.webPath}" ${isCurrentPage ? `class="currentPage"` : ''}>${item.name}</a></li>`;
     }
     const pathMatches = path && item.name == path[0];
     const childrenHTML = `
