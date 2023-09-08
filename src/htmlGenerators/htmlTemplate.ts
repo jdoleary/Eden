@@ -1,3 +1,5 @@
+import { Config } from "../sharedTypes.ts"
+
 export const defaultHtmlTemplatePage = `<!DOCTYPE html>
 <html lang="en">
 
@@ -63,7 +65,7 @@ export const defaultHtmlTemplatePage = `<!DOCTYPE html>
 
 </html>`
 
-export const defaultStyles = `
+export const defaultStyles = (config: Config) => `
 body {
     font-size: 18px;
     background-color: #ffffff;
@@ -86,6 +88,7 @@ header a {
 }
 header a:hover {
   text-decoration: none; /* no underline */
+  color: ${config.style?.themeColor || '#603dd3'}
 }
 #article-header {
     grid-row: 2;
@@ -127,7 +130,6 @@ article {
     background-color: #f5f5f5;
     display: flex;
     flex-direction: column;
-    align-items: center;
     padding:0 1em;
     background-color: #ffffff;
     width:100%;
@@ -161,7 +163,7 @@ nav a {
 }
 nav a:hover {
     text-decoration: none; /* no underline */
-    color:#555;
+    color: ${config.style?.themeColor || '#603dd3'}
     border-left:2px solid #555;
 }
 
@@ -216,12 +218,13 @@ body.type-directory #article-metadata {
 }
 
 
-/* Only show underline on hover like how google does it */
+/* Instead of underline, just change color */
 a:hover {
-    text-decoration: underline;
+    color: ${config.style?.themeColor || '#603dd3'}
 }
 
 a {
+    color: ${config.style?.linkColor || '#7a7aff'};
     text-decoration: none;
 }
 

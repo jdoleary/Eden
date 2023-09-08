@@ -77,6 +77,10 @@ export interface Config {
     // the website root.  Useful for serving images or json for example.
     // These paths are relative to the parseDir
     staticServeDirs: string[];
+    style: {
+        themeColor: string;
+        linkColor: string;
+    }
     logVerbose?: boolean;
     rssInfo?: RSSInfo;
 }

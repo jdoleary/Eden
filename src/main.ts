@@ -110,6 +110,10 @@ async function main() {
         ],
         staticServeDirs,
         logVerbose: false,
+        style: {
+            themeColor: '#603dd3',
+            linkColor: '#7a7aff'
+        },
         rssInfo: {
             title: projectName,
             description: 'My Digital Garden',
@@ -199,7 +203,7 @@ async function main() {
     const stylesPath = path.join(getConfDir(config.parseDir), stylesName)
     if (cliFlags['overwrite-template'] || !await exists(stylesPath)) {
         console.log('Creating default styles in ', stylesPath);
-        await Deno.writeTextFile(stylesPath, defaultStyles);
+        await Deno.writeTextFile(stylesPath, defaultStyles(config));
     }
     // Copy styles to outDir so it will be statically served
     if (await exists(stylesPath)) {
