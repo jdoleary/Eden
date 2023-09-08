@@ -8,25 +8,37 @@ export function makeRSSFeed(tableOfContents: TableOfContents, rssInfo: RSSInfo):
         const pubDate = entry.createdAt?.toUTCString();
         return `
         <item>
-            <title>${entry.pageName}</title>
-            <link>${itemUrl}</link>
-            <guid>${itemUrl}</guid>
-            ${pubDate ? `<pubDate>${pubDate}</pubDate>` : ''}
+            <title>${escapeXml(entry.pageName)}</title>
+            <link>${escapeXml(itemUrl)}</link>
+            <guid>${escapeXml(itemUrl)}</guid>
+            ${pubDate ? `<pubDate>${escapeXml(pubDate)}</pubDate>` : ''}
         </item>
 `
     }).join('');
     const rssFeedString = `
 <rss version="2.0">
     <channel>
-        <title>${rssInfo.title}</title>
-        <link>${rssInfo.homepage}</link>
-        <description>${rssInfo.description}</description>
+        <title>${escapeXml(rssInfo.title)}</title>
+        <link>${escapeXml(rssInfo.homepage)}</link>
+        <description>${escapeXml(rssInfo.description)}</description>
         <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
-        <language>${rssInfo.language}</language>
+        <language>${escapeXml(rssInfo.language)}</language>
         ${items}
     </channel>
 </rss>
             `;
     return rssFeedString;
+}
+function escapeXml(unsafe: string) {
+    return unsafe.replaceAll(/[<>&'"]/gm, (c) => {
+        switch (c) {
+            case '<': return '&lt;';
+            case '>': return '&gt;';
+            case '&': return '&amp;';
+            case '\'': return '&apos;';
+            case '"': return '&quot;';
+        }
+        return c;
+    });
 }

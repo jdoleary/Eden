@@ -51,7 +51,7 @@ export const defaultHtmlTemplatePage = `<!DOCTYPE html>
     <aside>
     </aside>
     <footer>
-    Footer
+        {{footer}}
     </footer>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

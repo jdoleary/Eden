@@ -54,6 +54,8 @@ function getContentType(filePath: string): string {
     switch (ext) {
         case ".html":
             return "text/html";
+        case ".xml":
+            return "text/xml";
         case ".css":
             return "text/css";
         case ".js":
