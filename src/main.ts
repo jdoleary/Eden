@@ -17,7 +17,7 @@ import { assertSnapshot } from "https://deno.land/std@0.201.0/testing/snapshot.t
 import { copy } from "https://deno.land/std@0.195.0/fs/copy.ts";
 import { exists } from "https://deno.land/std@0.198.0/fs/exists.ts";
 import { parse } from "https://deno.land/std@0.194.0/flags/mod.ts";
-import { createDirectoryIndexFile, createTagDirIndexFile, createTagIndexFile } from "./htmlGenerators/indexFile.ts";
+import { createDirectoryIndexFile, createTagDirIndexFile, createTagIndexFile, getWebPathOfTag } from "./htmlGenerators/indexFile.ts";
 import { addContentsToTemplate, findTOCEntryFromFilepath } from "./htmlGenerators/useTemplate.ts";
 import { getDirs, getFiles } from "./os.ts";
 import { absoluteOsMdPathToWebPath, getConfDir, getOutDir, pageNameToPagePath, pathOSAbsolute, pathOSRelative, pathToPageName, pathWeb } from "./path.ts";
@@ -311,6 +311,36 @@ async function main() {
         return `<div>${indentHTML.join('')}<a href="${x.relativePath}">${x.pageName}</a></div>`;
     }).join(''), templateHtml, { config, tableOfContents, filePath: tocOutPath, relativePath: '', metadata: { title: 'Table of Contents' }, backlinks, isDir: true });
     await Deno.writeTextFile(tocOutPath, tableOfContentsHtml);
+
+    // Create Homepage
+    // Sort pages by newest
+    let homepageContents = '';
+    const homepagePath = 'index.html';
+    if (garden.pages.length) {
+
+        const sortedPages = garden.pages.filter(p => !!p.createdAt).sort((p1, p2) => (p2.createdAt || 0) - (p1.createdAt || 0))
+        const latestPage = sortedPages[0];
+        // `.createdAt as number` because createdAt is guarunteed to exist due to above .filter on garden.pages
+        homepageContents += `
+<h4>Latest</h4>
+<a href="${latestPage.webPath}"><h3>${latestPage.name}</h3></a>
+<div>${new Date(latestPage.createdAt as number).toDateString()}</div>
+<div>${latestPage.contents.slice(0, 100)}...</div>
+<hr>
+<h4> Tags </h4>
+${Array.from(garden.tags).map(t => `<a href="${getWebPathOfTag(t)}">${t}</a>`).join('<span>, </span>')}
+<hr>
+<h4>Pages </h4>
+<table>
+    <tbody>
+    ${sortedPages.map(p => `<tr><td style="text-align:right">${new Date(p.createdAt as number).toDateString()}</td><td><a href="${p.webPath}">${p.name}</a><td></tr>`).join('')}
+    </tbody>
+</table>
+            `
+    }
+    const homepageOutPath = path.join(getOutDir(config), homepagePath);
+    const homepageHTML = await addContentsToTemplate(homepageContents, templateHtml, { config, tableOfContents, filePath: homepageOutPath, relativePath: '', metadata: { title: config.projectName }, backlinks, isDir: true });
+    await Deno.writeTextFile(homepageOutPath, homepageHTML);
 
     // Create tag index pages
     // --

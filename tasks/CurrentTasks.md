@@ -9,7 +9,6 @@
         - Note: Always assume that a viewer might be seeing any video as their first video so reexplain the core ("this is the deep dive, but there's a simple way to do it if you don't want to customize") every video
 - **Change icon from deno dinosaur to something else**
     - http://www.angusj.com/resourcehacker/
-- **Build rudimentary homepage based off of https://stephanango.com/**
 ---
 - TODO support ` ![[wikilink#Header]] for headers`
     - https://publish.obsidian.md/hub/04+-+Guides%2C+Workflows%2C+%26+Courses/Guides/Markdown+Syntax#Obsidian's+Custom+markdown+syntax

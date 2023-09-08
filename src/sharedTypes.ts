@@ -5,7 +5,7 @@ export const templateName = 'template-page.html';
 export const stylesName = 'styles.css';
 export const configDirName = `${PROGRAM_NAME}-config`
 export const configName = `${PROGRAM_NAME}.config.json`;
-export const tableOfContentsURL = '/index.html';
+export const tableOfContentsURL = '/table_of_contents.html';
 export const tagsDirectoryName = 'tags';
 export const edenEmbedClassName = 'eden-embed';
 // For use in data attribute, hence the "-"

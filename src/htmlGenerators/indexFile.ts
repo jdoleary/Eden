@@ -31,10 +31,13 @@ export async function createDirectoryIndexFile(d: { dir: string, contents: Deno.
     }
 
 }
+export function getWebPathOfTag(tag: string): string {
+    return path.join(tagsDirectoryName, `${tag}.html`).replaceAll(' ', '_');
+}
 // An index file that shows all Pages that use the `tag`
 export async function createTagIndexFile(tag: string, garden: Garden, templateHtml: string, { tableOfContents, config, backlinks }: { tableOfContents: TableOfContents, config: Config, backlinks: Backlinks }) {
     try {
-        const relativePath = path.join(tagsDirectoryName, `${tag}.html`).replaceAll(' ', '_');
+        const relativePath = getWebPathOfTag(tag);
         const title = tag;
         // Rename the file as .html
         // .replaceAll: Replace all spaces with underscores, so they become valid html paths
