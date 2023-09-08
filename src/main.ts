@@ -34,7 +34,7 @@ import { embedBlocks, processBlockElementsWithID } from "./tool/editDOM.ts";
 import { getCliFlagOptions, rawCLIFlagOptions } from "./cliOptions.ts";
 import plugins from "./tool/mdPlugins.ts";
 import { obsidianStyleBacklinkRegex, obsidianStyleEmbedBlockRegex, obsidianStyleEmbedFileRegex, obsidianStyleEmbedPageRegex } from "./tool/regexCollection.ts";
-import { NavItem, findNavItem } from "./tool/navigation.ts";
+import { NavItem, findNavItem, removeHiddenPages } from "./tool/navigation.ts";
 
 const VERSION = '0.1.0'
 
@@ -253,20 +253,22 @@ async function main() {
         const indent = pageNameSteps.length;
         const pageName = pathToPageName(directoryPathSegment);
         const parentNavItem = findNavItem(nav, pageNameSteps.slice(0, -1));
-        const dirNavItem: NavItem = { name: pageName, isDir: true, webPath: '/' + path.join(pageNameSteps.join('/'), 'index.html'), children: [] };
+        // Note: `hidden` will be updated once the page is processed and the metadata is inspected
+        const dirNavItem: NavItem = { name: pageName, hidden: false, isDir: true, webPath: '/' + path.posix.join(pageNameSteps.join('/'), 'index.html'), children: [] };
         if (parentNavItem) {
             parentNavItem.children.push(dirNavItem)
         } else {
             nav.push(dirNavItem);
         }
-        tableOfContents.push({ indent, pageName, relativePath: directoryPathSegment, isDir: true, publish: true });
+        tableOfContents.push({ indent, pageName, relativePath: directoryPathSegment, isDir: true, hidden: false });
         // Add files to table of contents for use later for "next" and "prev" buttons to know order of pages
         for (const content of d.contents) {
             if (content.isFile) {
                 if (content.name.endsWith('.md')) {
                     const name = content.name.replace('.md', '')
                     const relativePath = pageNameToPagePath(directoryPathSegment, content.name);
-                    dirNavItem.children.push({ name, isDir: false, webPath: '/' + relativePath, children: [] });
+                    // Note: `hidden` will be updated once the page is processed and the metadata is inspected
+                    dirNavItem.children.push({ name, hidden: false, isDir: false, webPath: '/' + relativePath, children: [] });
                     tableOfContents.push({
                         originalFilePath: path.normalize(path.join(d.dir, content.name)),
                         indent: indent + 1,
@@ -274,8 +276,7 @@ async function main() {
                         pageName: name,
                         relativePath,
                         isDir: false,
-                        // Defaults to true until it is changed later when the file's metadata is processed
-                        publish: true
+                        hidden: false,
                     });
                 } else {
                     logVerbose('table of contents: skipping', content.name);
@@ -318,7 +319,7 @@ async function main() {
     // files with metadata `publish` can mutate the tableOfContents object
     const tocOutPath = path.join(getOutDir(config), tableOfContentsURL);
 
-    const tableOfContentsHtml = await addContentsToTemplate(tableOfContents.filter(x => x.publish).map(x => {
+    const tableOfContentsHtml = await addContentsToTemplate(tableOfContents.filter(x => !x.hidden).map(x => {
         // -1 sets the top level pages flush with the left hand side
         const indentHTML: string[] = Array(x.indent - 1).fill('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
         return `<div>${indentHTML.join('')}<a href="${x.relativePath}">${x.pageName}</a></div>`;
@@ -392,10 +393,10 @@ ${tagsHtml}
     // Iterate all .html files to find embed blocks and add the blocks' html into the garden object
     // TODO make async
     for (const { name, webPath, metadata } of garden.pages) {
-        if (metadata && metadata.publish === false) {
+        if (metadata && metadata.hidden) {
             continue;
         }
-        // TODO exclude --publish: false files from allFilesNames
+        // TODO exclude --hidden: true files from allFilesNames
         try {
             const filePath = path.join(getOutDir(config), webPath);
             const fileContent = await Deno.readTextFile(filePath);
@@ -411,7 +412,7 @@ ${tagsHtml}
     // Iterate all .html files to replace embed block references with the block content 
     // TODO make async
     for (const { name, webPath, metadata } of garden.pages) {
-        if (metadata && metadata.publish === false) {
+        if (metadata && metadata.hidden) {
             continue;
         }
         try {
@@ -556,15 +557,15 @@ async function process(filePath: string, templateHtml: string, { allFilesNames, 
         }
 
 
-        // metadata: `publish`
+        // metadata: `hidden`
         // Supports omitting a document from being rendered
-        if (metadata && metadata.publish === false) {
-            logVerbose('Skipping processing', filePath, 'Due to `metadata.publish == false`\n');
+        if (metadata && metadata.hidden) {
+            logVerbose('Skipping processing', filePath, 'Due to `metadata.hidden`\n');
             const tocEntry = findTOCEntryFromFilepath(tableOfContents, filePath)
             if (tocEntry) {
-                tocEntry.publish = false;
+                tocEntry.hidden = true;
             } else {
-                console.error('Unexpected, could not locate', filePath, 'in table of contents in order to set `publish` to false');
+                console.error('Unexpected, could not locate', filePath, 'in table of contents in order to set `hidden` to true');
             }
             return;
         }

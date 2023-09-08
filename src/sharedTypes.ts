@@ -11,7 +11,9 @@ export const edenEmbedClassName = 'eden-embed';
 // For use in data attribute, hence the "-"
 export const embedPathDataKey = 'embedpath';
 export interface Metadata {
-    publish: boolean;
+    // hidden prevents the page from being published
+    hidden: boolean;
+    summary: string;
     template: string;
     tags: string[];
     title: string;
@@ -20,7 +22,7 @@ export interface Metadata {
 export type TableOfContentsEntry = {
     originalFilePath?: pathOSAbsolute,
     // If the document will be publicly available and converted to html
-    publish: boolean,
+    hidden: boolean,
     indent: number,
     pageName: string,
     relativePath: string,

@@ -64,12 +64,12 @@ export function extractMetadata(fileContents: string): { metadata: any | null, m
 tags:
     - tag1
     - tag2
-publish: false
+hidden: true
 ---
 after metadata`,
         expected: {
             tags: ['tag1', 'tag2'],
-            publish: false,
+            hidden: true,
         }
 
     },
@@ -77,7 +77,7 @@ after metadata`,
         description: 'Test Dashes broken by character, note yaml is invalid so expected will be null',
         input: `---
     anything: one
-    publish: false
+    hidden: true
     -x--
     not done yet
     ---`,
@@ -88,7 +88,7 @@ after metadata`,
         description: 'Test Dashes broken by newline, note yaml is invalid so expected will be null',
         input: `---
     anything: one
-    publish: false
+    hidden: true
     --
     -
     not done yet

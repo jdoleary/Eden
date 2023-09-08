@@ -26,7 +26,6 @@
     - Validate the idea
 - Sign & notorize app on mac
     - https://developer.apple.com/forums/thread/130379
-- Refactor footgun: `!metadata.publish is true when publish is just undefined, in which case it should default to true, not falsey`
 ## Tasks
 - test against commonmark spec: `![foo ![bar](/url)](/url2)` https://spec.commonmark.org/0.30/#images
 
