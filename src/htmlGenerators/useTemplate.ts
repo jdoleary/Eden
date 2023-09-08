@@ -71,6 +71,9 @@ export async function addContentsToTemplate(content: string, templateHtml: strin
 
     // Add nav
     content = content.replace('{{nav}}', nav ? navHTML(nav, relativePath.split(path.SEP)) : '');
+    // Add header
+    const headerHTML = `<a href="/">${config.projectName}</a>`;
+    content = content.replace('{{header}}', headerHTML);
     // Add footer
     let footerHTML = ``;
     if (config.rssInfo && config.rssInfo.homepage !== 'https://example.com') {

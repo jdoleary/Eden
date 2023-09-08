@@ -18,6 +18,9 @@ export const defaultHtmlTemplatePage = `<!DOCTYPE html>
 
 <body class="{{pageType}}">
     <header>
+        {{header}}
+    </header>
+    <div id="article-header">
         <div id="breadcrumbs">
             {{breadcrumbs}}
         </div>
@@ -31,7 +34,7 @@ export const defaultHtmlTemplatePage = `<!DOCTYPE html>
                 <div>Updated {{modified}}</div>
             </div>
         </div>
-    </header>
+    </div>
     <nav>
         <div id="nav-aligner">
             {{nav}}
@@ -75,12 +78,23 @@ body {
 }
 
 header {
+    grid-column: 1/4;
+    padding:1em;
+}
+header a {
+  color: black;
+}
+header a:hover {
+  text-decoration: none; /* no underline */
+}
+#article-header {
+    grid-row: 2;
     grid-column: 2;
 }
 
 nav {
     display:none;
-    grid-row: 2;
+    grid-row: 3;
     grid-column: 1;
 }
 #nav-aligner {
@@ -102,13 +116,13 @@ nav {
     }
     body {
         display: grid;
-        grid-template-rows: auto 1fr auto;
+        grid-template-rows: auto auto 1fr auto;
         grid-template-columns: 1fr 800px 1fr;
     }
 }
 
 article {
-    grid-row: 2;
+    grid-row: 3;
     grid-column: 2;
     background-color: #f5f5f5;
     display: flex;
@@ -125,7 +139,7 @@ article {
 
 aside {
     display:none;
-    grid-row: 2;
+    grid-row: 3;
     grid-column: 3;
 }
 
@@ -133,6 +147,22 @@ aside {
     aside {
         display:block;
     }
+}
+nav summary {
+    color:#777;
+}
+nav summary:hover {
+    color:#333;
+}
+nav a {
+    color:#999;
+    border-left:2px solid #999;
+    padding-left:0.5em;
+}
+nav a:hover {
+    text-decoration: none; /* no underline */
+    color:#555;
+    border-left:2px solid #555;
 }
 
 footer {
@@ -338,7 +368,8 @@ details[open] summary {
 
 nav ul {
     list-style-type: none;
-    padding-left: 20px;
+    /* Aligns with the down arrow of the above folder */
+    padding-left: 6px;
     margin:0;
 }
 
