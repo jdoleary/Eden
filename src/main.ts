@@ -327,7 +327,12 @@ async function main() {
 
     // Create Homepage
     // Sort pages by newest
-    let homepageContents = '';
+    let homepageContents = `<style>
+    table td:first-child {
+        font-family: monospace;
+        padding-right:1.4em;
+    }
+</style>`;
     const homepagePath = 'index.html';
     if (garden.pages.length) {
 
