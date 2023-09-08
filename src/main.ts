@@ -341,8 +341,9 @@ async function main() {
     // Sort pages by newest
     let homepageContents = `<style>
     table td:first-child {
-        font-family: monospace;
         padding-right:1.4em;
+        text-align:right;
+        color:#777;
     }
 </style>`;
     const homepagePath = 'index.html';
@@ -355,24 +356,28 @@ async function main() {
         <hr>
 <h4> Tags </h4>
 ${Array.from(garden.tags).map(t => `<a href="${getWebPathOfTag(t)}">${t}</a>`).join('<span>, </span>')}
+<hr>
         `: '';
-        homepageContents += `
+        const latestHtml = latestPage.metadata?.summary ? `
 <h4>Latest</h4>
 <a href="${latestPage.webPath}"><h3>${latestPage.name}</h3></a>
 <div>${new Date(latestPage.createdAt as number).toDateString()}</div>
 <div>${latestPage.metadata?.summary || ''}</div>
-${tagsHtml}
 <hr>
+        `: '';
+        homepageContents += `
+${latestHtml}
+${tagsHtml}
 <h4>Pages </h4>
 <table>
     <tbody>
-    ${sortedPages.map(p => `<tr><td style="text-align:right">${new Date(p.createdAt as number).toDateString()}</td><td><a href="${p.webPath}">${p.name}</a><td></tr>`).join('')}
+    ${sortedPages.map(p => `<tr><td><span data-converttimeago="${p.createdAt as number}">${new Date(p.createdAt as number).toDateString()}</span></td><td><a href="${p.webPath}">${p.name}</a><td></tr>`).join('')}
     </tbody>
 </table>
             `
     }
     const homepageOutPath = path.join(getOutDir(config), homepagePath);
-    const homepageHTML = await addContentsToTemplate(homepageContents, templateHtml, { config, tableOfContents, nav, filePath: homepageOutPath, relativePath: '', metadata: { title: config.projectName }, backlinks, isDir: true });
+    const homepageHTML = await addContentsToTemplate(homepageContents, templateHtml, { config, tableOfContents, nav, filePath: homepageOutPath, relativePath: '', metadata: { title: '' }, backlinks, isDir: true });
     await Deno.writeTextFile(homepageOutPath, homepageHTML);
 
     // Create tag index pages
