@@ -65,11 +65,11 @@ body {
 }
 
 h1 {
-    font-size: 3.5em;
+    font-size: 2.5em;
 }
 
 h2 {
-    font-size: 1.55em;
+    font-size: 1.45em;
 }
 
 h1,h2,h3 {
