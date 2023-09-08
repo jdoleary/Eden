@@ -88,7 +88,7 @@ header a {
 }
 header a:hover {
   text-decoration: none; /* no underline */
-  color: ${config.style?.themeColor || '#603dd3'}
+  color: ${config.style?.themeColor || '#603dd3'};
 }
 #article-header {
     grid-row: 2;
@@ -163,8 +163,8 @@ nav a {
 }
 nav a:hover {
     text-decoration: none; /* no underline */
-    color: ${config.style?.themeColor || '#603dd3'}
-    border-left:2px solid #555;
+    color: ${config.style?.themeColor || '#603dd3'};
+    border-left:2px solid ${config.style?.themeColor || '#603dd3'};
 }
 
 footer {
@@ -220,7 +220,7 @@ body.type-directory #article-metadata {
 
 /* Instead of underline, just change color */
 a:hover {
-    color: ${config.style?.themeColor || '#603dd3'}
+    color: ${config.style?.themeColor || '#603dd3'};
 }
 
 a {
