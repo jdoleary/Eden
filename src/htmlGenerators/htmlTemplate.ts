@@ -318,8 +318,11 @@ details {
 }
 
 summary {
-    font-weight: bold;
+    list-style-type: '▸ ';
     cursor: pointer;
+}
+nav {
+    list-style-type: none;
 }
 
 summary::-webkit-details-marker {
@@ -330,10 +333,11 @@ details[open] {
 }
 
 details[open] summary {
+    list-style-type: '▾ ';
 }
 
 nav ul {
-    list-style-type: disc;
+    list-style-type: none;
     padding-left: 20px;
     margin:0;
 }
