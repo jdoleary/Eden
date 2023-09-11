@@ -35,7 +35,7 @@
 - [x] Embeddable content
     - [x] Embeddable Youtube Videos
     - [x] Embeddable Vimeo Videos
-    - [x]️ Embeddable Tweets
+    - [x] Embeddable Tweets
 - [ ] 🌀Ability to create different object types, ontologies, and tags
     - Example: https://www.gwern.net/About#confidence-tags
     - Example: Maggie Appleton's site, which has "Notes", "Essays", and "Patterns", among other collections of different objects
