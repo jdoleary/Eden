@@ -381,7 +381,11 @@ nav ul {
     margin:0;
 }
 nav li a.currentPage {
-    font-weight:bold;
+    color: ${config.style?.themeColor || '#603dd3'};
+    opacity:0.7;
+}
+nav li a.currentPage:hover {
+    opacity:1.0;
 }
 
 /* End Collapsable nav styling */
