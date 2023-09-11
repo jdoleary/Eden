@@ -101,7 +101,7 @@ export default function plugins(md: MarkdownIt, config: Config) {
             if (url) {
                 if (youtubeRegex.test(url)) {
                     const youtubeMatch = url.match(youtubeRegex);
-                    const youtubeVideoId = youtubeMatch && youtubeMatch[4];
+                    const youtubeVideoId = youtubeMatch && youtubeMatch[1];
                     return `<iframe class="responsive-iframe" src="https://www.youtube.com/embed/${youtubeVideoId}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`
                 }
 
