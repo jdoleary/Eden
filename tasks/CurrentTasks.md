@@ -1,5 +1,12 @@
 ## MVP Tasks
+- Sign and notorize
+    - https://developer.apple.com/developer-id/
+    - https://developer.apple.com/documentation/xcode/preparing-your-app-for-distribution/
+- Needed? https://github.com/cure53/DOMPurify
+    - https://developer.apple.com/forums/thread/130379
+    - See other useful libs: https://help.obsidian.md/Obsidian/Credits
 - **(MVP) Make mvp demo video and send to Zak**
+    - Use Obsidian help as sample https://github.com/obsidianmd/obsidian-help/tree/master/en
     - Try to drum up interest with a Discord server / mailing list for a "zero-config digital garden"
     - Video Outline
         - Introduce Eden
@@ -17,6 +24,7 @@
     - osx: https://stackoverflow.com/questions/30291757/attaching-an-icon-resource-to-a-rust-application
     - Also change the .exe details, description and copyright and original filename
 ---
+- Ensure caching supports UNPUBLISHING notes
 - TODO support ` ![[wikilink#Header]] for headers`
     - https://publish.obsidian.md/hub/04+-+Guides%2C+Workflows%2C+%26+Courses/Guides/Markdown+Syntax#Obsidian's+Custom+markdown+syntax
 - Refactor all the various `allFilesNames` and `tableOfContents` to ultimately use the Garden object
@@ -24,13 +32,8 @@
 - Support callouts: https://publish.obsidian.md/hub/04+-+Guides%2C+Workflows%2C+%26+Courses/Guides/Markdown+Syntax#Callouts
 - Separate root template from content template
 - add readme instructions in config dir?
-- Add footer with app name and such
 - if the out dir goes inside of the obsidian directory it takes obsidian too long to start up (it's caching) so the out dir should be somewhere else
 - Would this program work with Notion too?? What other programs output .md files? Evernote?
-- Splash page with waitlist
-    - Validate the idea
-- Sign & notorize app on mac
-    - https://developer.apple.com/forums/thread/130379
 ## Tasks
 - test against commonmark spec: `![foo ![bar](/url)](/url2)` https://spec.commonmark.org/0.30/#images
 
