@@ -1,5 +1,14 @@
 import { assertEquals } from "https://deno.land/std@0.196.0/testing/asserts.ts";
 
+
+export const twitterRegex = /^https?:\/\/(?:www\.)?(?:twitter|x).com(?:.com)?(?:\/(\w+))+/;
+([
+    ['https://twitter.com/Kamulch_Art/status/1701131095805452583?s=23', ['https://twitter.com/Kamulch_Art/status/1701131095805452583', '1701131095805452583'], true],
+    ['https://x.com/Kamulch_Art/status/1701131095805452583', ['1701131095805452583']],
+
+] as RegexTest[]).map(([testString, captureGroups, useExplicitMatch]) => {
+    runTest(`twitterRegex: ${testString}->${captureGroups} `, new RegExp(twitterRegex), testString, captureGroups, useExplicitMatch);
+});
 export const youtubeRegex = /^https?:\/\/(?:www\.)?youtu\.?be(?:.com)?\/(?:watch\?v=)?(\w*)/;
 ([
     ['https://youtu.be/', ['']],
@@ -94,6 +103,7 @@ function runTest(testName: string, regex: RegExp, testString: string, captureGro
             const testFn = useExplicitMatch ? testRegexExplicit : testRegex;
             testFn(new RegExp(regex), testString, captureGroups);
         },
+        only
     });
 
 }

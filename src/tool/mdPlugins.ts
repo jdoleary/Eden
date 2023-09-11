@@ -1,6 +1,6 @@
 import * as path from "https://deno.land/std@0.177.0/path/mod.ts";
 import { existsSync } from "https://deno.land/std@0.198.0/fs/exists.ts";
-import { youtubeRegex } from "./regexCollection.ts";
+import { twitterRegex, youtubeRegex } from "./regexCollection.ts";
 
 // @deno-types="../../types/markdown-it/index.d.ts"
 import MarkdownIt from "../../types/markdown-it/index.d.ts";
@@ -103,13 +103,17 @@ export default function plugins(md: MarkdownIt, config: Config) {
                     const youtubeMatch = url.match(youtubeRegex);
                     const youtubeVideoId = youtubeMatch && youtubeMatch[1];
                     return `<iframe class="responsive-iframe" src="https://www.youtube.com/embed/${youtubeVideoId}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`
-                }
-
-                if (vimeoRE.test(url)) {
+                } else if (vimeoRE.test(url)) {
                     const id = url.match(vimeoRE)?.[2];
                     if (id !== null) {
                         return '<iframe class="responsive-iframe" src="//player.vimeo.com/video/' + id + '"></iframe>';
                     }
+                } else if (twitterRegex.test(url)) {
+                    // .replace is needed because embedding currently only works with twitter.com urls
+                    // but the regex allows for x.com
+                    return `<blockquote class="twitter-tweet">
+  <a href="${url.replace('x.com', 'twitter.com')}"></a>
+</blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>`;
                 }
             }
             const content = token.content;
