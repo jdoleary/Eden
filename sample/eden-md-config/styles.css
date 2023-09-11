@@ -13,12 +13,24 @@ body {
 }
 
 header {
+    grid-column: 1/4;
+    padding:1em;
+}
+header a {
+  color: black;
+}
+header a:hover {
+  text-decoration: none; /* no underline */
+  color: #603dd3;
+}
+#article-header {
+    grid-row: 2;
     grid-column: 2;
 }
 
 nav {
     display:none;
-    grid-row: 2;
+    grid-row: 3;
     grid-column: 1;
 }
 #nav-aligner {
@@ -40,18 +52,17 @@ nav {
     }
     body {
         display: grid;
-        grid-template-rows: auto 1fr auto;
+        grid-template-rows: auto auto 1fr auto;
         grid-template-columns: 1fr 800px 1fr;
     }
 }
 
 article {
-    grid-row: 2;
+    grid-row: 3;
     grid-column: 2;
     background-color: #f5f5f5;
     display: flex;
     flex-direction: column;
-    align-items: center;
     padding:0 1em;
     background-color: #ffffff;
     width:100%;
@@ -63,7 +74,7 @@ article {
 
 aside {
     display:none;
-    grid-row: 2;
+    grid-row: 3;
     grid-column: 3;
 }
 
@@ -71,6 +82,22 @@ aside {
     aside {
         display:block;
     }
+}
+nav summary {
+    color:#777;
+}
+nav summary:hover {
+    color:#333;
+}
+nav a {
+    color:#999;
+    border-left:2px solid #999;
+    padding-left:0.5em;
+}
+nav a:hover {
+    text-decoration: none; /* no underline */
+    color: #603dd3;
+    border-left:2px solid #603dd3;
 }
 
 footer {
@@ -124,12 +151,13 @@ body.type-directory #article-metadata {
 }
 
 
-/* Only show underline on hover like how google does it */
+/* Instead of underline, just change color */
 a:hover {
-    text-decoration: underline;
+    color: #603dd3;
 }
 
 a {
+    color: #7a7aff;
     text-decoration: none;
 }
 
@@ -256,8 +284,11 @@ details {
 }
 
 summary {
-    font-weight: bold;
+    list-style-type: '▸ ';
     cursor: pointer;
+}
+nav {
+    list-style-type: none;
 }
 
 summary::-webkit-details-marker {
@@ -268,12 +299,28 @@ details[open] {
 }
 
 details[open] summary {
+    list-style-type: '▾ ';
 }
 
 nav ul {
-    list-style-type: disc;
-    padding-left: 20px;
+    list-style-type: none;
+    /* Aligns with the down arrow of the above folder */
+    padding-left: 6px;
     margin:0;
+}
+nav li a.currentPage {
+    font-weight:bold;
 }
 
 /* End Collapsable nav styling */
+body.type-homepage #article-header {
+    /* Cannot be display:none or else it will mess up the grid, so just hide it via visibility and height*/
+    visibility:hidden;
+    height:0;
+    margin:0;
+    padding:0;
+}
+body.type-homepage h4 {
+    /* Make sure the first h4 aligns with the <nav>*/
+    margin-top:0;
+}

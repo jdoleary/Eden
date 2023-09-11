@@ -1,3 +1,4 @@
+## Eden Features
 - ✅ Breadcrumbs
 - ✅ Metadata Support ^9d270c
     - Tags
@@ -22,7 +23,6 @@
         - Adding in dynamically updated bits of content into other bits of content
         - https://subpixel.space/entries/open-transclude/
         - 🔑[Obsidian named block ids](https://help.obsidian.md/Linking+notes+and+files/Internal+links#Link+to+a+block+in+a+note)
-- 🔲 Custom Static Components (similar to shortcodes)
 - 🔲 Site search
     - ✅ make entire garden available in json at /garden.json for advanced usage 
 - 🔲 🔑⛰️Backlinks should include optional context snippets
@@ -35,19 +35,37 @@
     - Example: https://www.gwern.net/About#confidence-tags
     - Example: Maggie Appleton's site, which has "Notes", "Essays", and "Patterns", among other collections of different objects
 - 🔲 🍎Expandible/collapsible blocks
-- 🔲 Sidenotes, in margin
-    - https://www.gwern.net/Sidenotes
 - 🔲 ⛰️Support syntax highlighting
-- 🔲 ❓Serve as or integrate with a headless or component content management system
-- 🔲 🌀Live link previews, infoboxes, and hover popups
 - 🔲 ❓Print-ready, capable of being exported to EPUB or PDF
 - 🔲 ⛰️Customizable header (like https://maggieappleton.com/) that works with transclusion.
-- 🔲 ⛰️Annotation support (or compatible with social annotation plugins)
 - 🔲 ⛰️Optimization: Optionally only process files that have changed to speed up compile time
 - 🔲 ⛰️Template Footer: with social links
     - ✅ link to rss.xml
 - 🔲 🍎[Link to a note using a metadata alias](https://help.obsidian.md/Linking+notes+and+files/Aliases#Link+to+a+note+using+an+alias)
 
+### Obsidian Flavored Markdown Support
+| Completed | Syntax | Feature Name | Note |
+| --------- | ------- | ------------ | --- |
+| ✅ |`[[Link]]` | Internal links | |
+| ✅ |`![[Link]]` | Embedding files | |
+| ✅ |`![[image.png]]` | Embedding image | |
+| ✅ |`![[Link#^id]]` | Block references | |
+| ✅ |`^id` | Defining a block | |
+| 🔲 |`%%Text%%` | Comments | |
+| ✅ |`~~Text~~` | Strikethroughs | |
+| ✅ |`==Text==` | Highlights | https://github.com/markdown-it/markdown-it-mark |
+| ⏳ |` ``` ` | Code blocks | Missing syntax highlighting |
+| ✅ |`- [ ]` | Incomplete task | Note: Use input checkbox for this; https://github.com/revin/markdown-it-task-lists/blob/master/index.js|
+| ✅ |`- [x]` | Completed task | |
+| ⏳ |`> [!note]` | Callouts | Missing special styling |
+
+### Advanced Potential Features
+- 🔲 ❓Serve as or integrate with a headless or component content management system
+- 🔲 🌀Live link previews, infoboxes, and hover popups
+- 🔲 Sidenotes, in margin
+    - https://www.gwern.net/Sidenotes
+- 🔲 Custom Static Components (similar to shortcodes)
+- 🔲 ⛰️Annotation support (or compatible with social annotation plugins)
 
 ```
 *🍎: Low-hanging fruit (easy and fast to complete)
@@ -55,6 +73,7 @@
 *🌀: Complex (may take longer to implement)
 *❓: Optional (unsure if this will be a final feature)
 *🔑: Key feature
+*⏳ : Partially Complete
 ```
 
 ^f3edfd
