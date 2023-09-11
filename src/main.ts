@@ -15,6 +15,7 @@ import MarkdownIt from "https://esm.sh/markdown-it@13.0.1";
 import pluginCheckboxes from "https://esm.sh/markdown-it-task-lists@2.1.1";
 import pluginHighlight from "https://esm.sh/markdown-it-mark@3.0.1";
 import pluginFootnote from "https://esm.sh/markdown-it-footnote@3.0.3";
+import pluginAnchor from "https://esm.sh/markdown-it-anchor@8.6.7";
 import * as path from "https://deno.land/std@0.177.0/path/mod.ts";
 import { assertSnapshot } from "https://deno.land/std@0.201.0/testing/snapshot.ts";
 import { copy } from "https://deno.land/std@0.195.0/fs/copy.ts";
@@ -156,6 +157,7 @@ async function main() {
     })
         .use(pluginCheckboxes)
         .use(pluginFootnote)
+        .use(pluginAnchor)
         .use(pluginHighlight);
     plugins(markdownIt, config);
 
@@ -559,11 +561,11 @@ async function process(filePath: string, { allFilesNames, tableOfContents, nav, 
             // Filter for unique tags
             return array.indexOf(x) == i;
         }).map(x => {
-            // Remove leading `[[` and trailing `]]`
-            return x.replace(/^\[\[/, '').replace(/\]\]$/, '');
-        });
+            return new RegExp(obsidianStyleBacklinkRegex).exec(x);
+        }).flatMap(x => x ? [x] : []);
         // Turn Obsidian style backlinks into actual links:
-        existingBacklinks.forEach(backlinkText => {
+        existingBacklinks.forEach(([wholeString, backlinkText, modifiedTitle, blockId]) => {
+
             const foundBacklinkPath = allFilesNames.find(({ name }) => {
                 if (name == path.parse(filePath).name) {
                     // Don't link to self
@@ -572,7 +574,9 @@ async function process(filePath: string, { allFilesNames, tableOfContents, nav, 
                 return name.toLowerCase() == backlinkText.toLowerCase();
             });
             if (foundBacklinkPath) {
-                fileContents = fileContents.replaceAll(`[[${backlinkText}]]`, `[${backlinkText}](${foundBacklinkPath.webPath})`);
+                const title = modifiedTitle ? modifiedTitle : backlinkText;
+                // .replaceAll(' ', '-') from https://developers.google.com/style/headings-targets#add-a-custom-anchor
+                fileContents = fileContents.replaceAll(wholeString, `[${title}](${foundBacklinkPath.webPath}${blockId ? `#${blockId.replaceAll(' ', '-')}` : ''})`);
             }
         });
 
