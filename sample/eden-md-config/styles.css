@@ -324,3 +324,18 @@ body.type-homepage h4 {
     /* Make sure the first h4 aligns with the <nav>*/
     margin-top:0;
 }
+
+/* 
+Special checkboxes ("- [x]" and "- [ ]") shouldn't have preceeding bullet
+points in order to match obsidian
+*/
+li.task-list-item {
+    list-style-type:none;
+    /* Left align where the bullet point was */
+    margin-left:-1em;
+}
+li.task-list-item ul {
+    /* Left align indented from the parent checkbox */
+    margin-left:1em;
+}
+/* End Special checkbox styling */

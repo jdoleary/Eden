@@ -20,8 +20,12 @@ Block references
 Defining a block:
 Example block ^id
 
-Comments (The below test is not rendered)
-%%Text%%
+Comments
+%%Invisible Text%%
+Inline comment %%invisible%% end inline 
+%%
+Multiline comment
+%%
 
 Strikethroughs
 ~~Text~~

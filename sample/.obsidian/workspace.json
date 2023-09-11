@@ -61,7 +61,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "more/Features.md",
+                "file": "markdown-it refactor.md",
                 "mode": "source",
                 "source": false
               }
@@ -156,7 +156,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "more/Features.md",
+                "file": "markdown-it refactor.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -173,7 +173,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "more/Features.md",
+                "file": "markdown-it refactor.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -196,7 +196,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "more/Features.md"
+                "file": "markdown-it refactor.md"
               }
             }
           }
@@ -219,7 +219,12 @@
   },
   "active": "9697d621dc4c5dde",
   "lastOpenFiles": [
+    "names block ids.md",
     "obsidian-flavored-markdown.md",
+    "Pasted image 20230903174037.png",
+    "summary.md",
+    "tests.md",
+    "more/Features.md",
     "testmd2web.md",
     "testmd2web2.md",
     "test-properties.md",
@@ -227,10 +232,7 @@
     "test_embed_entire_file.md",
     "test paste image.md",
     "test backlink.md",
-    "summary.md",
     "plain.md",
-    "Pasted image 20230903174037.png",
-    "names block ids.md",
     "markdown-it refactor.md",
     "do-not-publish.md",
     "checkboxes.md",
@@ -242,11 +244,9 @@
     "more/Metadata.md",
     "more/images.md",
     "more/bumblebee-at-root.gif",
-    "more/Features.md",
     "eden-md-config/eden-md.config.json",
     "eden-md-config/eden-md.config.old.json",
     "test_embed_page",
-    "tests.md",
     "tests",
     "Assets/bumblebee.gif",
     "JiuJitsuRainbow.png.md",
