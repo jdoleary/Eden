@@ -14,6 +14,7 @@ window.firstRun = false;
 import MarkdownIt from "https://esm.sh/markdown-it@13.0.1";
 import pluginCheckboxes from "https://esm.sh/markdown-it-task-lists@2.1.1";
 import pluginHighlight from "https://esm.sh/markdown-it-mark@3.0.1";
+import pluginFootnote from "https://esm.sh/markdown-it-footnote@3.0.3";
 import * as path from "https://deno.land/std@0.177.0/path/mod.ts";
 import { assertSnapshot } from "https://deno.land/std@0.201.0/testing/snapshot.ts";
 import { copy } from "https://deno.land/std@0.195.0/fs/copy.ts";
@@ -154,6 +155,7 @@ async function main() {
         linkify: true,
     })
         .use(pluginCheckboxes)
+        .use(pluginFootnote)
         .use(pluginHighlight);
     plugins(markdownIt, config);
 

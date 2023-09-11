@@ -15,6 +15,7 @@
 - [x] Metadata define custom `template`
 - [x] Metadata `type` like tags but singular.
 - [x] Metadata `tags` should link to index pages
+- [x] Support for Footnotes
 - [x] Index pages based on tags (example: [Maggie Appleton's Essays](https://maggieappleton.com/essays))
 - [x] [Support sizing images](https://help.obsidian.md/Editing+and+formatting/Basic+formatting+syntax#External+images)
 - [x] Navigation: Support for vertical and horizontal nav depending on screen size.  Collapsable sections

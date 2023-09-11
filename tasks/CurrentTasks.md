@@ -1,6 +1,4 @@
 ## MVP Tasks
-- Enable footnotes with https://github.com/markdown-it/markdown-it-footnote
-- [Add to denoland.com/x/](https://deno.com/add_module)
 - **(MVP) Make mvp demo video and send to Zak**
     - Try to drum up interest with a Discord server / mailing list for a "zero-config digital garden"
     - Video Outline
@@ -16,6 +14,8 @@
         - Note: Always assume that a viewer might be seeing any video as their first video so reexplain the core ("this is the deep dive, but there's a simple way to do it if you don't want to customize") every video
 - **Change .exe icon from deno dinosaur to something else**
     - http://www.angusj.com/resourcehacker/
+    - osx: https://stackoverflow.com/questions/30291757/attaching-an-icon-resource-to-a-rust-application
+    - Also change the .exe details, description and copyright and original filename
 ---
 - TODO support ` ![[wikilink#Header]] for headers`
     - https://publish.obsidian.md/hub/04+-+Guides%2C+Workflows%2C+%26+Courses/Guides/Markdown+Syntax#Obsidian's+Custom+markdown+syntax
@@ -46,6 +46,7 @@
 - Bug: ignoreDirs does fuzzy matching but should be exact, see tests in os.ts
 
 ## Enhancements
+- Remove leading bullet point from checkboxes
 - Simplify js lib so it doesn't have to be stored in a string.
 - Replace all usages of tableOfContents with garden
 - Optimization: What if I just store the `lastModified` value and skip documents that have been already processed past when they were last modified?

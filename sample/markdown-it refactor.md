@@ -1,4 +1,9 @@
 ![[Pasted image 20230903174037.png]]
+
+This is a simple footnote[^1]
+
+[^1]: This is the referenced text.
+
 ![[bumblebee.gif]]
 These lines test
 how softbreaks are handled
