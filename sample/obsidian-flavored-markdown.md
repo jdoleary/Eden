@@ -2,6 +2,9 @@
 
 Link:
 [[Features]]
+[[summary|summary-alias]]
+[[summary|product]]
+[[markdown-it refactor]]
 
 Embedding file
 ![[Page to be embedded]]

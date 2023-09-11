@@ -1,3 +1,6 @@
+---
+summary: Demonstrates how checkboxes are supported
+---
 - [ ] Incomplete Task
 - [x] Complete Task
 - [i] Complete Task 2

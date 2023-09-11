@@ -15,6 +15,8 @@ body {
 header {
     grid-column: 1/4;
     padding:1em;
+    border-bottom: 2px solid #555;
+    margin-bottom: 1em;
 }
 header a {
   color: black;
@@ -34,6 +36,11 @@ nav {
     grid-column: 1;
 }
 #nav-aligner {
+    /* Sticky side nav */
+    position:sticky;
+    top:0;
+
+    padding-right:1em;
     /* Keep the nav right aligned */
     width:280px;
     margin-left:auto;
@@ -308,7 +315,11 @@ nav ul {
     margin:0;
 }
 nav li a.currentPage {
-    font-weight:bold;
+    color: #603dd3;
+    opacity:0.7;
+}
+nav li a.currentPage:hover {
+    opacity:1.0;
 }
 
 /* End Collapsable nav styling */

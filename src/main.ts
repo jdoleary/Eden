@@ -364,9 +364,7 @@ async function main() {
         const sortedPages = garden.pages.filter(p => !!p.createdAt).sort((p1, p2) => (p2.createdAt || 0) - (p1.createdAt || 0))
         const latestPage = sortedPages[0];
         // `.createdAt as number` because createdAt is guarunteed to exist due to above .filter on garden.pages
-        const tagsHtml = garden.tags.size > 0 ? `
-        <hr>
-<h4> Tags </h4>
+        const tagsHtml = garden.tags.size > 0 ? `<h4> Tags </h4>
 ${Array.from(garden.tags).map(t => `<a href="${getWebPathOfTag(t)}">${t}</a>`).join('<span>, </span>')}
 <hr>
         `: '';

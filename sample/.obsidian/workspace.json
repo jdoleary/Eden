@@ -71,11 +71,9 @@
             "id": "887a4b74edbae9dc",
             "type": "leaf",
             "state": {
-              "type": "markdown",
+              "type": "image",
               "state": {
-                "file": "obsidian-custom-markdown-syntax.md",
-                "mode": "source",
-                "source": false
+                "file": "bumblebee-at-root.gif"
               }
             }
           },
@@ -85,7 +83,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "obsidian-custom-markdown-syntax.md",
+                "file": "more/Features.md",
                 "mode": "source",
                 "source": false
               }
@@ -97,7 +95,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "obsidian-custom-markdown-syntax.md",
+                "file": "checkboxes.md",
                 "mode": "source",
                 "source": false
               }
@@ -192,7 +190,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "obsidian-custom-markdown-syntax.md",
+                "file": "checkboxes.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -209,7 +207,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "obsidian-custom-markdown-syntax.md",
+                "file": "checkboxes.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -232,7 +230,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "obsidian-custom-markdown-syntax.md"
+                "file": "checkboxes.md"
               }
             }
           }
@@ -255,20 +253,22 @@
   },
   "active": "34ed4f232eca8752",
   "lastOpenFiles": [
+    "obsidian-flavored-markdown.md",
     "summary.md",
-    "obsidian-custom-markdown-syntax.md",
     "more/Features.md",
+    "tests.md",
+    "bumblebee-at-root.gif",
+    "obsidian-custom-markdown-syntax.md",
+    "more/bumblebee-nested.gif",
+    "more/Metadata.md",
+    "test_embed_page/embedder.md",
     "test_embed_page/Page to be embedded.md",
     "test_embed_page/Page to be embedded with own embed.md",
-    "test_embed_page/embedder.md",
-    "bumblebee-at-root.gif",
-    "more/Metadata.md",
     "more/images.md",
     "checkboxes.md",
     "do-not-publish.md",
     "markdown-it refactor.md",
     "names block ids.md",
-    "tests.md",
     "testmd2web2.md",
     "testmd2web.md",
     "test-properties.md",
@@ -277,9 +277,7 @@
     "test paste image.md",
     "test backlink.md",
     "plain.md",
-    "obsidian-flavored-markdown.md",
     "Pasted image 20230903174037.png",
-    "more/bumblebee-nested.gif",
     "more/bumblebee-at-root.gif",
     "eden-md-config/eden-md.config.json",
     "eden-md-config/eden-md.config.old.json",

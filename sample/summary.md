@@ -1,8 +1,14 @@
 ---
 type: Introduction
-tags: ['Digital Gardening', 'About']
+tags:
+  - Digital
+  - Gardening
+  - About
 title: Eden Markdown
 subtitle: No-code Digital Gardening
+aliases:
+  - summary-alias
+  - product
 ---
 `eden-md` is the easiest way to convert your markdown notes into a digital garden on the web! ^d8fdea
 

@@ -35,7 +35,7 @@ Test embed youtube (both types of link):
 ![](https://youtu.be/aFBp0cZ79bQ?si=rdrrNxhVlJWzHpVw)
 ![](https://www.youtube.com/watch?v=aFBp0cZ79bQ)
 Embeddable Twitter:
-![](https://twitter.com/Kamulch_Art/status/1701131095805452583?s=23)
+![](https://x.com/Kamulch_Art/status/1701131095805452583?s=23)
 
 Test custom xml tags:
 <AssumedAudience>
