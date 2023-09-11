@@ -543,7 +543,7 @@ async function process(filePath: string, { allFilesNames, tableOfContents, nav, 
         let fileContents = await Deno.readTextFile(filePath);
         const relativePath = path.relative(config.parseDir, filePath);
         // Replace embed file syntax with markdown image format
-        fileContents = fileContents.replaceAll(obsidianStyleEmbedFileRegex, '![$1]($1)');
+        fileContents = fileContents.replaceAll(obsidianStyleEmbedFileRegex, '![$1]($2)');
 
         // Replace embed block syntax with something that will be easily recognized later and parsed as
         // a single token by rusty_markdown (note: As of 2023.09.06 rusty_markdown has been replaced with markdown-it

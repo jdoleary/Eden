@@ -17,7 +17,10 @@ export const imageSizeRegex = /\|(\d+)x?(\d*)$/;
 // ![[panda.png]]
 // ![[image.png]]
 // ![[image.webm]]
-export const obsidianStyleEmbedFileRegex = /!\[\[([^\^#\[\]*"/\\<>\n\r:|?]+\.[\w\d]+)\]\]/g;
+// ![[flower.png|80]]
+// ![[flower.png|80x234]]
+// ![[more/flower.png]]
+export const obsidianStyleEmbedFileRegex = /!\[\[(([^\^#\[\]*"\\<>\n\r:|?]+\.[\w\d]+)(\|?\d*x?\d*)?)\]\]/g;
 
 // Matches
 // ![Pasted image 20230903174037.png](Pasted image 20230903174037.png)
