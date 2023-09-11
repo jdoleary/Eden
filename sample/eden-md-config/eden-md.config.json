@@ -13,8 +13,8 @@
   "logVerbose": false,
   "rssInfo": {
     "title": "Sample Digital Garden",
-    "description": "My Digital Garden",
-    "homepage": "https://example.com",
+    "description": "An example Digital Garden made with Eden",
+    "homepage": "https://www.edenmarkdown.com",
     "language": "en"
   }
 }
