@@ -102,6 +102,11 @@ nav {
     grid-column: 1;
 }
 #nav-aligner {
+    /* Sticky side nav */
+    position:sticky;
+    top:0;
+
+    padding-right:1em;
     /* Keep the nav right aligned */
     width:280px;
     margin-left:auto;
