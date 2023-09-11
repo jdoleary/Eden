@@ -31,6 +31,7 @@
     - [x] make entire garden available in json at /garden.json for advanced usage 
 - [ ] 🔑⛰️Backlinks should include optional context snippets
 - [ ] 🍎Metadata `thumbnail` for article for when it's displayed in an index page
+- [ ] [Obsidian CSS Snippets](https://help.obsidian.md/Extending+Obsidian/CSS+snippets)
 - [x] Embeddable content
     - [x] Embeddable Youtube Videos
     - [x] Embeddable Vimeo Videos
@@ -42,14 +43,17 @@
 - [ ] ⛰️Support syntax highlighting
 - [ ] ❓Print-ready, capable of being exported to EPUB or PDF
 - [ ] ⛰️Customizable header (like https://maggieappleton.com/) that works with transclusion.
-- [ ] ⛰️Template Footer: with social links
+- [ ] Template Footer
     - [x] link to rss.xml
+    - [ ] social links
+    - [ ] copyright
+    - [ ] eden "Made with" + icon
 
 ### Obsidian Flavored Markdown Support
 | Completed | Syntax | Feature Name | Note |
 | --------- | ------- | ------------ | --- |
 | ✅ |`[[Link]]` | Internal links | |
-| ✅ |`![[Link]]` | Embedding files | |
+| ✅ |`!\ [[Link]]` | Embedding files | |
 | ✅ |`![[image.png]]` | Embedding image | |
 | ✅ |`![[Link#^id]]` | Block references | |
 | ✅ |`^id` | Defining a block | |
@@ -60,7 +64,7 @@
 | ✅ |`- [ ]` | Incomplete task | |
 | ✅ |`- [x]` | Completed task | |
 | ⏳ |`> [!note]` | Callouts | Todo: styling |
-| ✅ |`[[page \| modified title]]` | Modified title | [source](https://publish.obsidian.md/hub/04+-+Guides%2C+Workflows%2C+%26+Courses/Guides/Markdown+Syntax#Obsidian's+Custom+markdown+syntax) |
+| ✅ |`[[page\|modified title]]` | Modified title | [source](https://publish.obsidian.md/hub/04+-+Guides%2C+Workflows%2C+%26+Courses/Guides/Markdown+Syntax#Obsidian's+Custom+markdown+syntax) |
 | ✅ |`[[page#header1]]` | Link to header | [source](https://publish.obsidian.md/hub/04+-+Guides%2C+Workflows%2C+%26+Courses/Guides/Markdown+Syntax#Obsidian's+Custom+markdown+syntax)|
 | ✅ |`[[page#^blockId]]` | Link to blockId | [source](https://publish.obsidian.md/hub/04+-+Guides%2C+Workflows%2C+%26+Courses/Guides/Markdown+Syntax#Obsidian's+Custom+markdown+syntax)|
 

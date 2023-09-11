@@ -95,7 +95,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "checkboxes.md",
+                "file": "summary.md",
                 "mode": "source",
                 "source": false
               }
@@ -190,7 +190,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "checkboxes.md",
+                "file": "summary.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -207,7 +207,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "checkboxes.md",
+                "file": "summary.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -230,7 +230,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "checkboxes.md"
+                "file": "summary.md"
               }
             }
           }
@@ -253,6 +253,9 @@
   },
   "active": "34ed4f232eca8752",
   "lastOpenFiles": [
+    "markdown-it refactor.md",
+    "do-not-publish.md",
+    "checkboxes.md",
     "obsidian-flavored-markdown.md",
     "summary.md",
     "more/Features.md",
@@ -265,9 +268,6 @@
     "test_embed_page/Page to be embedded.md",
     "test_embed_page/Page to be embedded with own embed.md",
     "more/images.md",
-    "checkboxes.md",
-    "do-not-publish.md",
-    "markdown-it refactor.md",
     "names block ids.md",
     "testmd2web2.md",
     "testmd2web.md",
