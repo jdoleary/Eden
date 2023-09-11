@@ -58,6 +58,7 @@ export const defaultHtmlTemplatePage = `<!DOCTYPE html>
     </aside>
     <footer>
         {{footer}}
+        <span>Made with <a href="https://www.edenmarkdown.com">Eden</a></span>
     </footer>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
