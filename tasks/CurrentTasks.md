@@ -1,7 +1,14 @@
 ## MVP Tasks
-- Replace all usages of tableOfContents with garden
+- Enable footnotes with https://github.com/markdown-it/markdown-it-footnote
+- [Add to denoland.com/x/](https://deno.com/add_module)
 - **(MVP) Make mvp demo video and send to Zak**
     - Try to drum up interest with a Discord server / mailing list for a "zero-config digital garden"
+    - Video Outline
+        - Introduce Eden
+            - Highlight that it requires 0 coding knowledge
+            - "just alpha at the moment", CTA to join Discord or mailinglist
+        - If you're interested in trying the alpha, `deno run`
+
     - Video steps
         - The "why", explain the value prop
         - TODO
@@ -28,6 +35,9 @@
 - test against commonmark spec: `![foo ![bar](/url)](/url2)` https://spec.commonmark.org/0.30/#images
 
 ## Bugs
+- Bug: File embed works for any file within the root, this includes images.  So `![[bumblebee-nested.png]]` will find it even though it's not in the Assets dir
+- Bug: on Features page: `![[Link]]` is invisible. its being parsed as an embed even though it's surrounded in single ticks
+- Bug: Spacing is weird in http://localhost:8000/obsidian-flavored-markdown.html Block references (its different from the spacing in the block)
 - Bug: Nav doesn't bold current page for top-level pages
 - Bug: markdown-it thinks that an obsidian embed syntax inside inline-code block is an embed and not code.  See `names block ids`
 - Bug: markdown-it doesn't recognize images with ' ' spaces in filename in image md format e.g. `![](url with spaces)` or `![[url with spaces]]`
@@ -36,6 +46,8 @@
 - Bug: ignoreDirs does fuzzy matching but should be exact, see tests in os.ts
 
 ## Enhancements
+- Simplify js lib so it doesn't have to be stored in a string.
+- Replace all usages of tableOfContents with garden
 - Optimization: What if I just store the `lastModified` value and skip documents that have been already processed past when they were last modified?
     - I can run Deno.stat on a file about 1500 times in the time it takes to process the file once, so this should be a valid optimization gain
 - Optimize generating backlinks to work on multiple threads
