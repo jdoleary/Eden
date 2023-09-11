@@ -37,7 +37,7 @@ import { timeAgoJs } from "./htmlGenerators/timeAgo.js";
 import { embedBlocks, processBlockElementsWithID } from "./tool/editDOM.ts";
 import { getCliFlagOptions, rawCLIFlagOptions } from "./cliOptions.ts";
 import plugins from "./tool/mdPlugins.ts";
-import { obsidianStyleBacklinkRegex, obsidianStyleEmbedBlockRegex, obsidianStyleEmbedFileRegex, obsidianStyleEmbedPageRegex } from "./tool/regexCollection.ts";
+import { obsidianStyleBacklinkRegex, obsidianStyleComment, obsidianStyleEmbedBlockRegex, obsidianStyleEmbedFileRegex, obsidianStyleEmbedPageRegex } from "./tool/regexCollection.ts";
 import { NavItem, findNavItem, removeHiddenPages } from "./tool/navigation.ts";
 
 const VERSION = '0.1.0'
@@ -546,6 +546,8 @@ async function process(filePath: string, { allFilesNames, tableOfContents, nav, 
     if (path.parse(filePath).ext == '.md') {
         let fileContents = await Deno.readTextFile(filePath);
         const relativePath = path.relative(config.parseDir, filePath);
+        // Remove all comments
+        fileContents = fileContents.replaceAll(obsidianStyleComment, '');
         // Replace embed file syntax with markdown image format
         fileContents = fileContents.replaceAll(obsidianStyleEmbedFileRegex, '![$1]($2)');
 

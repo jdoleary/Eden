@@ -54,16 +54,16 @@
 | ✅ |`![[image.png]]` | Embedding image | |
 | ✅ |`![[Link#^id]]` | Block references | |
 | ✅ |`^id` | Defining a block | |
-| 🔲 |`%%Text%%` | Comments | |
+| ✅ |`%%Text%%` | Comments | |
 | ✅ |`~~Text~~` | Strikethroughs | |
 | ✅ |`==Text==` | Highlights | |
 | ⏳ |` ``` ` | Code blocks | Syntax highlighting still needed |
 | ✅ |`- [ ]` | Incomplete task | |
 | ✅ |`- [x]` | Completed task | |
 | ⏳ |`> [!note]` | Callouts | Missing special styling |
-| 🔲 |`[[page|modified title]]` | Modified title | [https://publish.obsidian.md/hub/04+-+Guides%2C+Workflows%2C+%26+Courses/Guides/Markdown+Syntax#Obsidian's+Custom+markdown+syntax](source) |
-| 🔲 |`[[page#header1]]` | Link to header | [https://publish.obsidian.md/hub/04+-+Guides%2C+Workflows%2C+%26+Courses/Guides/Markdown+Syntax#Obsidian's+Custom+markdown+syntax](source)|
-| 🔲 |`[[page#^blockId]]` | Link to blockId | [https://publish.obsidian.md/hub/04+-+Guides%2C+Workflows%2C+%26+Courses/Guides/Markdown+Syntax#Obsidian's+Custom+markdown+syntax](source)|
+| ✅ |`[[page \| modified title]]` | Modified title | [https://publish.obsidian.md/hub/04+-+Guides%2C+Workflows%2C+%26+Courses/Guides/Markdown+Syntax#Obsidian's+Custom+markdown+syntax](source) |
+| ✅ |`[[page#header1]]` | Link to header | [https://publish.obsidian.md/hub/04+-+Guides%2C+Workflows%2C+%26+Courses/Guides/Markdown+Syntax#Obsidian's+Custom+markdown+syntax](source)|
+| ✅ |`[[page#^blockId]]` | Link to blockId | [https://publish.obsidian.md/hub/04+-+Guides%2C+Workflows%2C+%26+Courses/Guides/Markdown+Syntax#Obsidian's+Custom+markdown+syntax](source)|
 
 ### Advanced Potential Features
 - [ ] ❓Serve as or integrate with a headless or component content management system

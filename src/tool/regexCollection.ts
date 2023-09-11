@@ -73,9 +73,22 @@ export const obsidianStyleBacklinkRegex = /\[\[([^\^#\[\]*"/\\<>\n\r:|?]+)(?:\|(
     runTest(`obsidianStyleBacklinkRegex: ${testString}->${captureGroups} `, new RegExp(obsidianStyleBacklinkRegex), testString, captureGroups);
 });
 
+export const obsidianStyleComment = /%%[\r\n\w\d\s]+%%/g;
+([
+    ['%%Invisible Text%%', ['%%Invisible Text%%']],
+    ['Inline comment %%invisible%% end inline', ['%%invisible%%']],
+    [`before%%
+Multiline comment
+%%
+after`, [`%%
+Multiline comment
+%%`]],
+] as RegexTest[]).map(([testString, captureGroups]) => {
+    runTest(`obsidianStyleComment: ${testString}->${captureGroups} `, new RegExp(obsidianStyleComment), testString, captureGroups, true);
+});
 
 type RegexTest = [string, Array<string>, boolean?];
-function runTest(testName: string, regex: RegExp, testString: string, captureGroups: string[], useExplicitMatch?: boolean) {
+function runTest(testName: string, regex: RegExp, testString: string, captureGroups: string[], useExplicitMatch?: boolean, only?: boolean) {
     Deno.test({
         name: `${testName}: ${testString}->${captureGroups} `, fn: () => {
             const testFn = useExplicitMatch ? testRegexExplicit : testRegex;
@@ -87,7 +100,7 @@ function runTest(testName: string, regex: RegExp, testString: string, captureGro
 // Always expects the first match to == the test string
 function testRegex(regex: RegExp, testString: string, captureGroups: string[]) {
     const actual = new RegExp(regex).exec(testString);
-    // console.log('test', testString, actual);
+    // console.log('jtest2', testString, actual);
 
     // Always expect the first index to return the whole string
     assertEquals((actual || [])[0] as string, testString);
@@ -102,7 +115,7 @@ function testRegex(regex: RegExp, testString: string, captureGroups: string[]) {
 function testRegexExplicit(regex: RegExp, testString: string, matches: string[]) {
     const actual = new RegExp(regex).exec(testString);
     // Next, any array entries should match the Capture Groups
-    // console.log('test', testString, actual);
+    // console.log('jtest', testString, actual);
     for (let i = 0; i < matches.length; i++) {
         const match = matches[i];
         assertEquals((actual || [])[i] as string, match);
