@@ -19,11 +19,12 @@
 - [x] Index pages based on tags (example: [Maggie Appleton's Essays](https://maggieappleton.com/essays))
 - [x] [Support sizing images](https://help.obsidian.md/Editing+and+formatting/Basic+formatting+syntax#External+images)
 - [x] Navigation: Support for vertical and horizontal nav depending on screen size.  Collapsable sections
-- [x] 🔑Block Embedding
+- [x] Block Embedding
     - Block-based, content as data, so the same piece of content can easily be transcluded in multiple places
         - Adding in dynamically updated bits of content into other bits of content
         - https://subpixel.space/entries/open-transclude/
-        - 🔑[Obsidian named block ids](https://help.obsidian.md/Linking+notes+and+files/Internal+links#Link+to+a+block+in+a+note)
+        - [Obsidian named block ids](https://help.obsidian.md/Linking+notes+and+files/Internal+links#Link+to+a+block+in+a+note)
+- [x] [Link to a note using a metadata alias](https://help.obsidian.md/Linking+notes+and+files/Aliases#Link+to+a+note+using+an+alias)
 - [ ] Faster Execution with caching
     - Skips files if the .md is older than the .html and the template / css
 - [ ] Site search
@@ -41,10 +42,8 @@
 - [ ] ⛰️Support syntax highlighting
 - [ ] ❓Print-ready, capable of being exported to EPUB or PDF
 - [ ] ⛰️Customizable header (like https://maggieappleton.com/) that works with transclusion.
-- [ ] ⛰️Optimization: Optionally only process files that have changed to speed up compile time
 - [ ] ⛰️Template Footer: with social links
     - [x] link to rss.xml
-- [ ] 🍎[Link to a note using a metadata alias](https://help.obsidian.md/Linking+notes+and+files/Aliases#Link+to+a+note+using+an+alias)
 
 ### Obsidian Flavored Markdown Support
 | Completed | Syntax | Feature Name | Note |
@@ -57,13 +56,13 @@
 | ✅ |`%%Text%%` | Comments | |
 | ✅ |`~~Text~~` | Strikethroughs | |
 | ✅ |`==Text==` | Highlights | |
-| ⏳ |` ``` ` | Code blocks | Syntax highlighting still needed |
+| ⏳ |` ``` ` | Code blocks | Todo: Syntax highlighting [lib](https://www.npmjs.com/package/markdown-it-highlightjs) |
 | ✅ |`- [ ]` | Incomplete task | |
 | ✅ |`- [x]` | Completed task | |
-| ⏳ |`> [!note]` | Callouts | Missing special styling |
-| ✅ |`[[page \| modified title]]` | Modified title | [https://publish.obsidian.md/hub/04+-+Guides%2C+Workflows%2C+%26+Courses/Guides/Markdown+Syntax#Obsidian's+Custom+markdown+syntax](source) |
-| ✅ |`[[page#header1]]` | Link to header | [https://publish.obsidian.md/hub/04+-+Guides%2C+Workflows%2C+%26+Courses/Guides/Markdown+Syntax#Obsidian's+Custom+markdown+syntax](source)|
-| ✅ |`[[page#^blockId]]` | Link to blockId | [https://publish.obsidian.md/hub/04+-+Guides%2C+Workflows%2C+%26+Courses/Guides/Markdown+Syntax#Obsidian's+Custom+markdown+syntax](source)|
+| ⏳ |`> [!note]` | Callouts | Todo: styling |
+| ✅ |`[[page \| modified title]]` | Modified title | [source](https://publish.obsidian.md/hub/04+-+Guides%2C+Workflows%2C+%26+Courses/Guides/Markdown+Syntax#Obsidian's+Custom+markdown+syntax) |
+| ✅ |`[[page#header1]]` | Link to header | [source](https://publish.obsidian.md/hub/04+-+Guides%2C+Workflows%2C+%26+Courses/Guides/Markdown+Syntax#Obsidian's+Custom+markdown+syntax)|
+| ✅ |`[[page#^blockId]]` | Link to blockId | [source](https://publish.obsidian.md/hub/04+-+Guides%2C+Workflows%2C+%26+Courses/Guides/Markdown+Syntax#Obsidian's+Custom+markdown+syntax)|
 
 ### Advanced Potential Features
 - [ ] ❓Serve as or integrate with a headless or component content management system

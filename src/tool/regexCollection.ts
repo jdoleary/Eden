@@ -54,6 +54,7 @@ export const obsidianStyleEmbedPageRegex = /!\[\[([^\^#\[\]*"/\\<>\n\r:|?]+)\]\]
 ([
     [`![[Features]]`, ['Features']],
     [`![[page with spaces]]`, ['page with spaces']],
+    [`![[page-with-dashes]]`, ['page-with-dashes']],
 ] as RegexTest[]).map(([testString, captureGroups]) => {
     runTest(`obsidianStyleEmbedPageRegex: ${testString}->${captureGroups} `, new RegExp(obsidianStyleEmbedPageRegex), testString, captureGroups);
 });
@@ -68,12 +69,13 @@ export const obsidianStyleEmbedBlockRegex = /!\[\[([^\^#\[\]*"/\\<>\n\r:|?]+)(\#
 });
 
 // Capture groups: [pageName, modified title, link to header]
-export const obsidianStyleBacklinkRegex = /\[\[([^\^#\[\]*"/\\<>\n\r:|?]+)(?:\|([\w\s\d]+))?(?:#\^?([\w\s\d]+))?\]\]/g;
+export const obsidianStyleBacklinkRegex = /\[\[([^\^#\[\]*"/\\<>\n\r:|?]+)(?:\|([\w\s\d-]+))?(?:#\^?([\w\s\d]+))?\]\]/g;
 ([
     ['[[backlink]]', ['backlink']],
     ['[[backlink with spaces]]', ['backlink with spaces']],
-    // Modified title
+    // Modified title (also known as "aliases")
     ['[[summary|modified title]]', ['summary', 'modified title']],
+    ['[[summary|modified-title]]', ['summary', 'modified-title']],
     // Link to header
     ['[[Features#Advanced Potential Features]]', ['Features', undefined, 'Advanced Potential Features']],
     // Link to block id
