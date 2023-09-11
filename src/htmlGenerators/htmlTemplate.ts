@@ -83,6 +83,8 @@ body {
 header {
     grid-column: 1/4;
     padding:1em;
+    border-bottom: 2px solid #555;
+    margin-bottom: 1em;
 }
 header a {
   color: black;
