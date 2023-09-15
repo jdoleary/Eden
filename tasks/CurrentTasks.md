@@ -1,8 +1,8 @@
 ## MVP Tasks
 - Sign and notorize
+    - Purchased developer account 9/15, says it may take 48 hours to process
+    - Next: See [Sign and Notorize](./Sign&Notorize.md)
     - https://www.digicert.com/kb/code-signing/mac-os-codesign-tool.htm
-    - https://developer.apple.com/developer-id/
-        - Waiting on DUNS number 30days
     - https://developer.apple.com/documentation/xcode/preparing-your-app-for-distribution/
     - [Notorize](https://developer.apple.com/forums/thread/130379)
 - Needed? https://github.com/cure53/DOMPurify
