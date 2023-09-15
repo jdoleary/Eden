@@ -49,7 +49,7 @@ export async function createTagIndexFile(tag: string, garden: Garden, templateHt
 
         const htmlString = await addContentsToTemplate(taggedPages.map(p => {
             return `<a href="${p.webPath}">${p.name}</a>`
-        }).join('<br/>'), templateHtml, { config, tableOfContents, filePath: htmlOutPath, relativePath, metadata: { title }, backlinks, isDir: true })
+        }).join('<br/>'), templateHtml, { config, tableOfContents, garden, filePath: htmlOutPath, relativePath, metadata: { title }, backlinks, isDir: true })
         // Write the file
         await Deno.writeTextFile(htmlOutPath, htmlString);
         if (config.logVerbose) {
@@ -74,7 +74,7 @@ export async function createTagDirIndexFile(garden: Garden, templateHtml: string
         const htmlString = await addContentsToTemplate(tags.map(tag => {
             const tagPath = path.posix.join(tagsDirectoryName, `${tag}.html`).replaceAll(' ', '_');
             return `<a href="/${tagPath}">${tag}</a>`
-        }).join('<br/>'), templateHtml, { config, tableOfContents, filePath: htmlOutPath, relativePath, metadata: { title }, backlinks, isDir: true })
+        }).join('<br/>'), templateHtml, { config, tableOfContents, garden, filePath: htmlOutPath, relativePath, metadata: { title }, backlinks, isDir: true })
         // Write the file
         await Deno.writeTextFile(htmlOutPath, htmlString);
         if (config.logVerbose) {

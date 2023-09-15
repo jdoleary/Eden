@@ -47,7 +47,7 @@
     - [x] link to rss.xml
     - [ ] social links
     - [ ] copyright
-    - [ ] eden "Made with" + icon
+    - [x] eden "Made with" + icon
 
 ### Obsidian Flavored Markdown Support
 | Completed | Syntax | Feature Name | Note |

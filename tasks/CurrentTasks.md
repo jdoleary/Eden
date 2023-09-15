@@ -1,7 +1,10 @@
 ## MVP Tasks
 - Sign and notorize
+    - https://www.digicert.com/kb/code-signing/mac-os-codesign-tool.htm
     - https://developer.apple.com/developer-id/
+        - Waiting on DUNS number 30days
     - https://developer.apple.com/documentation/xcode/preparing-your-app-for-distribution/
+    - [Notorize](https://developer.apple.com/forums/thread/130379)
 - Needed? https://github.com/cure53/DOMPurify
     - https://developer.apple.com/forums/thread/130379
     - See other useful libs: https://help.obsidian.md/Obsidian/Credits
@@ -19,6 +22,8 @@
         - TODO
         - CTA
         - Note: Always assume that a viewer might be seeing any video as their first video so reexplain the core ("this is the deep dive, but there's a simple way to do it if you don't want to customize") every video
+- Website
+    - [design](https://www.fiverr.com/esthermariart/hand-lettering-illustration-art?context_referrer=search_gigs_with_recommendations_row_1&source=recommendation_returning_buyers&ref_ctx_id=6b096814d7fb2fd67c3746a09b33cecd&context=recommendations&pckg_id=1&pos=1&ad_key=182336f9-0ff9-4ee8-b23d-4ea7f268093c&context_type=auto&funnel=6b096814d7fb2fd67c3746a09b33cecd&imp_id=91b04d69-9a0e-4859-abd8-28dcbabb4308)
 - **Change .exe icon from deno dinosaur to something else**
     - http://www.angusj.com/resourcehacker/
     - osx: https://stackoverflow.com/questions/30291757/attaching-an-icon-resource-to-a-rust-application
@@ -38,6 +43,7 @@
 - test against commonmark spec: `![foo ![bar](/url)](/url2)` https://spec.commonmark.org/0.30/#images
 
 ## Bugs
+- Bug: Pagination order is wonky with top level files
 - Bug: File embed works for any file within the root, this includes images.  So `![[bumblebee-nested.png]]` will find it even though it's not in the Assets dir
 - Bug: on Features page: `![[Link]]` is invisible. its being parsed as an embed even though it's surrounded in single ticks
 - Bug: Spacing is weird in http://localhost:8000/obsidian-flavored-markdown.html Block references (its different from the spacing in the block)

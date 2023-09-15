@@ -1,12 +1,12 @@
 import * as path from "https://deno.land/std@0.177.0/path/mod.ts";
-import { Config, TableOfContents, TableOfContentsEntry, tableOfContentsURL, tagsDirectoryName } from "../sharedTypes.ts";
+import { Config, Garden, TableOfContents, TableOfContentsEntry, tableOfContentsURL, tagsDirectoryName } from "../sharedTypes.ts";
 import { Backlinks } from "../tool/backlinkFinder.ts";
 import { absoluteOsMdPathToWebPath, getOutDir, pathOSAbsolute } from "../path.ts";
 import { NavItem, navHTML } from "../tool/navigation.ts";
 
 // Takes a string that contains html with template designators (e.g. {{content}}) and fills all the templates
-export async function addContentsToTemplate(content: string, templateHtml: string, { config, tableOfContents, nav, filePath, relativePath, metadata, backlinks, isDir }: {
-    config: Config, tableOfContents: TableOfContents, nav?: NavItem[], filePath: string, relativePath: string, metadata: any, backlinks: Backlinks, isDir: boolean
+export async function addContentsToTemplate(content: string, templateHtml: string, { config, tableOfContents, garden, nav, filePath, relativePath, metadata, backlinks, isDir }: {
+    config: Config, tableOfContents: TableOfContents, garden?: Garden, nav?: NavItem[], filePath: string, relativePath: string, metadata: any, backlinks: Backlinks, isDir: boolean
 }): Promise<string> {
     const pageTitle = (relativePath.split('\\').slice(-1)[0] || '').replaceAll('.md', '');
 
@@ -39,6 +39,35 @@ export async function addContentsToTemplate(content: string, templateHtml: strin
         content = content.replace('{{backlinks}}', `<h4>Backlinks</h4>${backlinkList.map(({ text, from, backlinkName }) => `<div><a href="${from}#${backlinkName}">${text}</a></div>`).join('')}`);
     } else {
         content = content.replace('{{backlinks}}', '');
+    }
+
+    // Add footer "next" and "prev" buttons
+    if (garden) {
+
+        const publishedPages = garden.pages.filter(x => !x.metadata || !x.metadata.hidden);
+        const currentPage = publishedPages.find(x => x.name == pageTitle);
+        const currentIndex = currentPage ? publishedPages.indexOf(currentPage) : -1;
+        let pagination = '';
+        if (currentIndex !== -1) {
+            const previous = publishedPages[currentIndex - 1];
+            pagination += `<div class="pagination flex space-between">`;
+            // Add next and previous buttons to page
+            // If other page is in a different chapter, show the chapter before a ":"
+            pagination += `${(previous && previous.name)
+                // ? `<a class="nextPrevButtons" href="\\${previous.webPath}">← ${previous.parentDir !== currentPage?.parentDir
+                //     ? path.parse(previous.parentDir || '').name + '/'
+                //     : ''}${previous.name}</a>`
+                ? `<a class="nextPrevButtons" href="${previous.webPath}">${previous.name}</a>`
+                : `<a class="nextPrevButtons ${(metadata && metadata.title == 'Table of Contents') ? 'hidden' : ''}" href="${tableOfContentsURL}">Table of Contents</a>`}`;
+            // Add pageNumber
+            pagination += `<div class="pageNumber"><a href="${tableOfContentsURL}">${currentIndex + 1}</a></div>`;
+            const next = publishedPages[currentIndex + 1];
+            pagination += `${next ? `<a class="nextPrevButtons" href="${next.webPath}">${next.name} →</a>` : ''}`;
+            pagination += `</div>`;
+        }
+        content = content.replace('{{pagination}}', pagination);
+    } else {
+        content = content.replace('{{pagination}}', '');
     }
 
     // {{ metadata  }} has spaces due to formatter changing it

@@ -52,6 +52,7 @@ export const defaultHtmlTemplatePage = `<!DOCTYPE html>
             <div id="backlinks">
                 {{backlinks}}
             </div>
+            {{pagination}}
         </div>
     </article>
     <aside>
@@ -304,6 +305,24 @@ ul {
     background-color: #ffffff;
     max-width: 800px;
     box-shadow: 0 -1px 0.9px;
+}
+.pagination .nextPrevButtons:first-child {
+    margin-left:0;
+}
+.pagination .nextPrevButtons:last-child {
+    margin-right:0;
+}
+
+.pagination a {
+    transition: 0.05s;
+    display: block;
+    margin: 0.5em;
+    padding: 0.5em;
+    border-radius: 4px;
+    text-decoration: none;
+    color: black;
+    border: 1px solid black;
+
 }
 
 .hidden {

@@ -346,7 +346,7 @@ async function main() {
         // -1 sets the top level pages flush with the left hand side
         const indentHTML: string[] = Array(x.indent - 1).fill('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
         return `<div>${indentHTML.join('')}<a href="${x.relativePath}">${x.pageName}</a></div>`;
-    }).join(''), templateHtml, { config, tableOfContents, nav, filePath: tocOutPath, relativePath: '', metadata: { title: 'Table of Contents' }, backlinks, isDir: true });
+    }).join(''), templateHtml, { config, tableOfContents, garden, nav, filePath: tocOutPath, relativePath: '', metadata: { title: 'Table of Contents' }, backlinks, isDir: true });
     await Deno.writeTextFile(tocOutPath, tableOfContentsHtml);
 
     // Create Homepage
@@ -387,7 +387,7 @@ ${tagsHtml}
             `
     }
     const homepageOutPath = path.join(getOutDir(config), homepagePath);
-    const homepageHTML = await addContentsToTemplate(homepageContents, templateHtml, { config, tableOfContents, nav, filePath: homepageOutPath, relativePath: '', metadata: { title: '' }, backlinks, isDir: true });
+    const homepageHTML = await addContentsToTemplate(homepageContents, templateHtml, { config, tableOfContents, garden, nav, filePath: homepageOutPath, relativePath: '', metadata: { title: '' }, backlinks, isDir: true });
     await Deno.writeTextFile(homepageOutPath, homepageHTML);
 
     // Create tag index pages
@@ -527,7 +527,7 @@ await main().catch(e => {
 async function process(filePath: string, { allFilesNames, tableOfContents, nav, config, backlinks, garden, markdownIt }: { allFilesNames: FileName[], tableOfContents: TableOfContents, nav: NavItem[], config: Config, backlinks: Backlinks, garden: Garden, markdownIt: MarkdownIt }): Promise<Page | undefined> {
     // Dev, test single file
     // if (filePath !== 'C:\\ObsidianJordanJiuJitsu\\JordanJiuJitsu\\Core Concepts.md') {
-    // if (filePath !== 'C:\\git\\eden-markdown\\sample\\markdown-it refactor.md') {
+    // if (filePath !== 'C:\\git\\eden-markdown\\sample\\obsidian-custom-markdown-syntax.md') {
     //     return;
     // }
 
@@ -669,7 +669,7 @@ async function outputPage(page: Page, templateHtml: string, { allFilesNames, tab
         }
     }
 
-    const htmlString = await addContentsToTemplate(page.contents, templateHtml, { config, tableOfContents, nav, filePath: page._internal.filePath, relativePath, metadata: page.metadata, backlinks, isDir: false });
+    const htmlString = await addContentsToTemplate(page.contents, templateHtml, { config, tableOfContents, garden, nav, filePath: page._internal.filePath, relativePath, metadata: page.metadata, backlinks, isDir: false });
 
     try {
         // Get the new path
