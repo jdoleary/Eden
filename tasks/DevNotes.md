@@ -1,0 +1,7 @@
+- Sign and Notorize
+    - https://www.digicert.com/kb/code-signing/mac-os-codesign-tool.htm
+    - https://developer.apple.com/documentation/xcode/preparing-your-app-for-distribution/
+    - [Notorize](https://developer.apple.com/forums/thread/130379)
+- Needed? https://github.com/cure53/DOMPurify
+    - https://developer.apple.com/forums/thread/130379
+    - See other useful libs: https://help.obsidian.md/Obsidian/Credits
