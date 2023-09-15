@@ -114,6 +114,7 @@ nav {
     position:sticky;
     top:0;
 
+    padding-top:1em;
     padding-right:1em;
     /* Keep the nav right aligned */
     width:280px;
@@ -144,6 +145,9 @@ article {
     background-color: #f5f5f5;
     display: flex;
     flex-direction: column;
+    /* justify-content:space-between keeps the article footer at the bottom of the screen even if the content doesn't
+    fill the whole screen. */
+    justify-content:space-between;
     padding:0 1em;
     background-color: #ffffff;
     width:100%;
@@ -183,7 +187,7 @@ nav a:hover {
 
 footer {
     grid-column: 2;
-    padding-bottom:4em;
+    padding: 0 1em 4em 1em;
 }
 /* End holy grail layout*/
 
