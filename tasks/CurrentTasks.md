@@ -1,7 +1,4 @@
 ## MVP Tasks
-- Sign and notorize
-    - Purchased developer account 9/15, says it may take 48 hours to process
-    - Next: See [Sign and Notorize](./Sign&Notorize.md)
 - **(MVP) Make mvp demo video and send to Zak**
     - Use Obsidian help as sample https://github.com/obsidianmd/obsidian-help/tree/master/en
     - Try to drum up interest with a Discord server / mailing list for a "zero-config digital garden"
