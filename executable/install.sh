@@ -4,26 +4,23 @@
 
 set -e
 
-if ! command -v unzip >/dev/null; then
-	echo "Error: unzip is required to install Eden (see: https://github.com/denoland/deno_install#unzip-is-required )." 1>&2
-	exit 1
-fi
+# if ! command -v unzip >/dev/null; then
+# 	echo "Error: unzip is required to install Eden (see: https://github.com/denoland/deno_install#unzip-is-required )." 1>&2
+# 	exit 1
+# fi
 
 if [ "$OS" = "Windows_NT" ]; then
-	target="x86_64-pc-windows-msvc"
+	target=".exe"
 else
 	case $(uname -sm) in
-	"Darwin x86_64") target="x86_64-apple-darwin" ;;
-	"Darwin arm64") target="aarch64-apple-darwin" ;;
-	"Linux aarch64")
-		echo "Error: Official Eden builds for Linux aarch64 are not available." 1>&2
-		exit 1
-		;;
-	*) target="x86_64-unknown-linux-gnu" ;;
+	"Darwin x86_64") target="-mac-x86-64" ;;
+	"Darwin arm64") target="-mac-aarch" ;;
+	"Linux aarch64") target="-mac-aarch" ;;
+	*) target="-mac-aarch" ;;
 	esac
 fi
 
-file_name="test-${target}"
+file_name="eden${target}"
 eden_uri="https://jordanoleary.me/assets/executables/${file_name}"
 
 eden_install="${EDEN_INSTALL:-$HOME/.eden}"
@@ -35,9 +32,7 @@ if [ ! -d "$bin_dir" ]; then
 fi
 
 curl --fail --location --progress-bar --output "$exe" "$eden_uri"
-# unzip -d "$bin_dir" -o "$exe.zip"
 chmod +x "$exe"
-# rm "$exe.zip"
 
 echo "Eden was installed successfully to $exe"
 if command -v eden >/dev/null; then
