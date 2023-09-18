@@ -1,4 +1,10 @@
 ## MVP Tasks
+- Make it so that --parseDir is the final unnamed argument so you can drag a folder onto the exe to run it on that folder 
+- Ensure `test image paths` works
+    - it seems an image can be referenced by name alone unless there are multiple copies
+    - If there are multiple copies it references the one at root
+- Improve design of homepage
+- Support thumbnail
 - **(MVP) Make mvp demo video and send to Zak**
     - Use Obsidian help as sample https://github.com/obsidianmd/obsidian-help/tree/master/en
     - Try to drum up interest with a Discord server / mailing list for a "zero-config digital garden"
