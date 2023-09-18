@@ -1,9 +1,7 @@
 ## MVP Tasks
-- Make it so that --parseDir is the final unnamed argument so you can drag a folder onto the exe to run it on that folder 
-- Ensure `test image paths` works
-    - it seems an image can be referenced by name alone unless there are multiple copies
-    - If there are multiple copies it references the one at root
-- Improve design of homepage
+- auto ignore obsidian static dir
+    - 971a8c1
+    - but still allow it to find images there
 - **(MVP) Make mvp demo video and send to Zak**
     - Use Obsidian help as sample https://github.com/obsidianmd/obsidian-help/tree/master/en
     - Try to drum up interest with a Discord server / mailing list for a "zero-config digital garden"
@@ -24,6 +22,10 @@
     - http://www.angusj.com/resourcehacker/
     - osx: https://stackoverflow.com/questions/30291757/attaching-an-icon-resource-to-a-rust-application
     - Also change the .exe details, description and copyright and original filename
+- Make it so that --parseDir is the final unnamed argument so you can drag a folder onto the exe to run it on that folder 
+- Ensure `test image paths` works
+    - it seems an image can be referenced by name alone unless there are multiple copies
+    - If there are multiple copies it references the one at root
 ---
 - Ensure caching supports UNPUBLISHING notes
 - TODO support ` ![[wikilink#Header]] for headers`
@@ -39,15 +41,15 @@
 - test against commonmark spec: `![foo ![bar](/url)](/url2)` https://spec.commonmark.org/0.30/#images
 
 ## Bugs
+- Bug: Hidden pages can still show up in backlinks
 - Bug: Pagination order is wonky with top level files
-- Bug: File embed works for any file within the root, this includes images.  So `![[bumblebee-nested.png]]` will find it even though it's not in the Assets dir
 - Bug: on Features page: `![[Link]]` is invisible. its being parsed as an embed even though it's surrounded in single ticks
 - Bug: Spacing is weird in http://localhost:8000/obsidian-flavored-markdown.html Block references (its different from the spacing in the block)
-- Bug: Nav doesn't bold current page for top-level pages
 - Bug: markdown-it thinks that an obsidian embed syntax inside inline-code block is an embed and not code.  See `names block ids`
 - Bug: ignoreDirs does fuzzy matching but should be exact, see tests in os.ts
 
 ## Enhancements
+- Default first image to thumbnail
 - Rethink if I should copy ALL files to outDir as done in 971a8c1 or just referenced images
 - Remove leading bullet point from checkboxes
 - Simplify js lib so it doesn't have to be stored in a string.

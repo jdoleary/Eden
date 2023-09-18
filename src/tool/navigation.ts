@@ -39,7 +39,15 @@ function navToHTML(item: NavItem, path?: string[]): string {
         ${item.children
             ? `
             <ul>
-            ${item.children.map(c => navToHTML(c, pathMatches ? path.slice(1) : undefined)).join('')}
+            ${item.children.map(c => navToHTML(c, pathMatches
+                // Go down one path since we are iterating children
+                ? path.slice(1)
+                // Exception: For top level documents (at the root of parseDir), keep
+                // the path as is since "" is never a part of path during the previous split operation
+                // that makes the path string
+                : item.name == ''
+                    ? path
+                    : undefined)).join('')}
             </ul>
             `
             : ''}
