@@ -114,6 +114,10 @@ nav {
     grid-row: 3;
     grid-column: 1;
 }
+.type-homepage #nav-aligner {
+    /* Align with top of homepage content */
+    padding-top:0;
+}
 #nav-aligner {
     /* Sticky side nav */
     position:sticky;
