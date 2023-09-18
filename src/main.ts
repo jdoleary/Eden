@@ -321,7 +321,7 @@ EXAMPLES
             const fileOutPath = path.join(getOutDir(config), path.relative(config.parseDir, filePath));
             await Deno.mkdirSync(path.parse(fileOutPath).dir, { recursive: true });
             await copy(filePath, fileOutPath, { overwrite: true });
-            garden.files.push(path.relative(getOutDir(config), fileOutPath));
+            garden.files.push(path.relative(getOutDir(config), fileOutPath).split(path.sep).join('/'));
         } catch (e) {
             if (e.name !== 'AlreadyExists') {
                 console.error('❌ Error occurred when copying assets to static dir', e);
@@ -335,7 +335,6 @@ EXAMPLES
     const processPromises: Promise<Page | undefined>[] = [];
     for await (const f of getFiles(allFilesPath, config)) {
         try {
-            garden.files.push(path.relative(config.parseDir, f));
             processPromises.push(process(f, { allFilesNames, tableOfContents, nav, config, backlinks, garden, markdownIt }));
         } catch (e) {
             console.error('error in process', e);
