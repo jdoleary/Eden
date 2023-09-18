@@ -45,9 +45,6 @@
 - Bug: Spacing is weird in http://localhost:8000/obsidian-flavored-markdown.html Block references (its different from the spacing in the block)
 - Bug: Nav doesn't bold current page for top-level pages
 - Bug: markdown-it thinks that an obsidian embed syntax inside inline-code block is an embed and not code.  See `names block ids`
-- Bug: markdown-it doesn't recognize images with ' ' spaces in filename in image md format e.g. `![](url with spaces)` or `![[url with spaces]]`
-    - This happens with pasted images in obsidian
-    - See // TODO: handle images with spaces
 - Bug: ignoreDirs does fuzzy matching but should be exact, see tests in os.ts
 
 ## Enhancements

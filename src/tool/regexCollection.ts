@@ -21,6 +21,14 @@ export const youtubeRegex = /^https?:\/\/(?:www\.)?youtu\.?be(?:.com)?\/(?:watch
     runTest(`youtubeRegex: ${testString}->${captureGroups} `, new RegExp(youtubeRegex), testString, captureGroups, useExplicitMatch);
 });
 
+export const markdownImageRegex = /!\[([^\^#\[\]*"\\<>\n\r:|?]+(?:\.[\w\d]+)?)\]\(([^\^#\[\]*"\\<>\n\r:|?]+\.[\w\d]+)(?: "([\w\s]*)")?\)/;
+([
+    ['![alt text](Pasted_image 20230729221843.png "title text")', ['alt text', 'Pasted_image 20230729221843.png', 'title text']],
+    ['![Pasted image 20230729221843.png](Pasted image 20230729221843.png)', ['Pasted image 20230729221843.png', 'Pasted image 20230729221843.png']],
+] as RegexTest[]).map(([testString, captureGroups]) => {
+    runTest(`markdownImageRegex: ${testString}->${captureGroups} `, new RegExp(markdownImageRegex), testString, captureGroups, false);
+});
+
 
 export const imageSizeRegex = /\|(\d+)x?(\d*)$/;
 ([
@@ -112,7 +120,7 @@ function runTest(testName: string, regex: RegExp, testString: string, captureGro
 // Always expects the first match to == the test string
 function testRegex(regex: RegExp, testString: string, captureGroups: string[]) {
     const actual = new RegExp(regex).exec(testString);
-    // console.log('jtest2', testString, actual);
+    // console.log('jtest2', testString, 'actual:', actual);
 
     // Always expect the first index to return the whole string
     assertEquals((actual || [])[0] as string, testString);

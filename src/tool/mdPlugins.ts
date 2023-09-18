@@ -1,38 +1,42 @@
 import * as path from "https://deno.land/std@0.177.0/path/mod.ts";
 import { existsSync } from "https://deno.land/std@0.198.0/fs/exists.ts";
-import { twitterRegex, youtubeRegex } from "./regexCollection.ts";
+import { markdownImageRegex, twitterRegex, youtubeRegex } from "./regexCollection.ts";
 
 // @deno-types="../../types/markdown-it/index.d.ts"
 import MarkdownIt from "../../types/markdown-it/index.d.ts";
 import { getOutDir } from "../path.ts";
 import { Config, edenEmbedClassName, embedPathDataKey } from "../sharedTypes.ts";
-import { copySync } from "https://deno.land/std@0.195.0/fs/copy.ts";
 import { findFilePathFromBaseName } from "./backlinkFinder.ts";
 
 export default function plugins(md: MarkdownIt, config: Config) {
 
-    // {
-    //     // Remember old renderer, if overridden, or proxy to default renderer
-    //     const defaultRender = md.renderer.rules.text || function (tokens, idx, options, env, self) {
-    //         return self.renderToken(tokens, idx, options);
-    //     };
+    {
+        // Remember old renderer, if overridden, or proxy to default renderer
+        const defaultRender = md.renderer.rules.text || function (tokens, idx, options, env, self) {
+            return self.renderToken(tokens, idx, options);
+        };
 
-    //     md.renderer.rules.text = function (tokens, idx, options, env, self) {
-    //         const token = tokens[idx];
-    //         const content = token.content;
-    //         if (content) {
-    //             if (mdImageEmbedRegex.test(content)) {
-    //                 const renderOverride = md.renderer.rules.image ? md.renderer.rules.image : defaultRender;
-    //                 console.log('jtest content', content, token, idx)
-    // // TODO: Handle images with spaces
-    //                 return renderOverride(tokens, idx, options, env, self);
-    //             }
+        md.renderer.rules.text = function (tokens, idx, options, env, self) {
+            const token = tokens[idx];
+            const content = token.content;
+            if (content) {
+                // Feature: Support images with spaces
+                // If you copy paste an image into Obsidian, it is saved like: `Pasted image 20230729221843.png`
+                // so images with spaces must be handled because they are not automatically handled in
+                // markdown-it
+                // TODO: Eventually write a custom markdown it rule, for now this custom regex will do
+                if (markdownImageRegex.test(content)) {
+                    const [_, altText, imgPath, titleText] = content.match(markdownImageRegex) || [];
+                    if (imgPath) {
+                        const imgActualPath = findFilePathFromBaseName(imgPath, globalThis.garden);
+                        return `<img alt="${altText || ''}" title="${titleText || ''}" src="${imgActualPath}"/>`;
+                    }
+                }
+            }
+            return defaultRender(tokens, idx, options, env, self);
+        }
 
-    //         }
-    //         return defaultRender(tokens, idx, options, env, self);
-    //     }
-
-    // }
+    }
     {
         // Remember old renderer, if overridden, or proxy to default renderer
         const defaultRender = md.renderer.rules.code_inline || function (tokens, idx, options, env, self) {
