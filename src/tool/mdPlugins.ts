@@ -145,35 +145,16 @@ export default function plugins(md: MarkdownIt, config: Config) {
             // `!await exists` ensures that the image doesn't exist as the url relative to the outDir, in which case we drop into this
             // block to try to find it
             if (url && !url.startsWith('http') && !existsSync(path.join(getOutDir(config), url))) {
-                url = `/${url}`;
-                let foundMissingImage = false;
-                for (const staticPath of config.staticServeDirs) {
-                    const testPath = path.join(getOutDir(config), staticPath, url);
-                    if (existsSync(testPath)) {
-                        // path.posix is needed because this is now a webPath
-                        url = `/${path.posix.join(staticPath, url)}`;
-                        foundMissingImage = true;
-                        break;
-                    }
+                // @ts-ignore todo add global
+                const foundFile = globalThis.garden.files.find(f => {
+                    const parsedFile = path.parse(f);
+                    return parsedFile.base == url;
+                })
+                if (foundFile) {
+                    url = `/${path.parse(foundFile).base}`
+                } else {
+                    console.error('⚠️ Missing image', url);
                 }
-                if (!foundMissingImage) {
-                    // Obsidian by default puts drag-n-dropped images in the root,
-                    // if the image is not found in any of the staticServeDirs but 
-                    // it is in the parseDir root
-                    // then copy it to the root of the outDir
-                    const pathAtParseRoot = path.join(config.parseDir, url);
-                    if (existsSync(pathAtParseRoot)) {
-                        const outDir = getOutDir(config);
-                        const newOutPath = path.join(outDir, url);
-                        copySync(pathAtParseRoot, newOutPath);
-                        // Convert to a relative path for web serve root
-                        url = `/${path.relative(outDir, newOutPath)}`;
-                        foundMissingImage = true;
-                    } else {
-                        console.error('⚠️ Missing image', url, 'check config staticServeDirs for missing directory.');
-                    }
-                }
-
             }
 
 

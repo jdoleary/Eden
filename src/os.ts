@@ -1,7 +1,7 @@
 import * as path from "https://deno.land/std@0.177.0/path/mod.ts";
 import { Config, configDirName } from "./sharedTypes.ts";
 function getIgnoredDirectories(config: Config): string[] {
-    return [...config.ignoreDirs, ...config.staticServeDirs, config.outDirRoot, configDirName];
+    return [...config.ignoreDirs, config.outDirRoot, configDirName];
 
 }
 export async function* getDirs(dir: string, config: Config): AsyncGenerator<{ dir: string, contents: Deno.DirEntry[] }, void, void> {

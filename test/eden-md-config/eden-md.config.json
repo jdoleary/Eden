@@ -6,8 +6,5 @@
     "node_modules",
     ".obsidian"
   ],
-  "staticServeDirs": [
-    "Assets"
-  ],
   "logVerbose": false
 }

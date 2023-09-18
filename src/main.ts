@@ -118,20 +118,6 @@ EXAMPLES
     }
     const unnamedParseDirArg = cliFlags._[0] !== undefined ? cliFlags._[0].toString() : undefined;
     const parseDir = cliFlags.parseDir || unnamedParseDirArg || Deno.cwd();
-    let staticServeDirs: string[] = [];
-    let obsidianAttachmentFolderPath = '';
-    try {
-        const obsidianAppJsonText = await Deno.readTextFile(path.join(parseDir, '.obsidian', 'app.json'));
-        const obsidianAppJson = JSON.parse(obsidianAppJsonText);
-        if (obsidianAppJson && obsidianAppJson.attachmentFolderPath) {
-            // This variable is used for firstTime logging later
-            obsidianAttachmentFolderPath = obsidianAppJson.attachmentFolderPath;
-            // Set obsidian's attachmentFolderPath as a staticServeDir so obsidian's images will work out of the box
-            staticServeDirs = [obsidianAppJson.attachmentFolderPath]
-        }
-    } catch (_) {
-        // Fully ignorable error, this file may not exist
-    }
 
     // Default config
     const projectName = `my-digital-garden`;
@@ -144,7 +130,6 @@ EXAMPLES
             "node_modules",
             ".obsidian",
         ],
-        staticServeDirs,
         logVerbose: false,
         style: {
             themeColor: '#603dd3',
@@ -174,8 +159,6 @@ EXAMPLES
     }
     try {
         Object.assign(config, JSON.parse(await Deno.readTextFile(configPath)) || {});
-        // Keep obsidian attachmentFolderPath as static serve dir
-        config.staticServeDirs = [...config.staticServeDirs, ...staticServeDirs]
     } catch (e) {
         console.log('Caught: Config file non-existant or corrupt', e);
         return;
@@ -207,22 +190,6 @@ EXAMPLES
     // Create the out directory if it doesn't exist
     if (!await exists(getOutDir(config))) {
         await Deno.mkdir(getOutDir(config), { recursive: true });
-    }
-
-    if (config.staticServeDirs.length) {
-        // Copy assets such as images so they can be served
-        for (const staticDir of config.staticServeDirs) {
-            const absoluteStaticDir = path.join(config.parseDir, staticDir);
-            try {
-                await copy(absoluteStaticDir, path.join(getOutDir(config), staticDir));
-            } catch (e) {
-                if (e.name !== 'AlreadyExists') {
-                    console.error('❌ Error occurred when copying assets to static dir', e);
-                }
-
-            }
-            logVerbose('Statically serving contents of', `${staticDir} at /${staticDir}`);
-        }
     }
 
     // Create the template files from defaults unless they already exist in the parseDir's config directory:
@@ -337,14 +304,37 @@ EXAMPLES
     const garden: Garden = {
         pages: [],
         tags: new Set(),
+        files: [],
         blocks: {}
     }
 
+    //@ts-ignore todo type global
+    globalThis.garden = garden;
+
+    // Copy all files in parseDir to out dir
+    for await (const filePath of getFiles(allFilesPath, config)) {
+        // Copy file to outDir so it is made available
+        // This is mostly useful for images that need to be served but it may be desireable to include .md
+        // files
+        try {
+            const fileOutPath = path.join(getOutDir(config), path.relative(config.parseDir, filePath));
+            await Deno.mkdirSync(path.parse(fileOutPath).dir, { recursive: true });
+            await copy(filePath, fileOutPath, { overwrite: true });
+            garden.files.push(path.relative(getOutDir(config), fileOutPath));
+        } catch (e) {
+            if (e.name !== 'AlreadyExists') {
+                console.error('❌ Error occurred when copying assets to static dir', e);
+            }
+        }
+    }
+
+
     const convertingPerformanceStart = performance.now();
-    console.log('Converting .md files to .html...')
+    console.log('Converting .md files to .html...');
     const processPromises: Promise<Page | undefined>[] = [];
     for await (const f of getFiles(allFilesPath, config)) {
         try {
+            garden.files.push(path.relative(config.parseDir, f));
             processPromises.push(process(f, { allFilesNames, tableOfContents, nav, config, backlinks, garden, markdownIt }));
         } catch (e) {
             console.error('error in process', e);
@@ -571,7 +561,7 @@ async function process(filePath: string, { allFilesNames, tableOfContents, nav, 
         console.error('outDirRoot is undefined');
         return;
     }
-    logVerbose('\nProcess', filePath)
+    logVerbose('\nProcess', filePath);
 
     if (path.parse(filePath).ext == '.md') {
         let fileContents = await Deno.readTextFile(filePath);

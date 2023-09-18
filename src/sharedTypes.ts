@@ -55,6 +55,7 @@ export interface Page {
 export interface Garden {
     pages: Page[],
     tags: Set<string>,
+    files: pathOSRelative[];
     // Html blocks key'd by id
     blocks: { [blockId: string]: string };
 
@@ -73,10 +74,6 @@ export interface Config {
     outDirRoot: pathOSRelative;
     // These paths are relative to the parseDir
     ignoreDirs: pathOSRelative[];
-    // These directories will be statically served so that their files are accessible from
-    // the website root.  Useful for serving images or json for example.
-    // These paths are relative to the parseDir
-    staticServeDirs: string[];
     style: {
         themeColor: string;
         linkColor: string;
