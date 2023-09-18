@@ -145,7 +145,6 @@ export default function plugins(md: MarkdownIt, config: Config) {
             // `!await exists` ensures that the image doesn't exist as the url relative to the outDir, in which case we drop into this
             // block to try to find it
             if (url && !url.startsWith('http') && !existsSync(path.join(getOutDir(config), url))) {
-                // @ts-ignore todo add global
                 const foundFile = globalThis.garden.files.find(f => {
                     const parsedFile = path.parse(f);
                     return parsedFile.base == url;

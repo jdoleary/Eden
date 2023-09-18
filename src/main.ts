@@ -4,6 +4,7 @@ declare global {
     var useLogVerbose: boolean;
     // will print extra instructions if running for the first time
     var firstRun: boolean;
+    var garden: Garden;
 }
 // Initialize to false, will be set from cli flags
 window.useLogVerbose = false;
