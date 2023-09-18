@@ -35,7 +35,7 @@ import { Backlinks, findBacklinks } from "./tool/backlinkFinder.ts";
 import { makeRSSFeed } from "./tool/rss-feed-maker.ts";
 import { timeAgoJs } from "./htmlGenerators/timeAgo.js";
 import { embedBlocks, processBlockElementsWithID } from "./tool/editDOM.ts";
-import { getCliFlagOptions, rawCLIFlagOptions } from "./cliOptions.ts";
+import { CLIFlag, getCliFlagOptions, rawCLIFlagOptions } from "./cliOptions.ts";
 import plugins from "./tool/mdPlugins.ts";
 import { obsidianStyleBacklinkRegex, obsidianStyleComment, obsidianStyleEmbedBlockRegex, obsidianStyleEmbedFileRegex, obsidianStyleEmbedPageRegex } from "./tool/regexCollection.ts";
 import { NavItem, findNavItem, removeHiddenPages } from "./tool/navigation.ts";
@@ -81,11 +81,43 @@ async function main() {
         }
     }
     if (cliFlags.h || cliFlags.help) {
-        console.log('Usage:\n' + rawCLIFlagOptions.map(flag => `${flag.names.map(name => name.length == 1 ? `-${name}` : `--${name}${flag.type == 'string' ? ' VALUE' : ''}`).join(', ')}: ${flag.description}`).join('\n'));
+        const getFlagPrintedName = (flag: CLIFlag) => {
+            return `${flag.names.map(name => {
+                return name.length == 1 ? `-${name}` : `--${name}${flag.type == 'string' ? ' VALUE' : ''}`;
+            }).join(', ')}`
+        }
+        const longestNameOption = rawCLIFlagOptions.sort((a, b) => getFlagPrintedName(b).length - getFlagPrintedName(a).length)[0];
+        const longestNameOptionLength = longestNameOption ? longestNameOption.names.join('').length : 0;
+        console.log(`
+NAME
+        eden - process a directory of .md files and output static html
+
+SYNOPSIS
+        eden [OPTIONS] [PARSE DIRECTORY]
+
+DESCRIPTION
+        Eden parses a directory of markdown files into static html.  It outputs an eden-md-config directory inside of the pared directory which contains files used for customizing the behavior of eden and the outputted html.
+
+        The options are as follows:
+
+        ${rawCLIFlagOptions.map(flag => {
+            const printedName = getFlagPrintedName(flag);
+            return `${new Array(longestNameOptionLength + ': '.length).fill(' ').slice(printedName.length).join('')}${printedName}:  ${flag.description}`;
+        }).join('\n\n        ')}
+
+EXAMPLES
+        The command:
+            eden C:\\my-obsidian-notes
+        will parse the my-obsidian-notes directory into static html in C:\\my-obsidian-notes\\eden-md-out.
+
+        The command:
+            eden
+        will parse current working directory into static html.
+`);
         return;
     }
-    // This will eventually be supplied via CLI
-    const parseDir = cliFlags.parseDir || Deno.cwd();
+    const unnamedParseDirArg = cliFlags._[0] !== undefined ? cliFlags._[0].toString() : undefined;
+    const parseDir = cliFlags.parseDir || unnamedParseDirArg || Deno.cwd();
     let staticServeDirs: string[] = [];
     let obsidianAttachmentFolderPath = '';
     try {
