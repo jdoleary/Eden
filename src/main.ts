@@ -392,10 +392,9 @@ ${Array.from(garden.tags).map(t => `<a href="${getWebPathOfTag(t)}">${t}</a>`).j
 <hr>
         `: '';
         const latestHtml = latestPage.metadata?.summary ? `
-<h4>Latest</h4>
+${thumbnail}
 <a href="${latestPage.webPath}"><h3>${latestPage.name}</h3></a>
 <div>${new Date(latestPage.createdAt as number).toDateString()}</div>
-${thumbnail}
 <div>${latestPage.metadata?.summary || ''}</div>
 <hr>
         `: '';

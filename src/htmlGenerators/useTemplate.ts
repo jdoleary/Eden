@@ -57,7 +57,7 @@ export async function addContentsToTemplate(content: string, templateHtml: strin
                 // ? `<a class="nextPrevButtons" href="\\${previous.webPath}">← ${previous.parentDir !== currentPage?.parentDir
                 //     ? path.parse(previous.parentDir || '').name + '/'
                 //     : ''}${previous.name}</a>`
-                ? `<a class="nextPrevButtons" href="${previous.webPath}">${previous.name}</a>`
+                ? `<a class="nextPrevButtons" href="${previous.webPath}">← ${previous.name}</a>`
                 : `<a class="nextPrevButtons ${(metadata && metadata.title == 'Table of Contents') ? 'hidden' : ''}" href="${tableOfContentsURL}">Table of Contents</a>`}`;
             // Add pageNumber
             pagination += `<div class="pageNumber"><a href="${tableOfContentsURL}">${currentIndex + 1}</a></div>`;
@@ -74,7 +74,7 @@ export async function addContentsToTemplate(content: string, templateHtml: strin
     // TODO find a better way to add this to the head rather than replace
     content = content.replace('{{ metadata }}', JSON.stringify(metadata) || '{}');
 
-    content = content.replace('{{metadata:title}}', `<h1>${metadata && metadata.title ? metadata.title : title === 'index' ? '' : title}</h1>`);
+    content = content.replace('{{metadata:title}}', `<h1 style="text-transform:capitalize;">${metadata && metadata.title ? metadata.title : title === 'index' ? '' : title}</h1>`);
     content = content.replace('{{metadata:subtitle}}', metadata && metadata.subtitle ? `<h2 class="gray">${metadata.subtitle}</h2>` : '');
     // Even if tags don't exist, it should still be an empty div so that the createdAt timestamps stay on the right side of the flex
     content = content.replace('{{metadata:tags}}', metadata && metadata.tags ? `<div id="article-tags">${metadata.tags.map((tag: string) => `<a href="${path.join('/', tagsDirectoryName, `${tag}.html`).replaceAll(' ', '_')}">${tag}</a>`).join('')}</div>` : '<div></div>');
