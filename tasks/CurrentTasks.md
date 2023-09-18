@@ -5,6 +5,7 @@
     - If there are multiple copies it references the one at root
 - Improve design of homepage
 - Support thumbnail
+    - See `// Copy assets such as images so they can be served`, any referenced image in any directory will have to be copied
 - **(MVP) Make mvp demo video and send to Zak**
     - Use Obsidian help as sample https://github.com/obsidianmd/obsidian-help/tree/master/en
     - Try to drum up interest with a Discord server / mailing list for a "zero-config digital garden"
@@ -52,6 +53,7 @@
 - Bug: ignoreDirs does fuzzy matching but should be exact, see tests in os.ts
 
 ## Enhancements
+- Rethink if I should copy ALL files to outDir as done in 971a8c1 or just referenced images
 - Remove leading bullet point from checkboxes
 - Simplify js lib so it doesn't have to be stored in a string.
 - Replace all usages of tableOfContents with garden
