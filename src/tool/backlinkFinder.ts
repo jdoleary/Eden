@@ -16,7 +16,10 @@ export type Backlinks = {
 // filePath may be relative path (obsidian style)
 // absolute web url
 // or just file baseName
-export function findFilePathFromBaseName(filePath: string, garden: Garden): string {
+export function findFilePathFromBaseName(filePath: string | undefined, garden: Garden): string {
+    if (filePath === undefined) {
+        return '';
+    }
     if (filePath.startsWith('http')) {
         return filePath;
     }
