@@ -38,9 +38,7 @@ export const defaultHtmlTemplatePage = `<!DOCTYPE html>
         </div>
     </div>
     <nav>
-        <div id="nav-aligner">
-            {{nav}}
-        </div>
+        {{nav}}
     </nav>
     <article>
         <div id="article-main">
@@ -124,6 +122,9 @@ nav {
 @media screen and (min-width: 1080px) {
     nav {
         display: block;
+    }
+    nav:empty {
+        display:none;
     }
     div#breadcrumbs {
         display:none;

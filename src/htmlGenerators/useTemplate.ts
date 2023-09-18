@@ -100,7 +100,9 @@ export async function addContentsToTemplate(content: string, templateHtml: strin
     }
 
     // Add nav
-    content = content.replace('{{nav}}', nav ? navHTML(nav, relativePath.split(path.SEP)) : '');
+    content = content.replace('{{nav}}', nav ? `<div id="nav-aligner">
+        ${navHTML(nav, relativePath.split(path.SEP))}
+    </div>` : '');
     // Add header
     const headerHTML = `<a href="/">${config.projectName}</a>`;
     content = content.replace('{{header}}', headerHTML);
