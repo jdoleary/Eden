@@ -7,6 +7,7 @@ import MarkdownIt from "../../types/markdown-it/index.d.ts";
 import { getOutDir } from "../path.ts";
 import { Config, edenEmbedClassName, embedPathDataKey } from "../sharedTypes.ts";
 import { copySync } from "https://deno.land/std@0.195.0/fs/copy.ts";
+import { findFilePathFromBaseName } from "./backlinkFinder.ts";
 
 export default function plugins(md: MarkdownIt, config: Config) {
 
@@ -145,14 +146,9 @@ export default function plugins(md: MarkdownIt, config: Config) {
             // `!await exists` ensures that the image doesn't exist as the url relative to the outDir, in which case we drop into this
             // block to try to find it
             if (url && !url.startsWith('http') && !existsSync(path.join(getOutDir(config), url))) {
-                const foundFile = globalThis.garden.files.find(f => {
-                    const parsedFile = path.parse(f);
-                    return parsedFile.base == url;
-                })
-                if (foundFile) {
-                    url = `/${path.parse(foundFile).base}`
-                } else {
-                    console.error('⚠️ Missing image', url);
+                const foundPath = findFilePathFromBaseName(url, globalThis.garden);
+                if (foundPath) {
+                    url = foundPath;
                 }
             }
 

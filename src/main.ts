@@ -32,7 +32,7 @@ import { deploy, DeployableFile } from "./tool/publish.ts";
 import { extractMetadata } from "./tool/metadataParser.ts";
 import { logVerbose } from "./tool/console.ts";
 import { defaultHtmlTemplatePage, defaultStyles } from './htmlGenerators/htmlTemplate.ts';
-import { Backlinks, findBacklinks } from "./tool/backlinkFinder.ts";
+import { Backlinks, findBacklinks, findFilePathFromBaseName } from "./tool/backlinkFinder.ts";
 import { makeRSSFeed } from "./tool/rss-feed-maker.ts";
 import { timeAgoJs } from "./htmlGenerators/timeAgo.js";
 import { embedBlocks, processBlockElementsWithID } from "./tool/editDOM.ts";
@@ -386,6 +386,7 @@ EXAMPLES
 
         const sortedPages = garden.pages.filter(p => !!p.createdAt).sort((p1, p2) => (p2.createdAt || 0) - (p1.createdAt || 0))
         const latestPage = sortedPages[0];
+        const thumbnail = latestPage.metadata?.thumbnail ? `<img height="256px" src="${findFilePathFromBaseName(latestPage.metadata.thumbnail, garden)}"/> ` : '';
         // `.createdAt as number` because createdAt is guarunteed to exist due to above .filter on garden.pages
         const tagsHtml = garden.tags.size > 0 ? `<h4> Tags </h4>
 ${Array.from(garden.tags).map(t => `<a href="${getWebPathOfTag(t)}">${t}</a>`).join('<span>, </span>')}
@@ -395,6 +396,7 @@ ${Array.from(garden.tags).map(t => `<a href="${getWebPathOfTag(t)}">${t}</a>`).j
 <h4>Latest</h4>
 <a href="${latestPage.webPath}"><h3>${latestPage.name}</h3></a>
 <div>${new Date(latestPage.createdAt as number).toDateString()}</div>
+${thumbnail}
 <div>${latestPage.metadata?.summary || ''}</div>
 <hr>
         `: '';

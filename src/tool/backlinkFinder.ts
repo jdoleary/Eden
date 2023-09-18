@@ -1,7 +1,7 @@
 import { BufReader } from "https://deno.land/std@0.199.0/io/buf_reader.ts";
 import * as path from "https://deno.land/std@0.177.0/path/mod.ts";
-import { absoluteOsMdPathToWebPath, pathOSAbsolute, pathToPageName, pathWeb } from "../path.ts";
-import { FileName } from "../sharedTypes.ts";
+import { absoluteOsMdPathToWebPath, pathOSAbsolute, pathOSRelative, pathToPageName, pathWeb } from "../path.ts";
+import { FileName, Garden } from "../sharedTypes.ts";
 
 export type Backlinks = {
     [webPath: pathWeb]: {
@@ -12,6 +12,25 @@ export type Backlinks = {
         from: pathOSAbsolute;
     }[]
 };
+
+// filePath may be relative path (obsidian style)
+// absolute web url
+// or just file baseName
+export function findFilePathFromBaseName(filePath: string, garden: Garden): string {
+    if (filePath.startsWith('http')) {
+        return filePath;
+    }
+    const foundFile = garden.files.find(f => {
+        return f.endsWith(filePath);
+    })
+    if (foundFile) {
+        return `/${foundFile}`
+    } else {
+        console.error('⚠️ Missing image', filePath);
+        return filePath
+    }
+
+}
 
 export async function findBacklinks(filePathsGenerator: AsyncGenerator<string, void, void>, allFileNames: FileName[], parseDir: string): Promise<Backlinks> {
     console.log('Finding backlinks...');

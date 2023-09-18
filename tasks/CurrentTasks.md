@@ -4,8 +4,6 @@
     - it seems an image can be referenced by name alone unless there are multiple copies
     - If there are multiple copies it references the one at root
 - Improve design of homepage
-- Support thumbnail
-    - See `// Copy assets such as images so they can be served`, any referenced image in any directory will have to be copied
 - **(MVP) Make mvp demo video and send to Zak**
     - Use Obsidian help as sample https://github.com/obsidianmd/obsidian-help/tree/master/en
     - Try to drum up interest with a Discord server / mailing list for a "zero-config digital garden"

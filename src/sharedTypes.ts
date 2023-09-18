@@ -18,6 +18,7 @@ export interface Metadata {
     tags: string[];
     title: string;
     subtitle: string;
+    thumbnail?: string;
 }
 export type TableOfContentsEntry = {
     originalFilePath?: pathOSAbsolute,
