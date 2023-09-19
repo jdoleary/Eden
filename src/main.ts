@@ -244,10 +244,9 @@ EXAMPLES
 
     const tableOfContents: TableOfContents = [];
 
-    const allFilesPath = path.join('.', config.parseDir);
     // Get a list of all file names to support automatic back linking
     const allFilesNames = [];
-    for await (const f of getFiles(allFilesPath, config)) {
+    for await (const f of getFiles(config.parseDir, config)) {
         const parsed = path.parse(f);
         if (parsed.ext == '.md') {
             allFilesNames.push({ name: parsed.name, webPath: absoluteOsMdPathToWebPath(f, config.parseDir) });
@@ -257,11 +256,11 @@ EXAMPLES
     // console.log('jtest allfilenames', allFilesNames, allFilesNames.length);
     // console.log('jtest table', tableOfContents.map(x => `${x.pageName}, ${x.isDir}`), tableOfContents.length);
     logVerbose('All markdown file names:', Array.from(allFilesNames));
-    const backlinks = await findBacklinks(getFiles(allFilesPath, config), allFilesNames, config.parseDir);
+    const backlinks = await findBacklinks(getFiles(config.parseDir, config), allFilesNames, config.parseDir);
 
     // Create index file for each directory
     const nav: NavItem[] = [];
-    for await (const d of getDirs(allFilesPath, config)) {
+    for await (const d of getDirs(config.parseDir, config)) {
         const directoryPathSegment: pathOSRelative = path.relative(config.parseDir, d.dir).replaceAll(' ', '_');
         const pageNameSteps = directoryPathSegment.split('\\');
         const indent = pageNameSteps.length;
@@ -315,7 +314,7 @@ EXAMPLES
     globalThis.garden = garden;
 
     // Copy all files in parseDir to out dir
-    for await (const filePath of getFiles(allFilesPath, config)) {
+    for await (const filePath of getFiles(config.parseDir, config)) {
         // Copy file to outDir so it is made available
         // This is mostly useful for images that need to be served but it may be desireable to include .md
         // files
@@ -334,7 +333,7 @@ EXAMPLES
     const convertingPerformanceStart = performance.now();
     console.log('Converting .md files to .html...');
     const processPromises: Promise<Page | undefined>[] = [];
-    for await (const f of getFiles(allFilesPath, config)) {
+    for await (const f of getFiles(config.parseDir, config)) {
         try {
             processPromises.push(process(f, { allFilesNames, tableOfContents, nav, config, backlinks, garden, markdownIt }));
         } catch (e) {
@@ -451,15 +450,19 @@ ${tagsHtml}
             continue;
         }
         // TODO exclude --hidden: true files from allFilesNames
+        const filePath = path.join(getOutDir(config), webPath);
         try {
-            const filePath = path.join(getOutDir(config), webPath);
             const fileContent = await Deno.readTextFile(filePath);
             const newFileContent = processBlockElementsWithID(fileContent, name, garden);
             if (newFileContent) {
                 await Deno.writeTextFile(filePath, newFileContent);
             }
         } catch (e) {
-            console.error('Error populating garden.blocks', e);
+            if(e.name == 'NotFound'){
+                console.error('Error populating garden.blocks', filePath);
+            }else{
+                console.error('Error populating garden.blocks', e);
+            }
         }
     }
 
@@ -469,15 +472,19 @@ ${tagsHtml}
         if (metadata && metadata.hidden) {
             continue;
         }
-        try {
             const filePath = path.join(getOutDir(config), webPath);
+        try {
             const fileContent = await Deno.readTextFile(filePath);
             const newFileContent = embedBlocks(fileContent, garden, webPath, config);
             if (newFileContent) {
                 await Deno.writeTextFile(filePath, newFileContent);
             }
         } catch (e) {
-            console.error('Error replacing embed block ref', e);
+            if(e.name == 'NotFound'){
+                console.error('Error: Could not replace embed block ref', filePath)
+            }else{
+                console.error('Error replacing embed block ref', e);
+            }
         }
     }
     console.log('✅ Finished transcluding embeddable blocks', performance.now() - startTranscludingEmbeddableBlocks, 'milliseconds.');
