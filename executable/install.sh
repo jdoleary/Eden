@@ -21,11 +21,18 @@ else
 fi
 
 file_name="eden${target}"
-eden_uri="https://jordanoleary.me/assets/executables/${file_name}"
+# https://eden.nyc3.cdn.digitaloceanspaces.com/eden-mac-aarch
+# https://eden.nyc3.cdn.digitaloceanspaces.com/eden-mac-x86-64
+# https://eden.nyc3.cdn.digitaloceanspaces.com/eden.exe
+eden_uri="https://eden.nyc3.cdn.digitaloceanspaces.com/${file_name}"
 
 eden_install="${EDEN_INSTALL:-$HOME/.eden}"
 bin_dir="$eden_install/bin"
 exe="$bin_dir/eden"
+
+if [ "$OS" = "Windows_NT" ]; then
+	exe="$exe.exe"
+fi
 
 if [ ! -d "$bin_dir" ]; then
 	mkdir -p "$bin_dir"
