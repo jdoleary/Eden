@@ -449,15 +449,19 @@ ${tagsHtml}
             continue;
         }
         // TODO exclude --hidden: true files from allFilesNames
+        const filePath = path.join(getOutDir(config), webPath);
         try {
-            const filePath = path.join(getOutDir(config), webPath);
             const fileContent = await Deno.readTextFile(filePath);
             const newFileContent = processBlockElementsWithID(fileContent, name, garden);
             if (newFileContent) {
                 await Deno.writeTextFile(filePath, newFileContent);
             }
         } catch (e) {
-            console.error('Error populating garden.blocks', e);
+            if(e.name == 'NotFound'){
+                console.error('Error populating garden.blocks', filePath);
+            }else{
+                console.error('Error populating garden.blocks', e);
+            }
         }
     }
 
@@ -467,15 +471,19 @@ ${tagsHtml}
         if (metadata && metadata.hidden) {
             continue;
         }
-        try {
             const filePath = path.join(getOutDir(config), webPath);
+        try {
             const fileContent = await Deno.readTextFile(filePath);
             const newFileContent = embedBlocks(fileContent, garden, webPath, config);
             if (newFileContent) {
                 await Deno.writeTextFile(filePath, newFileContent);
             }
         } catch (e) {
-            console.error('Error replacing embed block ref', e);
+            if(e.name == 'NotFound'){
+                console.error('Error: Could not replace embed block ref', filePath)
+            }else{
+                console.error('Error replacing embed block ref', e);
+            }
         }
     }
     console.log('✅ Finished transcluding embeddable blocks', performance.now() - startTranscludingEmbeddableBlocks, 'milliseconds.');
