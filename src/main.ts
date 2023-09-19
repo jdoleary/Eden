@@ -40,8 +40,13 @@ import { CLIFlag, getCliFlagOptions, rawCLIFlagOptions } from "./cliOptions.ts";
 import plugins from "./tool/mdPlugins.ts";
 import { obsidianStyleBacklinkRegex, obsidianStyleComment, obsidianStyleEmbedBlockRegex, obsidianStyleEmbedFileRegex, obsidianStyleEmbedPageRegex } from "./tool/regexCollection.ts";
 import { NavItem, findNavItem, removeHiddenPages } from "./tool/navigation.ts";
+import { isUpdateNewer } from "./tool/updateAvailable.ts";
 
-const VERSION = '0.1.0'
+// When updating VERSION, also update executable/metadata.json's version
+// this tells the app when a new version is available
+const VERSION = '0.2.1'
+// When updating VERSION, also update executable/metadata.json's version
+// this tells the app when a new version is available
 
 interface ManifestFiles {
     [filePath: string]: {
@@ -62,19 +67,16 @@ async function main() {
         console.log(VERSION);
         return;
     } else {
-        const [MAJOR, MINOR, PATCH] = VERSION.split('.');
+        const [MAJOR, _MINOR, _PATCH] = VERSION.split('.');
         console.log(`\n${PROGRAM_NAME} v${VERSION} ${MAJOR == '0' ? 'Beta' : ''}`);
         console.log('Please send feedback, questions, or bug reports to jdoleary@gmail.com or Twitter:@nestfall\n');
 
         // Check for updates
         try {
-
-            // updateUrl is coming from https://github.com/jdoleary/spellmasons-server-hub (I'm just reusing a server that I'm hosting for spellmasons)
-            const updateUrl = 'https://server-hub-d2b2v.ondigitalocean.app/md2webUpdate';
+            const updateUrl = 'https://eden.nyc3.digitaloceanspaces.com/metadata.json';
             const res = await fetch(updateUrl);
             const updateData = await res.json();
-            const [MAJOR_UPDATE, MINOR_UPDATE, PATCH_UPDATE] = updateData.version.split('.');
-            if (MAJOR_UPDATE !== MAJOR || MINOR_UPDATE !== MINOR || PATCH_UPDATE !== PATCH) {
+            if (isUpdateNewer(VERSION, updateData.version)) {
                 console.log(`🎁 Update available: ${VERSION}->${updateData.version}\n${updateData.updateUrl}\n${updateData.message}\n\n`);
             }
         } catch (e) {
