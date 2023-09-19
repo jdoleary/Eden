@@ -33,7 +33,7 @@ export async function addContentsToTemplate(content: string, templateHtml: strin
         })].filter(x => !!x).join('<span class="center-dot">/</span>');
     }
     content = content.replace('{{breadcrumbs}}', breadcrumbs);
-    const webPath = absoluteOsMdPathToWebPath(filePath, config.parseDir);
+    const webPath = absoluteOsMdPathToWebPath(filePath, globalThis.parseDir);
     const backlinkList = backlinks[webPath];
     if (backlinkList) {
         content = content.replace('{{backlinks}}', `<h4>Backlinks</h4>${backlinkList.map(({ text, from, backlinkName }) => `<div><a href="${from}#${backlinkName}">${text}</a></div>`).join('')}`);
@@ -85,7 +85,7 @@ export async function addContentsToTemplate(content: string, templateHtml: strin
     if (!isDir) {
         // Get file stat data on the harddrive
         try {
-            const statInfo = await Deno.stat(path.join(config.parseDir, relativePath));
+            const statInfo = await Deno.stat(path.join(globalThis.parseDir, relativePath));
             if (statInfo.birthtime) {
                 content = content.replace('{{created}}', `<span ${statInfo.birthtime ? `data-converttimeago="${statInfo.birthtime.getTime()}"` : ''}>${statInfo.birthtime?.toLocaleDateString()}</span>` || '');
                 const tocEntry = findTOCEntryFromFilepath(tableOfContents, filePath);

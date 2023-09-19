@@ -8,7 +8,7 @@ export async function* getDirs(dir: string, config: Config): AsyncGenerator<{ di
     const dirents = Deno.readDir(dir);
     // Yield top level directory first so its own contents will be included
     // ex: content.name: 'Butterfly Sweep.md'
-    if (isDirectoryIgnored(dir, config.parseDir, getIgnoredDirectories(config))) {
+    if (isDirectoryIgnored(dir, globalThis.parseDir, getIgnoredDirectories(config))) {
         return;
     }
     yield { dir: dir, contents: Array.from(Deno.readDirSync(dir)) };
@@ -16,7 +16,7 @@ export async function* getDirs(dir: string, config: Config): AsyncGenerator<{ di
         const res = path.resolve(dir, dirent.name);
         // Ignore outDirRoot or else it will loop forever
         // Ignore both ignoreDirectories and staticServeDirectorys (we don't want static serve directories showing up in table of contents)
-        if (isDirectoryIgnored(res, config.parseDir, getIgnoredDirectories(config))) {
+        if (isDirectoryIgnored(res, globalThis.parseDir, getIgnoredDirectories(config))) {
             // Do not process a file in an ignore directory
             continue;
         }
@@ -35,7 +35,7 @@ export async function* getFiles(dir: string, config: Config): AsyncGenerator<str
             continue;
         }
         // Ignore outDirRoot or else it will loop forever
-        if (isDirectoryIgnored(res, config.parseDir, getIgnoredDirectories(config))) {
+        if (isDirectoryIgnored(res, globalThis.parseDir, getIgnoredDirectories(config))) {
             // Do not process a file in an ignore directory
             continue;
         }

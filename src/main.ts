@@ -5,6 +5,7 @@ declare global {
     // will print extra instructions if running for the first time
     var firstRun: boolean;
     var garden: Garden;
+    var parseDir: pathOSAbsolute;
 }
 // Initialize to false, will be set from cli flags
 window.useLogVerbose = false;
@@ -120,7 +121,7 @@ EXAMPLES
         return;
     }
     const unnamedParseDirArg = cliFlags._[0] !== undefined ? cliFlags._[0].toString() : undefined;
-    const parseDir = cliFlags.parseDir || unnamedParseDirArg || Deno.cwd();
+    globalThis.parseDir = cliFlags.parseDir || unnamedParseDirArg || Deno.cwd();
 
     // Default config
     const projectName = `my-digital-garden`;
@@ -128,7 +129,6 @@ EXAMPLES
         projectName,
         edenVersion: VERSION,
         outDirRoot: `${PROGRAM_NAME}-out`,
-        parseDir,
         ignoreDirs: [
             "node_modules",
             ".obsidian",
@@ -146,14 +146,14 @@ EXAMPLES
         }
     };
     // If there is no config file in parseDir, create one from the default
-    const configPath = path.join(getConfDir(config.parseDir), configName)
+    const configPath = path.join(getConfDir(globalThis.parseDir), configName)
 
     // Create the config directory if it doesn't exist
-    if (!await exists(getConfDir(config.parseDir))) {
+    if (!await exists(getConfDir(globalThis.parseDir))) {
         // A missing confDir means that this is the first time this program is being
         // run on a parseDir
         window.firstRun = true;
-        await Deno.mkdir(getConfDir(config.parseDir), { recursive: true });
+        await Deno.mkdir(getConfDir(globalThis.parseDir), { recursive: true });
     }
 
     if (!await exists(configPath)) {
@@ -179,7 +179,7 @@ EXAMPLES
         .use(pluginHighlight);
     plugins(markdownIt, config);
 
-    if (!config.parseDir || !config.outDirRoot) {
+    if (!globalThis.parseDir || !config.outDirRoot) {
         console.error('❌ Config is invalid', config);
         return;
     }
@@ -196,7 +196,7 @@ EXAMPLES
     }
 
     // Create the template files from defaults unless they already exist in the parseDir's config directory:
-    const templatePath = path.join(getConfDir(config.parseDir), templateName);
+    const templatePath = path.join(getConfDir(globalThis.parseDir), templateName);
     if (cliFlags['overwrite-template'] || !await exists(templatePath)) {
         console.log('Creating template in ', templatePath);
         await Deno.writeTextFile(templatePath, defaultHtmlTemplatePage);
@@ -210,7 +210,7 @@ EXAMPLES
     // }
     // Copy the default styles unless they already exist 
     // (which means they could be changed by the user in which case do not overwrite)
-    const stylesPath = path.join(getConfDir(config.parseDir), stylesName)
+    const stylesPath = path.join(getConfDir(globalThis.parseDir), stylesName)
     if (cliFlags['overwrite-template'] || !await exists(stylesPath)) {
         console.log('Creating default styles in ', stylesPath);
         await Deno.writeTextFile(stylesPath, defaultStyles(config));
@@ -226,7 +226,7 @@ EXAMPLES
     // To be used later once I add support for a changed template causing a waterfall change
     // let previousManifest: Manifest = { version: "0.0.0", files: {} };
     // try {
-    //     previousManifest = JSON.parse(await Deno.readTextFile(path.join(config.parseDir, 'manifest.json'))) || { files: {} };
+    //     previousManifest = JSON.parse(await Deno.readTextFile(path.join(globalThis.parseDir, 'manifest.json'))) || { files: {} };
     // } catch (e) {
     //     console.log('Caught: Manifest non-existant or corrupt', e);
     // }
@@ -234,7 +234,7 @@ EXAMPLES
     // Todo: future enhancement, allow for defining different templates in a .md's metadata
     const templateReplacer = '{{content}}';
     let templateHtml = templateReplacer;
-    const defaultTemplatePath = path.join(getConfDir(config.parseDir), templateName);
+    const defaultTemplatePath = path.join(getConfDir(globalThis.parseDir), templateName);
     try {
         templateHtml = await Deno.readTextFile(defaultTemplatePath);
     } catch (_) {
@@ -246,22 +246,22 @@ EXAMPLES
 
     // Get a list of all file names to support automatic back linking
     const allFilesNames = [];
-    for await (const f of getFiles(config.parseDir, config)) {
+    for await (const f of getFiles(globalThis.parseDir, config)) {
         const parsed = path.parse(f);
         if (parsed.ext == '.md') {
-            allFilesNames.push({ name: parsed.name, webPath: absoluteOsMdPathToWebPath(f, config.parseDir) });
+            allFilesNames.push({ name: parsed.name, webPath: absoluteOsMdPathToWebPath(f, globalThis.parseDir) });
         }
     }
 
     // console.log('jtest allfilenames', allFilesNames, allFilesNames.length);
     // console.log('jtest table', tableOfContents.map(x => `${x.pageName}, ${x.isDir}`), tableOfContents.length);
     logVerbose('All markdown file names:', Array.from(allFilesNames));
-    const backlinks = await findBacklinks(getFiles(config.parseDir, config), allFilesNames, config.parseDir);
+    const backlinks = await findBacklinks(getFiles(globalThis.parseDir, config), allFilesNames, globalThis.parseDir);
 
     // Create index file for each directory
     const nav: NavItem[] = [];
-    for await (const d of getDirs(config.parseDir, config)) {
-        const directoryPathSegment: pathOSRelative = path.relative(config.parseDir, d.dir).replaceAll(' ', '_');
+    for await (const d of getDirs(globalThis.parseDir, config)) {
+        const directoryPathSegment: pathOSRelative = path.relative(globalThis.parseDir, d.dir).replaceAll(' ', '_');
         const pageNameSteps = directoryPathSegment.split(path.sep);
         const indent = pageNameSteps.length;
         const pageName = pathToPageName(directoryPathSegment);
@@ -298,7 +298,7 @@ EXAMPLES
 
         }
         // Create an index page for every directory except for the parse dir (the table of contents better serves this)
-        if (path.relative(config.parseDir, d.dir) != '') {
+        if (path.relative(globalThis.parseDir, d.dir) != '') {
             createDirectoryIndexFile(d, templateHtml, { tableOfContents, config, backlinks });
         }
     }
@@ -314,12 +314,12 @@ EXAMPLES
     globalThis.garden = garden;
 
     // Copy all files in parseDir to out dir
-    for await (const filePath of getFiles(config.parseDir, config)) {
+    for await (const filePath of getFiles(globalThis.parseDir, config)) {
         // Copy file to outDir so it is made available
         // This is mostly useful for images that need to be served but it may be desireable to include .md
         // files
         try {
-            const fileOutPath = path.join(getOutDir(config), path.relative(config.parseDir, filePath));
+            const fileOutPath = path.join(getOutDir(config), path.relative(globalThis.parseDir, filePath));
             await Deno.mkdirSync(path.parse(fileOutPath).dir, { recursive: true });
             await copy(filePath, fileOutPath, { overwrite: true });
             garden.files.push(path.relative(getOutDir(config), fileOutPath).split(path.sep).join('/'));
@@ -333,7 +333,7 @@ EXAMPLES
     const convertingPerformanceStart = performance.now();
     console.log('Converting .md files to .html...');
     const processPromises: Promise<Page | undefined>[] = [];
-    for await (const f of getFiles(config.parseDir, config)) {
+    for await (const f of getFiles(globalThis.parseDir, config)) {
         try {
             processPromises.push(process(f, { allFilesNames, tableOfContents, nav, config, backlinks, garden, markdownIt }));
         } catch (e) {
@@ -519,7 +519,7 @@ ${tagsHtml}
     }
 
     if (window.firstRun) {
-        console.log(`\n\n~~~First time setup~~~\nTemplate files have been created for you in ${getConfDir(config.parseDir)}.  You can modify the config file (${configName}) to change the behavior of this program or try modifying the ${templateName} or ${stylesName} to change the appearance of the generated website!\n`);
+        console.log(`\n\n~~~First time setup~~~\nTemplate files have been created for you in ${getConfDir(globalThis.parseDir)}.  You can modify the config file (${configName}) to change the behavior of this program or try modifying the ${templateName} or ${stylesName} to change the appearance of the generated website!\n`);
     }
 
 
@@ -561,7 +561,7 @@ async function process(filePath: string, { allFilesNames, tableOfContents, nav, 
     //     return;
     // }
 
-    if (!config.parseDir) {
+    if (!globalThis.parseDir) {
         console.error('parseDir is undefined');
         return;
     }
@@ -573,7 +573,7 @@ async function process(filePath: string, { allFilesNames, tableOfContents, nav, 
 
     if (path.parse(filePath).ext == '.md') {
         let fileContents = await Deno.readTextFile(filePath);
-        const relativePath = path.relative(config.parseDir, filePath);
+        const relativePath = path.relative(globalThis.parseDir, filePath);
         // Remove all comments
         fileContents = fileContents.replaceAll(obsidianStyleComment, '');
         // Replace embed file syntax with markdown image format
@@ -641,7 +641,7 @@ async function process(filePath: string, { allFilesNames, tableOfContents, nav, 
         let createdAt;
         let modifiedAt;
         try {
-            const statInfo = await Deno.stat(path.join(config.parseDir, relativePath));
+            const statInfo = await Deno.stat(path.join(globalThis.parseDir, relativePath));
             if (statInfo.birthtime) {
                 fileContents = fileContents.replace('{{created}}', `<span ${statInfo.birthtime ? `data-converttimeago="${statInfo.birthtime.getTime()}"` : ''}>${statInfo.birthtime?.toLocaleDateString()}</span>` || '');
                 createdAt = statInfo.birthtime;
@@ -661,7 +661,7 @@ async function process(filePath: string, { allFilesNames, tableOfContents, nav, 
             .replaceAll('%20', ' ');
 
         const page: Page = {
-            webPath: absoluteOsMdPathToWebPath(filePath, config.parseDir),
+            webPath: absoluteOsMdPathToWebPath(filePath, globalThis.parseDir),
             name: pathToPageName(filePath),
             contents: htmlString,
             metadata,
@@ -685,12 +685,12 @@ async function outputPage(page: Page, templateHtml: string, { allFilesNames, tab
         console.error('Page missing _internal');
         return;
     }
-    const relativePath = path.relative(config.parseDir, page._internal.filePath);
+    const relativePath = path.relative(globalThis.parseDir, page._internal.filePath);
 
     // metadata: `template`
     // Supports using a custom template instead of default template
     if (page.metadata && page.metadata.template) {
-        const defaultTemplatePath = path.join(getConfDir(config.parseDir), page.metadata.template);
+        const defaultTemplatePath = path.join(getConfDir(globalThis.parseDir), page.metadata.template);
         try {
             templateHtml = await Deno.readTextFile(defaultTemplatePath);
         } catch (_) {
