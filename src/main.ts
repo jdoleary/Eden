@@ -458,9 +458,9 @@ ${tagsHtml}
                 await Deno.writeTextFile(filePath, newFileContent);
             }
         } catch (e) {
-            if(e.name == 'NotFound'){
+            if (e.name == 'NotFound') {
                 console.error('Error populating garden.blocks', filePath);
-            }else{
+            } else {
                 console.error('Error populating garden.blocks', e);
             }
         }
@@ -472,7 +472,7 @@ ${tagsHtml}
         if (metadata && metadata.hidden) {
             continue;
         }
-            const filePath = path.join(getOutDir(config), webPath);
+        const filePath = path.join(getOutDir(config), webPath);
         try {
             const fileContent = await Deno.readTextFile(filePath);
             const newFileContent = embedBlocks(fileContent, garden, webPath, config);
@@ -480,9 +480,9 @@ ${tagsHtml}
                 await Deno.writeTextFile(filePath, newFileContent);
             }
         } catch (e) {
-            if(e.name == 'NotFound'){
+            if (e.name == 'NotFound') {
                 console.error('Error: Could not replace embed block ref', filePath)
-            }else{
+            } else {
                 console.error('Error replacing embed block ref', e);
             }
         }
