@@ -7,3 +7,7 @@ You can embed images just like you do in Obsidian
 It works for all image types, including gifs:
 `![A bee harvesting pollen](/Assets/bumblebee.gif "A bee harvesting pollen")`
 ![A bee harvesting pollen](/Assets/bumblebee.gif "A bee harvesting pollen") ^be171d
+
+Images can have sizes
+`![[bumblebee-at-root.gif|80]]`
+![[bumblebee-at-root.gif|80]]

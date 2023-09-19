@@ -8,123 +8,42 @@
         "type": "tabs",
         "children": [
           {
-            "id": "3efae0f6c5f6821c",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "markdown-it refactor.md",
-                "mode": "source",
-                "source": false
-              }
-            }
-          },
-          {
-            "id": "aa00d0f94cf1c701",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "test_embed_page/Page to be embedded.md",
-                "mode": "source",
-                "source": false
-              }
-            }
-          },
-          {
-            "id": "f020186c5de6a67c",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "test_embed_page/Page to be embedded with own embed.md",
-                "mode": "source",
-                "source": false
-              }
-            }
-          },
-          {
-            "id": "8a54603d13374e4b",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "more/Features.md",
-                "mode": "source",
-                "source": false
-              }
-            }
-          },
-          {
-            "id": "9697d621dc4c5dde",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "obsidian-flavored-markdown.md",
-                "mode": "source",
-                "source": false
-              }
-            }
-          },
-          {
-            "id": "887a4b74edbae9dc",
-            "type": "leaf",
-            "state": {
-              "type": "image",
-              "state": {
-                "file": "bumblebee-at-root.gif"
-              }
-            }
-          },
-          {
-            "id": "ca2352c16ff95d2c",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "more/Features.md",
-                "mode": "source",
-                "source": false
-              }
-            }
-          },
-          {
-            "id": "34ed4f232eca8752",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "summary.md",
-                "mode": "source",
-                "source": false
-              }
-            }
-          },
-          {
-            "id": "9ae852d2b31b48cc",
-            "type": "leaf",
-            "state": {
-              "type": "image",
-              "state": {
-                "file": "Pasted image 20230903174037.png"
-              }
-            }
-          },
-          {
             "id": "a9dca56654631486",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "testmd2web.md",
+                "file": "Metadata.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "0c5b0b268783fb0a",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Features.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "55d797fcfa81d56d",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Features.md",
                 "mode": "source",
                 "source": false
               }
             }
           }
-        ],
-        "currentTab": 7
+        ]
       }
     ],
     "direction": "vertical"
@@ -190,7 +109,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "summary.md",
+                "file": "Metadata.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -207,7 +126,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "summary.md",
+                "file": "Metadata.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -230,7 +149,17 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "summary.md"
+                "file": "Metadata.md"
+              }
+            }
+          },
+          {
+            "id": "3ba7724d4b22f042",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency"
               }
             }
           }
@@ -251,48 +180,53 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "34ed4f232eca8752",
+  "active": "a9dca56654631486",
   "lastOpenFiles": [
-    "markdown-it refactor.md",
-    "do-not-publish.md",
-    "checkboxes.md",
-    "obsidian-flavored-markdown.md",
-    "summary.md",
-    "more/Features.md",
-    "tests.md",
-    "bumblebee-at-root.gif",
-    "obsidian-custom-markdown-syntax.md",
-    "more/bumblebee-nested.gif",
-    "more/Metadata.md",
-    "test_embed_page/embedder.md",
-    "test_embed_page/Page to be embedded.md",
-    "test_embed_page/Page to be embedded with own embed.md",
-    "more/images.md",
-    "names block ids.md",
-    "testmd2web2.md",
-    "testmd2web.md",
-    "test-properties.md",
-    "test_names_block_ids.md",
-    "test_embed_entire_file.md",
-    "test paste image.md",
-    "test backlink.md",
+    "Features.md",
+    "embedding.md",
     "plain.md",
-    "Pasted image 20230903174037.png",
-    "more/bumblebee-at-root.gif",
-    "eden-md-config/eden-md.config.json",
-    "eden-md-config/eden-md.config.old.json",
-    "test_embed_page",
+    "backlinks.md",
+    "tests/plain.md",
+    "Metadata.md",
+    "images.md",
+    "bumblebee-nested.gif",
+    "test_embed_page/Page to be embedded with own embed.md",
+    "tests/test_embed_page/Page to be embedded.md",
+    "tests/test_embed_page/Page to be embedded with own embed.md",
+    "tests/test_embed_page/embedder.md",
+    "tests/test_embed_page",
+    "tests/test_assets/level2/only/only.png",
+    "tests/test_assets/level2/test.png",
+    "tests/test_assets/level2/test assets 1.md",
+    "tests/test_assets/level2/only",
+    "tests/test_assets/test.png",
+    "tests/test_assets/test image paths.md",
+    "tests/test_assets/only.png",
+    "tests/test_assets/level2",
+    "tests/test_assets",
+    "tests/tests.md",
+    "tests/test-properties.md",
+    "tests/testmd2web2.md",
+    "tests/testmd2web.md",
+    "tests/test_names_block_ids.md",
+    "tests/test_embed_entire_file.md",
+    "tests/test.png",
+    "tests/test paste image.md",
+    "tests/test backlink.md",
+    "tests/summary.md",
+    "tests/Pasted image 20230903174037.png",
+    "tests/obsidian-flavored-markdown.md",
+    "tests/names block ids.md",
+    "tests/markdown-it refactor.md",
+    "tests/do-not-publish.md",
     "tests",
-    "Assets/bumblebee.gif",
-    "JiuJitsuRainbow.png.md",
-    "eden-md-config/template-page.html",
-    "Assets/flower.png",
-    "eden-md-config/timeAgo.js",
-    "Multi Space_Backlink$^.md",
-    "md2web-config/template.html",
-    "md2web-config/styles.css",
-    "md2web-config/md2web.config.json",
-    "md2web-config",
-    "bumblebee 1.gif"
+    "test",
+    "New folder",
+    "test_assets/only.png",
+    "test_assets/test.png",
+    "test_assets/level2/only/only.png",
+    "test_assets/level2/only",
+    "test_assets/level2",
+    "test_assets"
   ]
 }

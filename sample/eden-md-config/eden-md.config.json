@@ -5,10 +5,8 @@
   "parseDir": "C:/git/eden-markdown/sample/",
   "ignoreDirs": [
     "node_modules",
-    ".obsidian"
-  ],
-  "staticServeDirs": [
-    "Assets"
+    ".obsidian",
+    "assets"
   ],
   "logVerbose": false,
   "rssInfo": {
