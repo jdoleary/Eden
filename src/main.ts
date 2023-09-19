@@ -242,10 +242,9 @@ EXAMPLES
 
     const tableOfContents: TableOfContents = [];
 
-    const allFilesPath = path.join('.', config.parseDir);
     // Get a list of all file names to support automatic back linking
     const allFilesNames = [];
-    for await (const f of getFiles(allFilesPath, config)) {
+    for await (const f of getFiles(config.parseDir, config)) {
         const parsed = path.parse(f);
         if (parsed.ext == '.md') {
             allFilesNames.push({ name: parsed.name, webPath: absoluteOsMdPathToWebPath(f, config.parseDir) });
@@ -255,11 +254,11 @@ EXAMPLES
     // console.log('jtest allfilenames', allFilesNames, allFilesNames.length);
     // console.log('jtest table', tableOfContents.map(x => `${x.pageName}, ${x.isDir}`), tableOfContents.length);
     logVerbose('All markdown file names:', Array.from(allFilesNames));
-    const backlinks = await findBacklinks(getFiles(allFilesPath, config), allFilesNames, config.parseDir);
+    const backlinks = await findBacklinks(getFiles(config.parseDir, config), allFilesNames, config.parseDir);
 
     // Create index file for each directory
     const nav: NavItem[] = [];
-    for await (const d of getDirs(allFilesPath, config)) {
+    for await (const d of getDirs(config.parseDir, config)) {
         const directoryPathSegment: pathOSRelative = path.relative(config.parseDir, d.dir).replaceAll(' ', '_');
         const pageNameSteps = directoryPathSegment.split('\\');
         const indent = pageNameSteps.length;
@@ -313,7 +312,7 @@ EXAMPLES
     globalThis.garden = garden;
 
     // Copy all files in parseDir to out dir
-    for await (const filePath of getFiles(allFilesPath, config)) {
+    for await (const filePath of getFiles(config.parseDir, config)) {
         // Copy file to outDir so it is made available
         // This is mostly useful for images that need to be served but it may be desireable to include .md
         // files
@@ -333,7 +332,7 @@ EXAMPLES
     const convertingPerformanceStart = performance.now();
     console.log('Converting .md files to .html...');
     const processPromises: Promise<Page | undefined>[] = [];
-    for await (const f of getFiles(allFilesPath, config)) {
+    for await (const f of getFiles(config.parseDir, config)) {
         try {
             processPromises.push(process(f, { allFilesNames, tableOfContents, nav, config, backlinks, garden, markdownIt }));
         } catch (e) {
