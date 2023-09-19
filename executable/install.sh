@@ -21,10 +21,7 @@ else
 fi
 
 file_name="eden${target}"
-# https://eden.nyc3.cdn.digitaloceanspaces.com/eden-mac-aarch
-# https://eden.nyc3.cdn.digitaloceanspaces.com/eden-mac-x86-64
-# https://eden.nyc3.cdn.digitaloceanspaces.com/eden.exe
-eden_uri="https://eden.nyc3.cdn.digitaloceanspaces.com/${file_name}"
+eden_uri="https://eden.nyc3.digitaloceanspaces.com/${file_name}"
 
 eden_install="${EDEN_INSTALL:-$HOME/.eden}"
 bin_dir="$eden_install/bin"
