@@ -25,7 +25,7 @@ import { parse } from "https://deno.land/std@0.194.0/flags/mod.ts";
 import { createDirectoryIndexFile, createTagDirIndexFile, createTagIndexFile, getWebPathOfTag } from "./htmlGenerators/indexFile.ts";
 import { addContentsToTemplate, findTOCEntryFromFilepath } from "./htmlGenerators/useTemplate.ts";
 import { getDirs, getFiles } from "./os.ts";
-import { absoluteOsMdPathToWebPath, getConfDir, getOutDir, pageNameToPagePath, pathOSAbsolute, pathOSRelative, pathToPageName, pathWeb } from "./path.ts";
+import { absoluteOsMdPathToWebPath, changeExtension, getConfDir, getOutDir, pageNameToPagePath, pathOSAbsolute, pathOSRelative, pathToPageName, pathWeb } from "./path.ts";
 import { Config, configName, edenEmbedClassName, embedPathDataKey, FileName, Garden, Metadata, Page, PROGRAM_NAME, stylesName, TableOfContents, TableOfContentsEntry, tableOfContentsURL, tagsDirectoryName, templateName } from "./sharedTypes.ts";
 import { host } from "./tool/httpServer.ts";
 import { deploy, DeployableFile } from "./tool/publish.ts";
@@ -711,7 +711,7 @@ async function outputPage(page: Page, templateHtml: string, { allFilesNames, tab
         // Note: Even though pageNameToPagePath returns `pathWeb` that is the path that we use 
         // for the htmlOutPath which is relative to the `ourDir` because that is the path that
         // it WILL become on the web (even though it's being saved to the harddrive now).
-        const htmlOutPath = pageNameToPagePath(path.dirname(outPath), outPath);
+        const htmlOutPath = changeExtension(outPath, '.html').replaceAll(' ', '_');
         // Write the file
         await Deno.writeTextFile(htmlOutPath, htmlString);
 

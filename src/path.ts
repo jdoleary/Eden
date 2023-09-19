@@ -63,6 +63,12 @@ export function absoluteOsMdPathToWebPath(osPath: string, parseDir: string): pat
         assertEquals(actual, expected);
     });
 });
+export function changeExtension(filePath: string, extension: string): string {
+    const parsed = path.parse(filePath);
+    parsed.base = parsed.base.replace(parsed.ext, extension);
+    parsed.ext = extension;
+    return path.format(parsed);
+}
 // returned pagePath is specifically for the web so seperator is always "/"
 // Always returns a relative path (no leading "/") (pathWeb)
 // For example, see tests above
