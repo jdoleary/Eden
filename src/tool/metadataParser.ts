@@ -40,7 +40,8 @@ export function extractMetadata(fileContents: string): { metadata: any | null, m
                     const sliceAmount = -(3 - dashesAddedThisLoop);
                     const yaml = sliceAmount < 0 ? metadata.slice(0, sliceAmount) : metadata;
                     try {
-                        return { metadata: parse(yaml), metadataCharacterCount: charactersToRemove };
+                        charactersToRemove -= v.length - dashesAddedThisLoop;
+                        return { metadata: parse(yaml), metadataCharacterCount: Math.max(0, charactersToRemove) };
                     } catch (e) {
                         if (Deno.env.get('MODE') !== 'test') {
                             console.error('❌ Error parsing metadata', e);
@@ -100,5 +101,26 @@ after metadata`,
     Deno.test(test.description, () => {
         const actual = extractMetadata(test.input)
         assertEquals(actual?.metadata, test.expected);
+    })
+});
+[
+    {
+        description: 'Ensure following text after metadata is preserved',
+        input: `---
+test: metadata
+tags:
+  - journal
+---
+Metadata lives at the top of a markdown document and looks like this:
+`,
+        expected: `
+Metadata lives at the top of a markdown document and looks like this:
+`
+    }
+].map(test => {
+    Deno.test(test.description, () => {
+        const extractedInfo = extractMetadata(test.input)
+        const actual = test.input.slice(extractedInfo.metadataCharacterCount);
+        assertEquals(actual, test.expected);
     })
 })
