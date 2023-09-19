@@ -329,7 +329,6 @@ EXAMPLES
         }
     }
 
-
     const convertingPerformanceStart = performance.now();
     console.log('Converting .md files to .html...');
     const processPromises: Promise<Page | undefined>[] = [];
@@ -511,7 +510,6 @@ ${tagsHtml}
     }
 
     if (window.firstRun) {
-        console.log(`Found .obsidian/app.json, automatically adding "${obsidianAttachmentFolderPath}" as staticServeDir in config`);
         console.log(`\n\n~~~First time setup~~~\nTemplate files have been created for you in ${getConfDir(config.parseDir)}.  You can modify the config file (${configName}) to change the behavior of this program or try modifying the ${templateName} or ${stylesName} to change the appearance of the generated website!\n`);
     }
 
