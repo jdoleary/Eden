@@ -262,7 +262,7 @@ EXAMPLES
     const nav: NavItem[] = [];
     for await (const d of getDirs(config.parseDir, config)) {
         const directoryPathSegment: pathOSRelative = path.relative(config.parseDir, d.dir).replaceAll(' ', '_');
-        const pageNameSteps = directoryPathSegment.split('\\');
+        const pageNameSteps = directoryPathSegment.split(path.sep);
         const indent = pageNameSteps.length;
         const pageName = pathToPageName(directoryPathSegment);
         const parentNavItem = findNavItem(nav, pageNameSteps.slice(0, -1));
