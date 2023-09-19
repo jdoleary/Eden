@@ -12,7 +12,7 @@ export function findNavItem(nav: NavItem[], steps: string[]): NavItem | undefine
     for (let i = 0; i < steps.length; i++) {
         const step = steps[i];
         for (const item of children) {
-            if (item.name == step) {
+            if (item.name.replaceAll(' ', '_') == step) {
                 // If last step is a match, return
                 if (i == steps.length - 1) {
                     return item;
