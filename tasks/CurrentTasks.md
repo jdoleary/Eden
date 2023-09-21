@@ -1,4 +1,5 @@
 ## MVP Tasks
+- feature: Support whatever `#this` stynax is. Obsidian appears to treat it like a tag
 - auto ignore obsidian static dir
     - 971a8c1
     - but still allow it to find images there
