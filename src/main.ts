@@ -59,7 +59,7 @@ interface Manifest {
     version: string;
     files: ManifestFiles;
 }
-async function main() {
+export default async function main() {
     const cliFlags = parse(Deno.args, getCliFlagOptions());
     if (cliFlags.verbose) {
         globalThis.useLogVerbose = true;
@@ -544,19 +544,6 @@ ${tagsHtml}
 
     }
 }
-await main().catch(e => {
-    console.error(e);
-}).then(() => {
-    // If there are no args, this exe was probably executed via a double-click,
-    // so we must prompt to leave the log open.  However, we must NOT prompt
-    // if there are args (such as --preview) because that will prevent
-    // the http server from serving content
-    // and there's also no reason to prompt if it was triggered via the command line
-    if (Deno.build.os === "windows" && Deno.args.length === 0) {
-
-        prompt("Finished... Enter any key to exit.");
-    }
-});
 async function process(filePath: string, { allFilesNames, tableOfContents, nav, config, backlinks, garden, markdownIt }: { allFilesNames: FileName[], tableOfContents: TableOfContents, nav: NavItem[], config: Config, backlinks: Backlinks, garden: Garden, markdownIt: MarkdownIt }): Promise<Page | undefined> {
     // Dev, test single file
     // if (filePath !== 'C:\\ObsidianJordanJiuJitsu\\JordanJiuJitsu\\Core Concepts.md') {
