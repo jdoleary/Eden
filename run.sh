@@ -1,5 +1,3 @@
-# Jiu Jitsu Notes
-# deno run --allow-net --allow-write --allow-read --allow-env src/main.ts --overwrite-template --parseDir C:/ObsidianJordanJiuJitsu/JordanJiuJitsu --preview && start http://localhost:8000/Table_of_Contents.html
 # Sample
 deno run --allow-net --allow-write --allow-read --allow-env src/main.ts --overwrite-template --parseDir sample/ --preview && start http://localhost:8000/Table_of_Contents.html
 
