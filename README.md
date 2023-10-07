@@ -5,8 +5,16 @@
 
 See [CurrentTasks.md](tasks/CurrentTasks.md) for up-to-date development tasks
 
-## Getting Started
+## Quick Start 
+- Install Deno from `https://deno.com/`
 - `./run.sh` to generate and view static html from the sample/ directory
+
+## Usage
+| Usage | Command |
+| --- | --- |
+|Simplest usage| `deno run src/main.ts path/to/my/vault/`|
+|Generate and preview the outputted html| `deno run src/main.ts path/to/my/vault/ --preview && start http://localhost:8000/`|
+|Run with permissions| `deno run --allow-net --allow-write --allow-read --allow-env src/main.ts path/to/my/vault/`|
 
 ## Features
 - [x] Breadcrumbs
