@@ -45,6 +45,11 @@ export const rawCLIFlagOptions: CLIFlag[] = [
         type: 'string',
         description: 'Used in concert with --publish in order to publish the generated files to the web via Vercel.'
     },
+    {
+        names: ['checkForUpdates'],
+        type: 'boolean',
+        description: 'Checks for an updated version of Eden and notifies'
+    },
 ]
 export function getCliFlagOptions() {
     const cliFlagOptions: { boolean: string[], string: string[] } = {
