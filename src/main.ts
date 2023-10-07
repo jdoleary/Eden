@@ -45,7 +45,7 @@ import { isUpdateNewer } from "./tool/updateAvailable.ts";
 
 // When updating VERSION, also update executable/metadata.json's version
 // this tells the app when a new version is available
-const VERSION = '0.3.0';
+const VERSION = '0.3.1';
 // When updating VERSION, also update executable/metadata.json's version
 // this tells the app when a new version is available
 
