@@ -1,5 +1,5 @@
 # Eden
-![Eden Logo][eden-logo.png]
+![Eden Logo](eden-logo.png)
 
 **Converts an Obsidian vault into a super-charged digital garden of static html.**
 
