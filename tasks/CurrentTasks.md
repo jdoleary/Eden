@@ -1,4 +1,7 @@
 ## MVP Tasks
+- Auto ignore directories with a leading `.` unless otherwise specified
+- Bug: Cannot find file if directory has space in it
+    - NotFound: The system cannot find the path specified. (os error 3): writefile 'C:\git\garden\eden-md-out\Jordan_Digitial_Garden\home_steading\animal_husbandry\dogs.html'
 - empty pages will result in `NotFound:` error
 - Exclude empty output folders like `assets`
 - feature: Support whatever `#this` stynax is. Obsidian appears to treat it like a tag
