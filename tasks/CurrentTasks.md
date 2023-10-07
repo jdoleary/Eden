@@ -1,4 +1,6 @@
 ## MVP Tasks
+- empty pages will result in `NotFound:` error
+- Exclude empty output folders like `assets`
 - feature: Support whatever `#this` stynax is. Obsidian appears to treat it like a tag
 - auto ignore obsidian static dir
     - 971a8c1
