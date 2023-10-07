@@ -45,7 +45,7 @@ import { isUpdateNewer } from "./tool/updateAvailable.ts";
 
 // When updating VERSION, also update executable/metadata.json's version
 // this tells the app when a new version is available
-const VERSION = '0.2.3';
+const VERSION = '0.3.0';
 // When updating VERSION, also update executable/metadata.json's version
 // this tells the app when a new version is available
 
@@ -72,16 +72,18 @@ async function main() {
         console.log(`\n${PROGRAM_NAME} v${VERSION} ${MAJOR == '0' ? 'Beta' : ''}`);
         console.log('Please send feedback, questions, or bug reports to jdoleary@gmail.com or Twitter:@nestfall\n');
 
-        // Check for updates
-        try {
-            const updateUrl = 'https://eden.nyc3.digitaloceanspaces.com/metadata.json';
-            const res = await fetch(updateUrl);
-            const updateData = await res.json();
-            if (isUpdateNewer(VERSION, updateData.version)) {
-                console.log(`🎁 Update available: ${VERSION}->${updateData.version}\n${updateData.updateUrl}\n${updateData.message}\n\n`);
+        if (cliFlags.checkForUpdates) {
+            // Check for updates
+            try {
+                const updateUrl = 'https://eden.nyc3.digitaloceanspaces.com/metadata.json';
+                const res = await fetch(updateUrl);
+                const updateData = await res.json();
+                if (isUpdateNewer(VERSION, updateData.version)) {
+                    console.log(`🎁 Update available: ${VERSION}->${updateData.version}\n${updateData.updateUrl}\n${updateData.message}\n\n`);
+                }
+            } catch (e) {
+                console.warn('WARN: Unable to check for updates', e);
             }
-        } catch (e) {
-            console.warn('WARN: Unable to check for updates', e);
         }
     }
     if (cliFlags.h || cliFlags.help) {
