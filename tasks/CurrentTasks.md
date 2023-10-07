@@ -1,10 +1,10 @@
 ## MVP Tasks
-- empty pages will result in `NotFound:` error
-- Exclude empty output folders like `assets`
-- feature: Support whatever `#this` stynax is. Obsidian appears to treat it like a tag
-- auto ignore obsidian static dir
-    - 971a8c1
-    - but still allow it to find images there
+- bug: empty pages will result in `NotFound:` error
+- feature: Support whatever `#something` stynax is. Obsidian appears to treat it like a tag
+- Exclude empty output folders like `assets` from table of contents
+    - auto ignore obsidian static dir
+        - 971a8c1
+        - but still allow it to find images there
 - **(MVP) Make mvp demo video and send to Zak**
     - Use Obsidian help as sample https://github.com/obsidianmd/obsidian-help/tree/master/en
     - Try to drum up interest with a Discord server / mailing list for a "zero-config digital garden"
@@ -20,11 +20,6 @@
         - CTA
         - Note: Always assume that a viewer might be seeing any video as their first video so reexplain the core ("this is the deep dive, but there's a simple way to do it if you don't want to customize") every video
 - Website
-    - [design](https://www.fiverr.com/esthermariart/hand-lettering-illustration-art?context_referrer=search_gigs_with_recommendations_row_1&source=recommendation_returning_buyers&ref_ctx_id=6b096814d7fb2fd67c3746a09b33cecd&context=recommendations&pckg_id=1&pos=1&ad_key=182336f9-0ff9-4ee8-b23d-4ea7f268093c&context_type=auto&funnel=6b096814d7fb2fd67c3746a09b33cecd&imp_id=91b04d69-9a0e-4859-abd8-28dcbabb4308)
-- **Change .exe icon from deno dinosaur to something else**
-    - http://www.angusj.com/resourcehacker/
-    - osx: https://stackoverflow.com/questions/30291757/attaching-an-icon-resource-to-a-rust-application
-    - Also change the .exe details, description and copyright and original filename
 - Make it so that --parseDir is the final unnamed argument so you can drag a folder onto the exe to run it on that folder 
 - Ensure `test image paths` works
     - it seems an image can be referenced by name alone unless there are multiple copies
