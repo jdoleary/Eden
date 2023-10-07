@@ -95,3 +95,8 @@ See [CurrentTasks.md](tasks/CurrentTasks.md) for up-to-date development tasks
 *🔑: Key feature
 *⏳ : Partially Complete
 ```
+
+## Support this Project
+I've created Eden on my own time and out of my own pocket.  If you benefit from it please consider a one-time donation!
+
+https://github.com/sponsors/jdoleary
