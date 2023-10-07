@@ -132,6 +132,7 @@ EXAMPLES
         ignoreDirs: [
             "node_modules",
             ".obsidian",
+            ".git"
         ],
         logVerbose: false,
         style: {
