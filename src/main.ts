@@ -131,11 +131,7 @@ EXAMPLES
         projectName,
         edenVersion: VERSION,
         outDirRoot: `${PROGRAM_NAME}-out`,
-        ignoreDirs: [
-            "node_modules",
-            ".obsidian",
-            ".git"
-        ],
+        ignoreDirs: [],
         logVerbose: false,
         style: {
             themeColor: '#603dd3',

@@ -51,7 +51,7 @@ import { assertEquals } from "https://deno.land/std@0.196.0/testing/asserts.ts";
 function isDirectoryIgnored(dir: string, parseDir: string, ignoreDirs: string[]): boolean {
     return ignoreDirs.some(ignore => {
         return path.relative(parseDir, dir).startsWith(ignore);
-    });
+    }) || dir.startsWith('.');
 
 }
 const testBaseDir = 'C:\\base';
