@@ -21,6 +21,8 @@ export async function createDirectoryIndexFile(d: { dir: string, contents: Deno.
             const link = pageNameToPagePath(path.relative(globalThis.parseDir, d.dir), x.name, x.isDirectory ? '' : '.html');
             return `<a href="/${link}">${pathToPageName(link)}</a>`
         }).join('<br/>'), templateHtml, { config, tableOfContents, filePath: htmlOutPath, relativePath, metadata: { title }, backlinks, isDir: true })
+        // Make directories if necessary
+        await Deno.mkdir(path.parse(htmlOutPath).dir.replaceAll(' ', '_'), { recursive: true });
         // Write the file
         await Deno.writeTextFile(htmlOutPath, htmlString);
         if (config.logVerbose) {

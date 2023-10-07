@@ -312,14 +312,18 @@ EXAMPLES
     //@ts-ignore todo type global
     globalThis.garden = garden;
 
-    // Copy all files in parseDir to out dir
+    // Copy all non-md mfiles in parseDir to out dir
     for await (const filePath of getFiles(globalThis.parseDir, config)) {
         // Copy file to outDir so it is made available
         // This is mostly useful for images that need to be served but it may be desireable to include .md
         // files
         try {
-            const fileOutPath = path.join(getOutDir(config), path.relative(globalThis.parseDir, filePath));
-            await Deno.mkdirSync(path.parse(fileOutPath).dir, { recursive: true });
+            // Skip markdown files since they will be converted into html
+            if (filePath.endsWith('.md')) {
+                continue;
+            }
+            const fileOutPath = path.join(getOutDir(config), path.relative(globalThis.parseDir, filePath)).replaceAll(' ', '_');
+            await Deno.mkdirSync(path.parse(fileOutPath).dir.replaceAll(' ', '_'), { recursive: true });
             await copy(filePath, fileOutPath, { overwrite: true });
             garden.files.push(path.relative(getOutDir(config), fileOutPath).split(path.sep).join('/'));
         } catch (e) {
@@ -691,7 +695,7 @@ async function outputPage(page: Page, templateHtml: string, { allFilesNames, tab
         // Get the new path
         const outPath = path.join(getOutDir(config), relativePath);
         // Make the directory that the file will end up in
-        await Deno.mkdir(path.parse(outPath).dir, { recursive: true });
+        await Deno.mkdir(path.parse(outPath).dir.replaceAll(' ', '_'), { recursive: true });
         // Rename the file as .html
         // .replaceAll: Replace all spaces with underscores, so they become valid html paths
         // Note: Even though pageNameToPagePath returns `pathWeb` that is the path that we use 
