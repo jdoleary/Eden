@@ -95,6 +95,13 @@ See [CurrentTasks.md](tasks/CurrentTasks.md) for up-to-date development tasks
 *🔑: Key feature
 *⏳ : Partially Complete
 ```
+### Git/Vercel setup
+To use Eden with Vercel and Git for Continuous Deployment, set the followin Project Settings in Vercel:
+Build Command: `/vercel/.deno/bin/deno run --allow-net --allow-write --allow-read --allow-env https://www.edenmarkdown.com/code/latest/src/mod.ts --parseDir .`
+Output Directory: `eden-md-out/YOUR_PROJECT_NAME` (note: YOUR_PROJECT_NAME is found in eden-md-config in your markdown vault directory)
+Install Command: `curl -fsSL https://deno.land/x/install/install.sh | sh`
+
+Note: deno.land/x/eden isn't working right now https://github.com/denoland/wanted_modules/issues/87 so I'm self hosting the source for now at edenmarkdown.com/code/VERSION/src/mod.ts
 
 ## Support this Project
 I've created Eden on my own time and out of my own pocket.  If you benefit from it please consider a one-time donation!
