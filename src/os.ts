@@ -51,14 +51,16 @@ import { assertEquals } from "https://deno.land/std@0.196.0/testing/asserts.ts";
 function isDirectoryIgnored(dir: string, parseDir: string, ignoreDirs: string[]): boolean {
     return ['node_modules', ...ignoreDirs].some(ignore => {
         return path.relative(parseDir, dir).startsWith(ignore);
-    }) || dir.split(path.sep).some(dirStep => dirStep.startsWith('.'));
-
+    }) || dir.split(path.sep).some(dirStep => /^\../.test(dirStep));
 }
 const testBaseDir = `C:${path.sep}base`;
 [
     { dir: `${testBaseDir}${path.sep}Assets`, ignoreDirs: ['Assets'], expected: true },
+    // allow unix-style current directory
+    { dir: `.`, ignoreDirs: [], expected: false },
+    // ignore hidden directories (with leading '.')
     { dir: `${testBaseDir}${path.sep}.hidden`, ignoreDirs: [], expected: true },
-    // Always ignore node_modules
+    // Always ignore node_modules, this is hard-coded
     { dir: `${testBaseDir}${path.sep}node_modules`, ignoreDirs: [], expected: true },
     // TODO: Fix fuzzy matching 
     // { dir: `${testBaseDir}${path.sep}Assets2`, ignoreDirs: ['Assets'], expected: true },

@@ -1,5 +1,5 @@
 # Test without updating snapshots
-MODE=test deno test --allow-env src/main.ts -- --parseDir test/
+MODE=test deno test --allow-env --allow-read src/main.ts -- --parseDir test/
 
 # Update snapshots
 # MODE=test deno test --allow-env src/main.ts --parseDir test/ -- --update
