@@ -51,19 +51,24 @@ import { assertEquals } from "https://deno.land/std@0.196.0/testing/asserts.ts";
 function isDirectoryIgnored(dir: string, parseDir: string, ignoreDirs: string[]): boolean {
     return ignoreDirs.some(ignore => {
         return path.relative(parseDir, dir).startsWith(ignore);
-    }) || dir.startsWith('.');
+    }) || dir.split(path.sep).some(dirStep => dirStep.startsWith('.'));
 
 }
 const testBaseDir = 'C:\\base';
 [
     { dir: `${testBaseDir}\\Assets`, ignoreDirs: ['Assets'], expected: true },
+    { dir: `${testBaseDir}\\.hidden`, ignoreDirs: [], expected: true },
     // TODO: Fix fuzzy matching 
     // { dir: `${testBaseDir}\\Assets2`, ignoreDirs: ['Assets'], expected: true },
     // { dir: `${testBaseDir}\\Assets2`, ignoreDirs: ['Assets/'], expected: false },
     // { dir: `${testBaseDir}\\Assets`, ignoreDirs: ['Assets/'], expected: true },
 ].map(({ dir, ignoreDirs, expected }) => {
-    Deno.test(`pathToPageName: ${dir} `, () => {
-        const actual = isDirectoryIgnored(dir, testBaseDir, ignoreDirs);
-        assertEquals(actual, expected);
+    Deno.test({
+        name: `pathToPageName: ${dir} `,
+        fn() {
+            const actual = isDirectoryIgnored(dir, testBaseDir, ignoreDirs);
+            assertEquals(actual, expected);
+        },
+        only: false
     });
 });
