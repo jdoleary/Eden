@@ -56,14 +56,14 @@ function isDirectoryIgnored(dir: string, parseDir: string, ignoreDirs: string[])
 }
 const testBaseDir = `C:${path.sep}base`;
 [
-    { dir: `${testBaseDir}${path.sep}}Assets`, ignoreDirs: ['Assets'], expected: true },
-    { dir: `${testBaseDir}${path.sep}}.hidden`, ignoreDirs: [], expected: true },
+    { dir: `${testBaseDir}${path.sep}Assets`, ignoreDirs: ['Assets'], expected: true },
+    { dir: `${testBaseDir}${path.sep}.hidden`, ignoreDirs: [], expected: true },
     // Always ignore node_modules
-    { dir: `${testBaseDir}${path.sep}}node_modules`, ignoreDirs: [], expected: true },
+    { dir: `${testBaseDir}${path.sep}node_modules`, ignoreDirs: [], expected: true },
     // TODO: Fix fuzzy matching 
-    // { dir: `${testBaseDir}${path.sep}}Assets2`, ignoreDirs: ['Assets'], expected: true },
-    // { dir: `${testBaseDir}${path.sep}}Assets2`, ignoreDirs: ['Assets/'], expected: false },
-    // { dir: `${testBaseDir}${path.sep}}Assets`, ignoreDirs: ['Assets/'], expected: true },
+    // { dir: `${testBaseDir}${path.sep}Assets2`, ignoreDirs: ['Assets'], expected: true },
+    // { dir: `${testBaseDir}${path.sep}Assets2`, ignoreDirs: ['Assets/'], expected: false },
+    // { dir: `${testBaseDir}${path.sep}Assets`, ignoreDirs: ['Assets/'], expected: true },
 ].map(({ dir, ignoreDirs, expected }) => {
     Deno.test({
         name: `pathToPageName: ${dir} `,
