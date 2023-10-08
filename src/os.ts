@@ -49,7 +49,7 @@ export async function* getFiles(dir: string, config: Config): AsyncGenerator<str
 
 import { assertEquals } from "https://deno.land/std@0.196.0/testing/asserts.ts";
 function isDirectoryIgnored(dir: string, parseDir: string, ignoreDirs: string[]): boolean {
-    return ignoreDirs.some(ignore => {
+    return ['node_modules', ...ignoreDirs].some(ignore => {
         return path.relative(parseDir, dir).startsWith(ignore);
     }) || dir.split(path.sep).some(dirStep => dirStep.startsWith('.'));
 
@@ -58,6 +58,8 @@ const testBaseDir = 'C:\\base';
 [
     { dir: `${testBaseDir}\\Assets`, ignoreDirs: ['Assets'], expected: true },
     { dir: `${testBaseDir}\\.hidden`, ignoreDirs: [], expected: true },
+    // Always ignore node_modules
+    { dir: `${testBaseDir}\\node_modules`, ignoreDirs: [], expected: true },
     // TODO: Fix fuzzy matching 
     // { dir: `${testBaseDir}\\Assets2`, ignoreDirs: ['Assets'], expected: true },
     // { dir: `${testBaseDir}\\Assets2`, ignoreDirs: ['Assets/'], expected: false },
