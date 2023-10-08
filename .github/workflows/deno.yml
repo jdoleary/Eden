@@ -39,4 +39,4 @@ jobs:
       #   run: deno lint
 
       - name: Run tests
-        run: MODE=test deno test --allow-env src/main.ts -- --parseDir test/
+        run: MODE=test deno test -A src/main.ts -- --parseDir test/
