@@ -621,6 +621,7 @@ async function process(filePath: string, { allFilesNames, tableOfContents, nav, 
             } else {
                 console.error('Unexpected, could not locate', filePath, 'in table of contents in order to set `hidden` to true');
             }
+            // Return, do not process a hidden file
             return;
         }
 
