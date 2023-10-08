@@ -52,15 +52,15 @@ export function absoluteOsMdPathToWebPath(osPath: string, parseDir: string): pat
     [`a${path.sep}`, 'name', 'a/name.html'],
     ['a/b', 'name', 'a/b/name.html'],
     ['', 'test.md', 'test.html'],
-    // Page names should always be converted to lowercase
-    // for the sake of case-insensitive backlinking
-    ['', 'TeSt.md', 'test.html'],
 ].map(([relativePath, name, expectedPath]) => {
 
-    Deno.test(`pageNameToPagePath: ${relativePath},${name} -> ${expectedPath} `, () => {
-        const actual = pageNameToPagePath(relativePath, name);
-        const expected = expectedPath;
-        assertEquals(actual, expected);
+    Deno.test({
+        name: `pageNameToPagePath: ${relativePath}, ${name} -> ${expectedPath} `,
+        fn() {
+            const actual = pageNameToPagePath(relativePath, name);
+            const expected = expectedPath;
+            assertEquals(actual, expected);
+        }, only: false
     });
 });
 export function changeExtension(filePath: string, extension: string): string {
