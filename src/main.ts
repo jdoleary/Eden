@@ -129,14 +129,9 @@ EXAMPLES
     const projectName = `my-digital-garden`;
     const config: Config = {
         projectName,
-        edenVersion: VERSION,
         outDirRoot: `${PROGRAM_NAME}-out`,
         ignoreDirs: [],
         logVerbose: false,
-        style: {
-            themeColor: '#603dd3',
-            linkColor: '#7a7aff'
-        },
         rssInfo: {
             title: projectName,
             description: 'My Digital Garden',

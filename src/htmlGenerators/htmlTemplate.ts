@@ -71,13 +71,32 @@ export const defaultHtmlTemplatePage = `<!DOCTYPE html>
 </html>`
 
 export const defaultStyles = (config: Config) => `
+/*Colors from https://www.realtimecolors.com/ */
+:root {
+    /* Green */
+    /*
+    --text: #101e16;
+    --background: #f8fcfa;
+    --primary: #284d38;
+    --secondary: #cde5d7;
+    --accent: #4e976d;
+    */
+    /* Blue and Tan */
+    --text: #19120b;
+    --background: #fcfaf8;
+    --primary: #345474;
+    --secondary: #dfccb9;
+    --accent: #3f668d;
+}
+
 body {
     font-size: 18px;
     background-color: #ffffff;
     font-family: 'Verdana', 'Helvetica', sans-serif;
     font-display: optional;
     margin: 0;
-    color:#313131;
+    background-color: var(--background);
+    color: var(--text);
 }
 /* Holy Grail Layout styling */
 body {
@@ -94,13 +113,40 @@ header {
 header a {
   color: black;
 }
+h1, h2, h3, h4 {
+    color: var(--primary);
+}
 hr {
+    height:0.3em;
+    border: var(--primary);
+    background-color: var(--primary);
     /* For spacing for homepage */
-    margin:1em 0;
+    margin:0.5em 0 1em 0;
+}
+.color-accent {
+    color: var(--accent);
+}
+.primary {
+    padding: 0.5em;
+    background-color: var(--primary);
+    color: var(--background);
+    border-radius: 4px;
+    transition: 0.1s;
+}
+.secondary {
+    padding: 0.5em;
+    background-color: var(--secondary);
+    color: var(--text);
+    border-radius: 4px;
+    transition: 0.1s;
+}
+
+.primary:hover, .secondary:hover {
+    transform: translateY(-2px);
 }
 header a:hover {
   text-decoration: none; /* no underline */
-  color: ${config.style?.themeColor || '#603dd3'};
+  color: var(--primary);
 }
 #article-header {
     grid-row: 2;
@@ -160,7 +206,9 @@ article {
     /* justify-content:space-between keeps the article footer at the bottom of the screen even if the content doesn't
     fill the whole screen. */
     justify-content:space-between;
-    padding:0 1em;
+    padding: 1em;
+    border-radius: 6px;
+    margin: 1em 0;
     background-color: #ffffff;
     width:100%;
     box-sizing: border-box;
@@ -192,8 +240,8 @@ nav a {
 }
 nav a:hover {
     text-decoration: none; /* no underline */
-    color: ${config.style?.themeColor || '#603dd3'};
-    border-left:2px solid ${config.style?.themeColor || '#603dd3'};
+    color: var(--primary);
+    border-left:2px solid var(--primary);
 }
 
 footer {
@@ -249,11 +297,11 @@ body.type-directory #article-metadata {
 
 /* Instead of underline, just change color */
 a:hover {
-    color: ${config.style?.themeColor || '#603dd3'};
+    color: var(--primary);
 }
 
 a {
-    color: ${config.style?.linkColor || '#7a7aff'};
+    color: var(--accent);
     text-decoration: none;
 }
 
@@ -329,14 +377,7 @@ ul {
 }
 
 .pagination a {
-    transition: 0.05s;
     display: block;
-    margin: 0.5em;
-    padding: 0.5em;
-    border-radius: 4px;
-    text-decoration: none;
-    color: black;
-    border: 1px solid black;
 
 }
 
@@ -353,17 +394,11 @@ ul {
     text-align: right;
 }
 
-.nextPrevButtons:hover {
-    transform: translateY(-2px);
-    box-shadow: 1px 1px 1px;
-}
-
-.nextPrevButtons:active {
-    transform: translateY(1px);
-    box-shadow: inset 1px 1px 1px;
-}
 .pageNumber {
     text-align: center;
+    margin: 0 2em;
+    /* match nextPrevButtons */
+    padding: 0.5em 2em;
 }
 
 .pageNumber a {
@@ -434,7 +469,7 @@ nav ul {
     margin:0;
 }
 nav li a.currentPage {
-    color: ${config.style?.themeColor || '#603dd3'};
+    color: var(--primary);
     opacity:0.7;
 }
 nav li a.currentPage:hover {

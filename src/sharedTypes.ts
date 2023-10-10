@@ -67,17 +67,11 @@ export interface FileName {
 }
 export interface Config {
     projectName: string;
-    // The version number of Eden that was used to generate this config
-    edenVersion: string;
     // If relative this path is relative to the currentWorkingDirectory 
     // Otherwise it is absolute
     outDirRoot: pathOSRelative;
     // These paths are relative to the parseDir
     ignoreDirs: pathOSRelative[];
-    style: {
-        themeColor: string;
-        linkColor: string;
-    }
     logVerbose?: boolean;
     rssInfo?: RSSInfo;
 }

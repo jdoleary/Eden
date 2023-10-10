@@ -57,12 +57,12 @@ export async function addContentsToTemplate(content: string, templateHtml: strin
                 // ? `<a class="nextPrevButtons" href="\\${previous.webPath}">← ${previous.parentDir !== currentPage?.parentDir
                 //     ? path.parse(previous.parentDir || '').name + '/'
                 //     : ''}${previous.name}</a>`
-                ? `<a class="nextPrevButtons" href="${previous.webPath}">← ${previous.name}</a>`
-                : `<a class="nextPrevButtons ${(metadata && metadata.title == 'Table of Contents') ? 'hidden' : ''}" href="${tableOfContentsURL}">Table of Contents</a>`}`;
+                ? `<a class="nextPrevButtons secondary" href="${previous.webPath}">← ${previous.name}</a>`
+                : `<a class="nextPrevButtons secondary ${(metadata && metadata.title == 'Table of Contents') ? 'hidden' : ''}" href="${tableOfContentsURL}">Table of Contents</a>`}`;
             // Add pageNumber
             pagination += `<div class="pageNumber"><a href="${tableOfContentsURL}">${currentIndex + 1}</a></div>`;
             const next = publishedPages[currentIndex + 1];
-            pagination += `${next ? `<a class="nextPrevButtons" href="${next.webPath}">${next.name} →</a>` : ''}`;
+            pagination += `${next ? `<a class="nextPrevButtons secondary" href="${next.webPath}">${next.name} →</a>` : ''}`;
             pagination += `</div>`;
         }
         content = content.replace('{{pagination}}', pagination);
