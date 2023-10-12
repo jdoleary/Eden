@@ -1,5 +1,4 @@
 ## MVP Tasks
-- bug: Remove edenVersion from config since eden version is determined by the run command
 - bug: empty pages will result in `NotFound:` error
 - feature: Support whatever `#something` stynax is. Obsidian appears to treat it like a tag
 - Exclude empty output folders like `assets` from table of contents
