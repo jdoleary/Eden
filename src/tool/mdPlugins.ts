@@ -1,14 +1,92 @@
 import * as path from "https://deno.land/std@0.177.0/path/mod.ts";
 import { existsSync } from "https://deno.land/std@0.198.0/fs/exists.ts";
-import { markdownImageRegex, twitterRegex, youtubeRegex } from "./regexCollection.ts";
+import { markdownImageRegex, obsidianStyleCallout, twitterRegex, youtubeRegex } from "./regexCollection.ts";
 
 // @deno-types="../../types/markdown-it/index.d.ts"
 import MarkdownIt from "../../types/markdown-it/index.d.ts";
 import { getOutDir } from "../path.ts";
 import { Config, edenEmbedClassName, embedPathDataKey } from "../sharedTypes.ts";
 import { findFilePathFromBaseName } from "./backlinkFinder.ts";
+import type Token from "../lib/markdown-it/lib/token.js";
+import { TokenType, findToken } from "./mdPluginUtils.ts";
+import StateCore from "../lib/markdown-it/lib/rules_core/state_core.js";
 
 export default function plugins(md: MarkdownIt, config: Config) {
+    md.use(callouts, 'callouts', 'blockquote', (tokens: Token[], idx: number) => { });
+    function callouts(md: MarkdownIt, ruleName: string, tokenType: string, iterator: (tokens: Token[], idx: number) => void) {
+        // https://stackoverflow.com/a/1026087/4418836
+        function capitalizeFirstLetter(string: string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+        function scan(state: StateCore) {
+
+            const tokens = state.tokens;
+
+            for (let i = 0, l = tokens.length; i < l; i++) {
+                // Find the opening tag of the next blockquote.
+                const start = findToken(tokens, { type: TokenType.BLOCKQUOTE_OPEN }, i);
+
+                if (start === -1) {
+                    continue;
+                }
+                const level = tokens[start].level;
+
+                // Find the closing tag of the current block quote.
+                const end = findToken(tokens, { type: TokenType.BLOCKQUOTE_CLOSE, level: level }, start + 1);
+
+                // Find potential callout type
+                if (start + 2 < end) {
+                    const calloutInline = tokens[start + 2];
+                    if (calloutInline.type == 'inline') {
+                        const tokenText = calloutInline.children[findToken(calloutInline.children, { type: 'text' }, 0)];
+                        if (tokenText) {
+                            // Remove now empty paragraph tokens
+                            if (tokens[start + 1].type == 'paragraph_open') {
+                                tokens[start + 1].type = 'html_inline';
+                                tokens[start + 1].tag = '';
+                            }
+                            if (tokens[start + 3].type == 'paragraph_close') {
+                                tokens[start + 3].type = 'html_inline';
+                                tokens[start + 3].tag = '';
+                            }
+
+                            const inlineMatches = new RegExp(obsidianStyleCallout).exec(tokenText.content);
+                            if (inlineMatches) {
+                                const fullMatch = inlineMatches[0];
+                                const calloutType = inlineMatches[1];
+                                const isFolding = !!inlineMatches[2];
+                                // Remove  markdown that determines which type of callback it is
+                                tokenText.content = tokenText.content.replace(fullMatch, calloutType + ' ');
+                                tokens[start].attrJoin('class', 'callout');
+                                tokens[start].attrSet('data-callout', calloutType);
+
+                                if (isFolding) {
+
+                                    tokenText.type = 'html_inline';
+                                    tokenText.content = `<summary>${capitalizeFirstLetter(tokenText.content)}</summary>`;
+                                    const detailsOpen = new state.Token('html_block', '', 0);
+                                    detailsOpen.content = '<details>';
+                                    calloutInline.children.unshift(detailsOpen);
+                                    const detailsClose = new state.Token('html_block', '', 0);
+                                    detailsClose.content = '</details>';
+                                    calloutInline.children.push(detailsClose);
+
+
+                                } else {
+                                    tokenText.type = 'html_inline';
+                                    tokenText.content = `<div class="callout-title"><div class="callout-title-inner">${capitalizeFirstLetter(tokenText.content)}</div></div>`;
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+
+        md.core.ruler.push(ruleName, scan);
+
+    }
 
     {
         // Remember old renderer, if overridden, or proxy to default renderer

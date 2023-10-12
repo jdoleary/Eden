@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Metadata.md",
+                "file": "Features.md",
                 "mode": "source",
                 "source": false
               }
@@ -109,7 +109,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Metadata.md",
+                "file": "Features.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -126,7 +126,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Metadata.md",
+                "file": "Features.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -149,7 +149,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Metadata.md"
+                "file": "Features.md"
               }
             }
           },
@@ -182,12 +182,16 @@
   },
   "active": "a9dca56654631486",
   "lastOpenFiles": [
+    "tests/callouts.md",
+    "tests/callouts copy.md",
+    "tests/callouts2.md",
+    "Embed files.md",
     "Features.md",
     "embedding.md",
+    "Metadata.md",
     "plain.md",
     "backlinks.md",
     "tests/plain.md",
-    "Metadata.md",
     "images.md",
     "bumblebee-nested.gif",
     "test_embed_page/Page to be embedded with own embed.md",
@@ -215,10 +219,6 @@
     "tests/test backlink.md",
     "tests/summary.md",
     "tests/Pasted image 20230903174037.png",
-    "tests/obsidian-flavored-markdown.md",
-    "tests/names block ids.md",
-    "tests/markdown-it refactor.md",
-    "tests/do-not-publish.md",
     "tests",
     "test",
     "New folder",

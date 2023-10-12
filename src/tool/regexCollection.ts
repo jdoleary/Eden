@@ -106,6 +106,8 @@ Multiline comment
     runTest(`obsidianStyleComment: ${testString}->${captureGroups} `, new RegExp(obsidianStyleComment), testString, captureGroups, true);
 });
 
+export const obsidianStyleCallout = /\[!(\w+)\](-)?\s?/g;
+
 type RegexTest = [string, Array<string>, boolean?];
 function runTest(testName: string, regex: RegExp, testString: string, captureGroups: string[], useExplicitMatch?: boolean, only?: boolean) {
     Deno.test({
@@ -115,7 +117,6 @@ function runTest(testName: string, regex: RegExp, testString: string, captureGro
         },
         only
     });
-
 }
 // Always expects the first match to == the test string
 function testRegex(regex: RegExp, testString: string, captureGroups: string[]) {

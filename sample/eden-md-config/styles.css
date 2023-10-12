@@ -431,3 +431,91 @@ li.task-list-item ul {
     margin-left:1em;
 }
 /* End Special checkbox styling */
+
+/* Start of Callout styling */
+/* ref: https://help.obsidian.md/Editing+and+formatting/Callouts */
+.callout {
+    border-radius:4px;
+    padding:1em;
+}
+.callout[data-callout="info"],
+.callout[data-callout="todo"] {
+    background-color: #e5f0fc;
+}
+.callout[data-callout="info"] > .callout-title,
+.callout[data-callout="todo"] > .callout-title {
+    color: #086ddd;
+}
+
+.callout[data-callout="tip"],
+.callout[data-callout="hint"],
+.callout[data-callout="important"] {
+    background-color: #e5f9f8;
+}
+.callout[data-callout="tip"] > .callout-title,
+.callout[data-callout="hint"] > .callout-title,
+.callout[data-callout="important"] > .callout-title {
+    color: #00bfbc;
+}
+
+.callout[data-callout="success"],
+.callout[data-callout="check"],
+.callout[data-callout="done"] {
+    background-color: #e5f8ed;
+}
+.callout[data-callout="success"] > .callout-title,
+.callout[data-callout="check"] > .callout-title,
+.callout[data-callout="done"] > .callout-title {
+    color: #08b94e;
+}
+
+.callout[data-callout="question"],
+.callout[data-callout="help"],
+.callout[data-callout="faq"],
+.callout[data-callout="warning"],
+.callout[data-callout="caution"],
+.callout[data-callout="attention"] {
+    background-color: #fdf1e5;
+}
+.callout[data-callout="question"] > .callout-title,
+.callout[data-callout="help"] > .callout-title,
+.callout[data-callout="faq"] > .callout-title,
+.callout[data-callout="warning"] > .callout-title,
+.callout[data-callout="caution"] > .callout-title,
+.callout[data-callout="attention"] > .callout-title {
+    color: #ec7500;
+}
+
+.callout[data-callout="failure"],
+.callout[data-callout="fail"],
+.callout[data-callout="missing"],
+.callout[data-callout="danger"],
+.callout[data-callout="error"],
+.callout[data-callout="bug"] {
+    background-color: #fdeaec;
+}
+.callout[data-callout="failure"] > .callout-title,
+.callout[data-callout="fail"] > .callout-title,
+.callout[data-callout="missing"] > .callout-title,
+.callout[data-callout="danger"] > .callout-title,
+.callout[data-callout="error"] > .callout-title,
+.callout[data-callout="bug"] > .callout-title {
+    color: #e93046;
+}
+
+.callout[data-callout="example"] {
+    background-color: #d5d2e0;
+}
+.callout[data-callout="example"] > .callout-title{
+    color: #7852ee;
+}
+
+.callout[data-callout="quote"],
+.callout[data-callout="cite"] {
+    background-color: #f5f5f5;
+}
+.callout[data-callout="quote"] > .callout-title,
+.callout[data-callout="cite"] > .callout-title {
+    color: #9e9e9e;
+}
+/* End of Callout styling */

@@ -27,6 +27,7 @@
     - [x] Embeddable Youtube Videos
     - [x] Embeddable Vimeo Videos
     - [x] Embeddable Tweets
+- [x] Obsidian style [[callouts]]
 - [ ] Faster Execution with caching
     - Skips files if the .md is older than the .html and the template / css
 - [ ] Site search
@@ -63,7 +64,7 @@
 | ⏳ |` ``` ` | Code blocks | Todo: Syntax highlighting [lib](https://www.npmjs.com/package/markdown-it-highlightjs) |
 | ✅ |`- [ ]` | Incomplete task | |
 | ✅ |`- [x]` | Completed task | |
-| ⏳ |`> [!note]` | Callouts | Todo: styling |
+| ✅ |`> [!note]` | Callouts |  |
 | ✅ |`[[page\|modified title]]` | Modified title | [source](https://publish.obsidian.md/hub/04+-+Guides%2C+Workflows%2C+%26+Courses/Guides/Markdown+Syntax#Obsidian's+Custom+markdown+syntax) |
 | ✅ |`[[page#header1]]` | Link to header | [source](https://publish.obsidian.md/hub/04+-+Guides%2C+Workflows%2C+%26+Courses/Guides/Markdown+Syntax#Obsidian's+Custom+markdown+syntax)|
 | ✅ |`[[page#^blockId]]` | Link to blockId | [source](https://publish.obsidian.md/hub/04+-+Guides%2C+Workflows%2C+%26+Courses/Guides/Markdown+Syntax#Obsidian's+Custom+markdown+syntax)|
