@@ -10,3 +10,4 @@ executable/eden-mac-aarch
 executable/eden-mac-x86-64
 executable/eden.exe
 sample/.obsidian/workspace.json
+sample/
