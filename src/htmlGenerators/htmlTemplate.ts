@@ -158,7 +158,7 @@ header a:hover {
 
 #article-header.hide-title {
     height:0;
-    visibility:none;
+    visibility:hidden;
 }
 
 nav {
