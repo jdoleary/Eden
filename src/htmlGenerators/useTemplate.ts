@@ -81,6 +81,8 @@ export async function addContentsToTemplate(content: string, templateHtml: strin
 
     content = content.replace('{{metadata:cssclasses}}', metadata && metadata.cssclasses && metadata.cssclasses.length ? metadata.cssclasses.join(' ') : '');
 
+    content = content.replace('{{article-header-css}}', metadata && metadata.cssclasses && metadata.cssclasses.includes('hide-title') ? 'hide-title' : '');
+
     let extraHeadTags = '';
     // Ref: https://help.obsidian.md/Obsidian+Publish/Customize+your+site
     if (await doesFileExist(path.join(globalThis.parseDir, 'publish.css'))) {

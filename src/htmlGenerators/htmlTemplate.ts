@@ -23,7 +23,7 @@ export const defaultHtmlTemplatePage = `<!DOCTYPE html>
     <header>
         {{header}}
     </header>
-    <div id="article-header">
+    <div id="article-header" class="{{article-header-css}}">
         <div id="breadcrumbs">
             {{breadcrumbs}}
         </div>
@@ -156,6 +156,11 @@ header a:hover {
     padding:0 1em;
 }
 
+#article-header.hide-title {
+    height:0;
+    visibility:none;
+}
+
 nav {
     display:none;
     grid-row: 3;
@@ -172,6 +177,7 @@ nav {
 
     padding-top:1em;
     padding-right:1em;
+    padding-left:1em;
     /* Keep the nav right aligned */
     min-width:280px;
     margin-left:auto;
@@ -472,6 +478,10 @@ nav ul {
     list-style-type: none;
     padding-left: 1em;
     margin:0;
+}
+#nav-aligner > ul {
+    /* Top level files shouldn't have any left padding */
+    padding-left:0;
 }
 nav li a.currentPage {
     color: var(--primary);
