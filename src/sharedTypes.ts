@@ -2,7 +2,7 @@ import { pathOSAbsolute, pathOSRelative, pathWeb } from "./path.ts";
 
 export const PROGRAM_NAME = 'eden-md';
 export const templateName = 'template-page.html';
-export const stylesName = 'styles.css';
+export const stylesName = 'eden.css';
 export const configDirName = `${PROGRAM_NAME}-config`
 export const configName = `${PROGRAM_NAME}.config.json`;
 export const tableOfContentsURL = '/table_of_contents.html';

@@ -9,7 +9,7 @@ export const defaultHtmlTemplatePage = `<!DOCTYPE html>
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     {{title}}
     <!-- <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet"> -->
-    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/eden.css">
     <script>
         window.metadata = {{ metadata }};
     </script>
