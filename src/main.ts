@@ -262,10 +262,13 @@ EXAMPLES
         const parentNavItem = findNavItem(nav, pageNameSteps.slice(0, -1));
         // Note: `hidden` will be updated once the page is processed and the metadata is inspected
         const dirNavItem: NavItem = { name: pageName, hidden: false, isDir: true, webPath: '/' + path.posix.join(pageNameSteps.join('/'), 'index.html'), children: [] };
-        if (parentNavItem) {
-            parentNavItem.children.push(dirNavItem)
-        } else {
-            nav.push(dirNavItem);
+        // Add directory to nav if it is non-empty
+        if (d.contents.filter(c => c.isDirectory || c.name.endsWith('.md')).length) {
+            if (parentNavItem) {
+                parentNavItem.children.push(dirNavItem)
+            } else {
+                nav.push(dirNavItem);
+            }
         }
         tableOfContents.push({ indent, pageName, relativePath: directoryPathSegment, isDir: true, hidden: false });
         // Add files to table of contents for use later for "next" and "prev" buttons to know order of pages
@@ -293,7 +296,10 @@ EXAMPLES
         }
         // Create an index page for every directory except for the parse dir (the table of contents better serves this)
         if (path.relative(globalThis.parseDir, d.dir) != '') {
-            createDirectoryIndexFile(d, templateHtml, { tableOfContents, config, backlinks });
+            // Only create Directory Index Files for directories that are non-empty
+            if (dirNavItem.children.length) {
+                createDirectoryIndexFile(d, templateHtml, { tableOfContents, config, backlinks });
+            }
         }
     }
 
