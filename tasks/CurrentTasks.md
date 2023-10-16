@@ -1,10 +1,8 @@
 ## MVP Tasks
-- bug: empty pages will result in `NotFound:` error
-- feature: Support whatever `#something` stynax is. Obsidian appears to treat it like a tag
-- Exclude empty output folders like `assets` from table of contents
-    - auto ignore obsidian static dir
-        - 971a8c1
-        - but still allow it to find images there
+- Support cssclasses metadata
+- Support publish.css
+    - https://help.obsidian.md/Obsidian+Publish/Customize+your+site
+---
 - **(MVP) Make mvp demo video and send to Zak**
     - Use Obsidian help as sample https://github.com/obsidianmd/obsidian-help/tree/master/en
     - Try to drum up interest with a Discord server / mailing list for a "zero-config digital garden"
@@ -25,6 +23,7 @@
     - it seems an image can be referenced by name alone unless there are multiple copies
     - If there are multiple copies it references the one at root
 ---
+- bug: empty pages will result in `NotFound:` error
 - Ensure caching supports UNPUBLISHING notes
 - TODO support ` ![[wikilink#Header]] for headers`
     - https://publish.obsidian.md/hub/04+-+Guides%2C+Workflows%2C+%26+Courses/Guides/Markdown+Syntax#Obsidian's+Custom+markdown+syntax
