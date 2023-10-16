@@ -107,12 +107,15 @@ Multiline comment
 });
 
 // Note tags always have a space after them
-export const obsidianTags = /#([\w-_]+)\s/g;
+export const obsidianTags = /(?:^|\s)#([\w-_]+)\s/g;
 ([
     ['#tag ', ['tag']],
     ['#tag_with_underscores ', ['tag_with_underscores']],
     ['#tag-dash ', ['tag-dash']],
     ['#tag1234567890 ', ['tag1234567890']],
+    // Does not match
+    // tagin#middleofword
+    // #tagwithspecialcharacters$
 ] as RegexTest[]).map(([testString, captureGroups]) => {
     runTest(`obsidianTags: ${testString}->${captureGroups} `, new RegExp(obsidianTags), testString, captureGroups);
 });
@@ -133,7 +136,7 @@ function runTest(testName: string, regex: RegExp, testString: string, captureGro
 // Always expects the first match to == the test string
 function testRegex(regex: RegExp, testString: string, captureGroups: string[]) {
     const actual = new RegExp(regex).exec(testString);
-    console.log('jtest2', testString, 'actual:', actual);
+    // console.log('jtest2', testString, 'actual:', actual);
 
     // Always expect the first index to return the whole string
     assertEquals((actual || [])[0] as string, testString);
