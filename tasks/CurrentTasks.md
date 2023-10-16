@@ -1,5 +1,4 @@
 ## MVP Tasks
-- prevent clobbering eden's styles.css with custom user's styles.css
 - **(MVP) Make mvp demo video and send to Zak**
     - Use Obsidian help as sample https://github.com/obsidianmd/obsidian-help/tree/master/en
     - Try to drum up interest with a Discord server / mailing list for a "zero-config digital garden"
