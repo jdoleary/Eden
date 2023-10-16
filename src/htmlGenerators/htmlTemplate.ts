@@ -458,7 +458,7 @@ summary::-webkit-details-marker {
 details[open] {
 }
 
-details[open] summary {
+details[open] > summary {
     list-style-type: '▾ ';
 }
 
