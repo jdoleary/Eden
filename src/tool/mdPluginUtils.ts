@@ -59,19 +59,6 @@ export function has(obj: any, prop: string) {
 }
 
 /**
- * Extract an url from the given string.
- *
- * @param {string} str The string to extract an url from.
- * @return {string}
- */
-export function extractUrl(str: string) {
-    const matches = str.match(REGEX_URL);
-    return matches !== null
-        ? matches.shift()
-        : null;
-}
-
-/**
  * Determines whether a string begins with the characters of a another string.
  *
  * @param {string} str The string to inspect.
