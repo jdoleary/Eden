@@ -86,7 +86,7 @@ export const defaultStyles = (config: Config) => `
     --background: #fcfaf8;
     --primary: #345474;
     --secondary: #dfccb9;
-    --accent: #3f668d;
+    --accent: #597b9d;
 }
 
 body {
@@ -172,7 +172,7 @@ nav {
     padding-top:1em;
     padding-right:1em;
     /* Keep the nav right aligned */
-    width:280px;
+    min-width:280px;
     margin-left:auto;
 }
 /* min width is the 800 of the article + the 280 of the nav aligner*/
@@ -196,6 +196,11 @@ nav {
         grid-template-columns: 1fr 800px 1fr;
     }
 }
+@media screen and (min-width: 1180px) {
+    #nav-aligner {
+        width:380px;
+    }
+}
 
 article {
     grid-row: 3;
@@ -208,7 +213,7 @@ article {
     justify-content:space-between;
     padding: 1em;
     border-radius: 6px;
-    margin: 1em 0;
+    margin-bottom: 1em;
     background-color: #ffffff;
     width:100%;
     box-sizing: border-box;
@@ -464,8 +469,7 @@ details[open] > summary {
 
 nav ul {
     list-style-type: none;
-    /* Aligns with the down arrow of the above folder */
-    padding-left: 6px;
+    padding-left: 1em;
     margin:0;
 }
 nav li a.currentPage {
