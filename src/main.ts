@@ -39,7 +39,7 @@ import { timeAgoJs } from "./htmlGenerators/timeAgo.js";
 import { embedBlocks, processBlockElementsWithID } from "./tool/editDOM.ts";
 import { CLIFlag, getCliFlagOptions, rawCLIFlagOptions } from "./cliOptions.ts";
 import plugins from "./tool/mdPlugins.ts";
-import { obsidianStyleBacklinkRegex, obsidianStyleComment, obsidianStyleEmbedBlockRegex, obsidianStyleEmbedFileRegex, obsidianStyleEmbedPageRegex } from "./tool/regexCollection.ts";
+import { obsidianStyleBacklinkRegex, obsidianStyleComment, obsidianStyleEmbedBlockRegex, obsidianStyleEmbedFileRegex, obsidianStyleEmbedPageRegex, obsidianTags } from "./tool/regexCollection.ts";
 import { NavItem, findNavItem, removeHiddenPages } from "./tool/navigation.ts";
 import { isUpdateNewer } from "./tool/updateAvailable.ts";
 
@@ -569,6 +569,9 @@ async function process(filePath: string, { allFilesNames, tableOfContents, nav, 
         fileContents = fileContents.replaceAll(obsidianStyleComment, '');
         // Replace embed file syntax with markdown image format
         fileContents = fileContents.replaceAll(obsidianStyleEmbedFileRegex, '![$1]($2)');
+
+        // Support tags to tag index pages
+        fileContents = fileContents.replaceAll(obsidianTags, '[#$1](/tags/$1.html)');
 
         // Replace embed block syntax with something that will be easily recognized later and parsed as
         // a single token by rusty_markdown (note: As of 2023.09.06 rusty_markdown has been replaced with markdown-it

@@ -106,6 +106,18 @@ Multiline comment
     runTest(`obsidianStyleComment: ${testString}->${captureGroups} `, new RegExp(obsidianStyleComment), testString, captureGroups, true);
 });
 
+// Note tags always have a space after them
+export const obsidianTags = /#([\w-_]+)\s/g;
+([
+    ['#tag ', ['tag']],
+    ['#tag_with_underscores ', ['tag_with_underscores']],
+    ['#tag-dash ', ['tag-dash']],
+    ['#tag1234567890 ', ['tag1234567890']],
+] as RegexTest[]).map(([testString, captureGroups]) => {
+    runTest(`obsidianTags: ${testString}->${captureGroups} `, new RegExp(obsidianTags), testString, captureGroups);
+});
+
+
 export const obsidianStyleCallout = /\[!(\w+)\](-)?\s?/g;
 
 type RegexTest = [string, Array<string>, boolean?];
@@ -121,7 +133,7 @@ function runTest(testName: string, regex: RegExp, testString: string, captureGro
 // Always expects the first match to == the test string
 function testRegex(regex: RegExp, testString: string, captureGroups: string[]) {
     const actual = new RegExp(regex).exec(testString);
-    // console.log('jtest2', testString, 'actual:', actual);
+    console.log('jtest2', testString, 'actual:', actual);
 
     // Always expect the first index to return the whole string
     assertEquals((actual || [])[0] as string, testString);
