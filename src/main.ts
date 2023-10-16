@@ -26,7 +26,7 @@ import { parse } from "https://deno.land/std@0.194.0/flags/mod.ts";
 import { createDirectoryIndexFile, createTagDirIndexFile, createTagIndexFile, getWebPathOfTag } from "./htmlGenerators/indexFile.ts";
 import { addContentsToTemplate, findTOCEntryFromFilepath } from "./htmlGenerators/useTemplate.ts";
 import { getDirs, getFiles } from "./os.ts";
-import { absoluteOsMdPathToWebPath, changeExtension, getConfDir, getOutDir, pageNameToPagePath, pathOSAbsolute, pathOSRelative, pathToPageName, pathWeb } from "./path.ts";
+import { absoluteOsMdPathToWebPath, changeExtension, getConfDir, getOutDir, pageNameToPagePath, pathOSAbsolute, pathOSRelative, pathToArrayOfNames, pathToPageName, pathWeb } from "./path.ts";
 import { Config, configName, edenEmbedClassName, embedPathDataKey, FileName, Garden, Metadata, Page, PROGRAM_NAME, stylesName, TableOfContents, TableOfContentsEntry, tableOfContentsURL, tagsDirectoryName, templateName } from "./sharedTypes.ts";
 import { host } from "./tool/httpServer.ts";
 import { deploy, DeployableFile } from "./tool/publish.ts";
@@ -402,7 +402,7 @@ ${tagsHtml}
 <h4>Pages </h4>
 <table>
     <tbody>
-    ${sortedPages.map(p => `<tr><td><span data-converttimeago="${p.createdAt as number}">${new Date(p.createdAt as number).toDateString()}</span></td><td><a href="${p.webPath}">${p.name}</a><td></tr>`).join('')}
+    ${sortedPages.map(p => `<tr><td><span data-converttimeago="${p.createdAt as number}">${new Date(p.createdAt as number).toDateString()}</span></td><td><a href="${p.webPath}"><span class="gray">${pathToArrayOfNames(p.webPath).join(' / ')} / </span>${p.name}</a><td></tr>`).join('')}
     </tbody>
 </table>
             `

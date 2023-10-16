@@ -96,6 +96,20 @@ export function pathToPageName(filepath: string): string {
     return path.parse(filepath).name.replaceAll('_', ' ');
 }
 
+[
+    ['/test/nest/path_has_underscores.html', ['test', 'nest']],
+    ['/directory_one/two', ['directory one']],
+].map(([path, expected]) => {
+    Deno.test(`pathToPageName: ${path} -> ${expected} `, () => {
+        const actual = pathToArrayOfNames(path as string);
+        assertEquals(actual, expected);
+    });
+});
+export function pathToArrayOfNames(filepath: pathWeb): string[] {
+    // Always splits on '/', not path.sep because the argument is pathWeb not pathOS
+    return path.parse(filepath).dir.split('/').flatMap(x => !!x ? [x.replaceAll('_', ' ')] : []);
+}
+
 
 
 // pathWeb is a path to be used for fetching data in the website such as
