@@ -32,6 +32,10 @@ function navToHTML(item: NavItem, path?: string[]): string {
     }
     if (!item.children.length) {
         const isCurrentPage = (path?.[0] || '').includes(item.name);
+        // Skip homepage since header already links to home
+        if (item.webPath == '/index.html') {
+            return ''
+        }
         return `<li><a href="${item.webPath}" ${isCurrentPage ? `class="currentPage"` : ''}>${item.name}</a></li>`;
     }
     const pathMatches = path && item.name == path[0];
@@ -65,10 +69,6 @@ function navToHTML(item: NavItem, path?: string[]): string {
 export function navHTML(nav: NavItem[], path?: string[]): string {
     let html = '';
     for (const item of nav) {
-        // Skip homepage since header already links to home
-        if (item.webPath == '/index.html') {
-            continue;
-        }
         html += navToHTML(item, path);
     }
     return html;
