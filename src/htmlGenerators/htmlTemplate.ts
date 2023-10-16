@@ -15,6 +15,7 @@ export const defaultHtmlTemplatePage = `<!DOCTYPE html>
     </script>
     <!-- Optional script: converts any element with data-converttimeago to the format "X days/months/years ago" -->
     <script src="/timeAgo.js" defer></script>
+    {{head:extra}}
 
 </head>
 
@@ -40,7 +41,7 @@ export const defaultHtmlTemplatePage = `<!DOCTYPE html>
     <nav>
         {{nav}}
     </nav>
-    <article>
+    <article class="{{metadata:cssclasses}}">
         <div id="article-main">
             <div id="article-content">
                 {{content}}

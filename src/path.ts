@@ -110,6 +110,19 @@ export function pathToArrayOfNames(filepath: pathWeb): string[] {
     return path.parse(filepath).dir.split('/').flatMap(x => !!x ? [x.replaceAll('_', ' ')] : []);
 }
 
+export async function doesFileExist(filepath: pathOSAbsolute): Promise<boolean> {
+    try {
+        return !!(await Deno.stat(filepath));
+    } catch (e) {
+        if (e instanceof Deno.errors.NotFound) {
+            // File does not exist
+        } else {
+            console.error(e);
+        }
+        return false;
+    }
+
+}
 
 
 // pathWeb is a path to be used for fetching data in the website such as

@@ -1,4 +1,5 @@
 ## MVP Tasks
+- handle clobbering styles.css
 - Support cssclasses metadata
 - Support publish.css
     - https://help.obsidian.md/Obsidian+Publish/Customize+your+site
@@ -23,6 +24,7 @@
     - it seems an image can be referenced by name alone unless there are multiple copies
     - If there are multiple copies it references the one at root
 ---
+- Url spaces should be `+` not `_`
 - bug: empty pages will result in `NotFound:` error
 - Ensure caching supports UNPUBLISHING notes
 - TODO support ` ![[wikilink#Header]] for headers`

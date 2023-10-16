@@ -1,7 +1,7 @@
 import * as path from "https://deno.land/std@0.177.0/path/mod.ts";
 import { Config, Garden, TableOfContents, TableOfContentsEntry, tableOfContentsURL, tagsDirectoryName } from "../sharedTypes.ts";
 import { Backlinks } from "../tool/backlinkFinder.ts";
-import { absoluteOsMdPathToWebPath, getOutDir, pathOSAbsolute } from "../path.ts";
+import { absoluteOsMdPathToWebPath, doesFileExist, getOutDir, pathOSAbsolute } from "../path.ts";
 import { NavItem, navHTML } from "../tool/navigation.ts";
 
 // Takes a string that contains html with template designators (e.g. {{content}}) and fills all the templates
@@ -78,6 +78,28 @@ export async function addContentsToTemplate(content: string, templateHtml: strin
     content = content.replace('{{metadata:subtitle}}', metadata && metadata.subtitle ? `<h2 class="gray">${metadata.subtitle}</h2>` : '');
     // Even if tags don't exist, it should still be an empty div so that the createdAt timestamps stay on the right side of the flex
     content = content.replace('{{metadata:tags}}', metadata && metadata.tags ? `<div id="article-tags">${metadata.tags.map((tag: string) => `<a href="${path.join('/', tagsDirectoryName, `${tag}.html`).replaceAll(' ', '_')}">${tag}</a>`).join('')}</div>` : '<div></div>');
+
+    content = content.replace('{{metadata:cssclasses}}', metadata && metadata.cssclasses && metadata.cssclasses.length ? metadata.cssclasses.join(' ') : '');
+
+    let extraHeadTags = '';
+    // Ref: https://help.obsidian.md/Obsidian+Publish/Customize+your+site
+    if (await doesFileExist(path.join(globalThis.parseDir, 'publish.css'))) {
+        extraHeadTags += `<link rel="stylesheet" href='/publish.css'>`;
+    }
+    if (await doesFileExist(path.join(globalThis.parseDir, 'publish.js'))) {
+        extraHeadTags += `<script src="/publish.js" defer></script>`;
+    }
+    if (await doesFileExist(path.join(globalThis.parseDir, 'favicon-32x32.png'))) {
+        extraHeadTags += `<link rel="icon" type="image/x-icon" href="/favicon-32x32.png">`;
+    }
+    if (await doesFileExist(path.join(globalThis.parseDir, 'favicon-32.png'))) {
+        extraHeadTags += `<link rel="icon" type="image/x-icon" href="/favicon-32.png">`;
+    }
+    if (await doesFileExist(path.join(globalThis.parseDir, 'favicon.ico'))) {
+        extraHeadTags += `<link rel="icon" type="image/x-icon" href="/favicon.ico">`;
+    }
+    content = content.replace('{{head:extra}}', extraHeadTags);
+
 
     const isHomepage = filePath == path.join(getOutDir(config), 'index.html');
     content = content.replace('{{pageType}}', isHomepage ? 'type-homepage' : isDir ? 'type-directory' : 'type-page');
