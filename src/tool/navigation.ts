@@ -65,6 +65,10 @@ function navToHTML(item: NavItem, path?: string[]): string {
 export function navHTML(nav: NavItem[], path?: string[]): string {
     let html = '';
     for (const item of nav) {
+        // Skip homepage since header already links to home
+        if (item.webPath == '/index.html') {
+            continue;
+        }
         html += navToHTML(item, path);
     }
     return html;
