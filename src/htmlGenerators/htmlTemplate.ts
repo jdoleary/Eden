@@ -218,7 +218,7 @@ article {
     /* justify-content:space-between keeps the article footer at the bottom of the screen even if the content doesn't
     fill the whole screen. */
     justify-content:space-between;
-    padding: 1em;
+    padding: 0 1em 1em 1em;
     border-radius: 6px;
     margin-bottom: 1em;
     background-color: #ffffff;
