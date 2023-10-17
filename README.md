@@ -5,10 +5,6 @@
 
 See [CurrentTasks.md](tasks/CurrentTasks.md) for up-to-date development tasks
 
-## Quick Start 
-- Install Deno from `https://deno.com/`
-- `./run.sh` to generate and view static html from the sample/ directory
-
 ## Usage
 | Usage | Command |
 | --- | --- |
