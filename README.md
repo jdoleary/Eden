@@ -6,6 +6,7 @@
 See [CurrentTasks.md](tasks/CurrentTasks.md) for up-to-date development tasks
 
 ## Usage
+Eden currently requires https://deno.com/ to run but will be made available as an executable in the future!
 | Usage | Command |
 | --- | --- |
 |Simplest usage| `deno run https://deno.land/x/eden path/to/my/vault/` |
