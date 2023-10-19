@@ -45,19 +45,19 @@ See [CurrentTasks.md](tasks/CurrentTasks.md) for up-to-date development tasks
     - Skips files if the .md is older than the .html and the template / css
 - [ ] Site search
     - [x] make entire garden available in json at /garden.json for advanced usage 
-- [ ] 🔑⛰️Backlinks should include optional context snippets
-- [ ] 🍎Metadata `thumbnail` for article for when it's displayed in an index page
+- [ ] 🔑Backlinks should include optional context snippets
+- [ ] Metadata `thumbnail` for article for when it's displayed in an index page
 - [ ] [Obsidian CSS Snippets](https://help.obsidian.md/Extending+Obsidian/CSS+snippets)
-- [ ] 🌀Ability to create different object types, ontologies, and tags
+- [ ] Ability to create different object types, ontologies, and tags
     - Example: https://www.gwern.net/About#confidence-tags
     - Example: Maggie Appleton's site, which has "Notes", "Essays", and "Patterns", among other collections of different objects
-- [ ] 🍎Expandible/collapsible blocks
+- [ ] Expandible/collapsible blocks
 - [ ] [Embed Audio files](https://help.obsidian.md/Linking+notes+and+files/Embedding+files#Embed+an+audio+file+in+a+note)
 - [ ] [Embed pdf](https://help.obsidian.md/Linking+notes+and+files/Embedding+files#Embed+a+PDF+in+a+note)
 - [ ] [Embed search results](https://help.obsidian.md/Linking+notes+and+files/Embedding+files#Embed+search+results)
-- [ ] ⛰️Support syntax highlighting
+- [ ] Support syntax highlighting
 - [ ] ❓Print-ready, capable of being exported to EPUB or PDF
-- [ ] ⛰️Customizable header (like https://maggieappleton.com/) that works with transclusion.
+- [ ] Customizable header (like https://maggieappleton.com/) that works with transclusion.
 - [ ] Template Footer
     - [x] link to rss.xml
     - [ ] social links
@@ -82,24 +82,20 @@ See [CurrentTasks.md](tasks/CurrentTasks.md) for up-to-date development tasks
 | ✅ |`[[page#header1]]` | Link to header | [source](https://publish.obsidian.md/hub/04+-+Guides%2C+Workflows%2C+%26+Courses/Guides/Markdown+Syntax#Obsidian's+Custom+markdown+syntax)|
 | ✅ |`[[page#^blockId]]` | Link to blockId | [source](https://publish.obsidian.md/hub/04+-+Guides%2C+Workflows%2C+%26+Courses/Guides/Markdown+Syntax#Obsidian's+Custom+markdown+syntax)|
 
-### Symbol Legend
-```
-*🍎: Low-hanging fruit (easy and fast to complete)
-*⛰️: Medium Difficulty
-*🌀: Complex (may take longer to implement)
-*❓: Optional (unsure if this will be a final feature)
-*🔑: Key feature
-*⏳ : Partially Complete
-```
-### Git/Vercel setup
+
+### Easy hosting with Static.app
+https://static.app/ is the simplest hosting solution for non-technical users.  Simply drag-n-drop your static html files found at `eden-md-out/YOUR_PROJECT_NAME` and your website is live!
+
+### Complex hosting with Git and Vercel
 To use Eden with Vercel and Git for Continuous Deployment, set the followin Project Settings in Vercel:
-Build Command: `/vercel/.deno/bin/deno run --allow-net --allow-write --allow-read --allow-env https://www.edenmarkdown.com/code/latest/src/mod.ts --parseDir .`
+
+Build Command: `/vercel/.deno/bin/deno run --allow-net --allow-write --allow-read --allow-env https://deno.land/x/eden --parseDir .`
+
 Output Directory: `eden-md-out/YOUR_PROJECT_NAME` (note: YOUR_PROJECT_NAME is found in eden-md-config in your markdown vault directory)
+
 Install Command: `curl -fsSL https://deno.land/x/install/install.sh | sh`
 
-Note: deno.land/x/eden isn't working right now https://github.com/denoland/wanted_modules/issues/87 so I'm self hosting the source for now at edenmarkdown.com/code/VERSION/src/mod.ts
-
 ## Support this Project
-I've created Eden on my own time and out of my own pocket.  If you benefit from it please consider a one-time donation!
+I've created Eden on my own time and out of my own pocket.  If you benefit from it please consider donating!
 
 https://github.com/sponsors/jdoleary

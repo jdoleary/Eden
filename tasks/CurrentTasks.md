@@ -1,4 +1,12 @@
 ## MVP Tasks
+- Website structure
+    - Homepage
+        - Embedded video
+        - CTA
+            - Join the Discord
+        - Getting Started
+        - Features
+        - Link to github
 - **(MVP) Make mvp demo video and send to Zak**
     - Use Obsidian help as sample https://github.com/obsidianmd/obsidian-help/tree/master/en
     - Try to drum up interest with a Discord server / mailing list for a "zero-config digital garden"
@@ -19,6 +27,7 @@
     - it seems an image can be referenced by name alone unless there are multiple copies
     - If there are multiple copies it references the one at root
 ---
+- https://help.obsidian.md/Files+and+folders/Accepted+file+formats
 - Url spaces should be `+` not `_`
 - bug: empty pages will result in `NotFound:` error
 - Ensure caching supports UNPUBLISHING notes
