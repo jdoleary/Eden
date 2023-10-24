@@ -7,7 +7,8 @@ import MarkdownIt from "../../types/markdown-it/index.d.ts";
 import { getOutDir } from "../path.ts";
 import { Config, edenEmbedClassName, embedPathDataKey } from "../sharedTypes.ts";
 import { findFilePathFromBaseName } from "./backlinkFinder.ts";
-import type Token from "../lib/markdown-it/lib/token.js";
+// @deno-types="../lib/markdown-it/lib/token.js"
+import Token from "../lib/markdown-it/lib/token.js";
 import { TokenType, findToken } from "./mdPluginUtils.ts";
 import StateCore from "../lib/markdown-it/lib/rules_core/state_core.js";
 
