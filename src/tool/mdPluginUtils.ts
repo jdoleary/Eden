@@ -1,6 +1,6 @@
 // This entire file is modified from https://github.com/dweidner/markdown-it-attribution/blob/master/index.js
 
-import type Token from "../lib/markdown-it/lib/token.js";
+import type Token from "https://esm.sh/markdown-it@13.0.1/lib/token.js";
 
 /**
  * An enumeration of token types.

@@ -7,10 +7,10 @@ import MarkdownIt from "../../types/markdown-it/index.d.ts";
 import { getOutDir } from "../path.ts";
 import { Config, edenEmbedClassName, embedPathDataKey } from "../sharedTypes.ts";
 import { findFilePathFromBaseName } from "./backlinkFinder.ts";
-// @deno-types="../lib/markdown-it/lib/token.js"
-import Token from "../lib/markdown-it/lib/token.js";
+// @deno-types="../../types/markdown-it/lib/token.d.ts"
+import Token from "https://esm.sh/markdown-it@13.0.1/lib/token.js";
 import { TokenType, findToken } from "./mdPluginUtils.ts";
-import StateCore from "../lib/markdown-it/lib/rules_core/state_core.js";
+import StateCore from "https://esm.sh/markdown-it@13.0.1/lib/rules_core/state_core.js";
 
 export default function plugins(md: MarkdownIt, config: Config) {
     md.use(callouts, 'callouts', 'blockquote', (tokens: Token[], idx: number) => { });
