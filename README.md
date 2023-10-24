@@ -9,9 +9,9 @@ See [CurrentTasks.md](tasks/CurrentTasks.md) for up-to-date development tasks
 Eden currently requires https://deno.com/ to run but will be made available as an executable in the future!
 | Usage | Command |
 | --- | --- |
-|Simplest usage| `deno run https://deno.land/x/eden path/to/my/vault/` |
-|Generate and preview the outputted html| `deno run https://deno.land/x/eden --preview path/to/my/vault/ && start http://localhost:8000/`|
-|Run with permissions| `deno run --allow-net --allow-write --allow-read --allow-env https://deno.land/x/eden path/to/my/vault/`|
+|Simplest usage| `deno run https://deno.land/x/eden/src/mod.ts path/to/my/vault/` |
+|Generate and preview the outputted html| `deno run https://deno.land/x/eden/src/mod.ts --preview path/to/my/vault/ && start http://localhost:8000/`|
+|Run with permissions| `deno run --allow-net --allow-write --allow-read --allow-env https://deno.land/x/eden/src/mod.ts path/to/my/vault/`|
 
 ## Features
 - [x] Breadcrumbs
@@ -90,7 +90,7 @@ https://static.app/ is the simplest hosting solution for non-technical users.  S
 ### Complex hosting with Git and Vercel
 To use Eden with Vercel and Git for Continuous Deployment, set the followin Project Settings in Vercel:
 
-Build Command: `/vercel/.deno/bin/deno run --allow-net --allow-write --allow-read --allow-env https://deno.land/x/eden --parseDir .`
+Build Command: `/vercel/.deno/bin/deno run --reload --allow-net --allow-write --allow-read --allow-env https://deno.land/x/eden/src/mod.ts --parseDir .`
 
 Output Directory: `eden-md-out/YOUR_PROJECT_NAME` (note: YOUR_PROJECT_NAME is found in eden-md-config in your markdown vault directory)
 
