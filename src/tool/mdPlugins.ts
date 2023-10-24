@@ -38,7 +38,7 @@ export default function plugins(md: MarkdownIt, config: Config) {
                 // Find potential callout type
                 if (start + 2 < end) {
                     const calloutInline = tokens[start + 2];
-                    if (calloutInline.type == 'inline') {
+                    if (calloutInline.type == 'inline' && calloutInline.children) {
                         const tokenText = calloutInline.children[findToken(calloutInline.children, { type: 'text' }, 0)];
                         if (tokenText) {
                             // Remove now empty paragraph tokens
