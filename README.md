@@ -1,6 +1,8 @@
 # Eden
 ![Eden Logo](eden-logo.png)
 
+![Tests](https://github.com/jdoleary/eden-markdown/actions/workflows/deno.yml/badge.svg)
+
 **Converts an Obsidian vault into a super-charged digital garden of static html.**
 
 See [CurrentTasks.md](tasks/CurrentTasks.md) for up-to-date development tasks
