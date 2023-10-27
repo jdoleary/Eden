@@ -60,7 +60,7 @@ export default function plugins(md: MarkdownIt, config: Config) {
                                 // Remove  markdown that determines which type of callback it is
                                 tokenText.content = tokenText.content.replace(fullMatch, calloutType + ' ');
                                 tokens[start].attrJoin('class', 'callout');
-                                tokens[start].attrSet('data-callout', calloutType);
+                                tokens[start].attrSet('data-callout', calloutType.toLowerCase());
 
                                 const title = titleOverride ? titleOverride : capitalizeFirstLetter(tokenText.content)
                                 if (isFolding) {
