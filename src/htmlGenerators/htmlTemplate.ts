@@ -94,7 +94,8 @@ body {
     font-size: 18px;
     font-family: 'Verdana', 'Helvetica', sans-serif;
     font-display: optional;
-    margin: 0;
+    /* body should have a margin on mobile so text isn't squished up againt the side*/
+    margin: 1em;
     color: var(--text);
 }
 /* Holy Grail Layout styling */
@@ -197,6 +198,7 @@ nav {
         grid-template-rows: auto auto 1fr auto;
         grid-template-columns: 1fr 800px 1fr;
         gap: 1em;
+        margin:0;
     }
 }
 @media screen and (min-width: 1180px) {
@@ -241,13 +243,10 @@ nav summary:hover {
 }
 nav a {
     color:#999;
-    border-left:2px solid #999;
-    padding-left:0.5em;
 }
 nav a:hover {
     text-decoration: none; /* no underline */
     color: var(--primary);
-    border-left:2px solid var(--primary);
 }
 
 footer {
