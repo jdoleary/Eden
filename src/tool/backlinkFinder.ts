@@ -23,7 +23,11 @@ export function findFilePathFromBaseName(filePath: string | undefined, garden: G
     if (filePath.startsWith('http')) {
         return filePath;
     }
+    filePath = (filePath || '').replaceAll(/\ |(%20)/g, '_');
     const foundFile = garden.files.find(f => {
+        if (!filePath) {
+            return false;
+        }
         return f.endsWith(filePath);
     })
     if (foundFile) {

@@ -569,7 +569,8 @@ async function process(filePath: string, { allFilesNames, tableOfContents, nav, 
         // Remove all comments
         fileContents = fileContents.replaceAll(obsidianStyleComment, '');
         // Replace embed file syntax with markdown image format
-        fileContents = fileContents.replaceAll(obsidianStyleEmbedFileRegex, '![$1]($2)');
+        // Angle brackets ensure that images containing spaces in the filename meet commonmark spec for images
+        fileContents = fileContents.replaceAll(obsidianStyleEmbedFileRegex, '![$1](<$2>)');
 
         // Support tags to tag index pages
         fileContents = fileContents.replaceAll(obsidianTags, '[#$1](/tags/$1.html)');
