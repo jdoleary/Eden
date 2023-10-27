@@ -92,11 +92,9 @@ export const defaultStyles = (config: Config) => `
 
 body {
     font-size: 18px;
-    background-color: #ffffff;
     font-family: 'Verdana', 'Helvetica', sans-serif;
     font-display: optional;
     margin: 0;
-    background-color: var(--background);
     color: var(--text);
 }
 /* Holy Grail Layout styling */
@@ -108,7 +106,6 @@ header {
     grid-row: 1;
     /* Align the column with the article */
     grid-column: 2;
-    padding:1em;
     margin-bottom: 1em;
 }
 header a {
@@ -152,8 +149,6 @@ header a:hover {
 #article-header {
     grid-row: 2;
     grid-column: 2;
-    /* Align with article */
-    padding:0 1em;
 }
 
 #article-header.hide-title {
@@ -201,6 +196,7 @@ nav {
         display: grid;
         grid-template-rows: auto auto 1fr auto;
         grid-template-columns: 1fr 800px 1fr;
+        gap: 1em;
     }
 }
 @media screen and (min-width: 1180px) {
@@ -218,8 +214,6 @@ article {
     /* justify-content:space-between keeps the article footer at the bottom of the screen even if the content doesn't
     fill the whole screen. */
     justify-content:space-between;
-    padding: 0 1em 1em 1em;
-    border-radius: 6px;
     margin-bottom: 1em;
     background-color: #ffffff;
     width:100%;
