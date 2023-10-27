@@ -162,16 +162,16 @@ nav {
     grid-row: 3;
     grid-column: 1;
 }
-.type-homepage #nav-aligner {
-    /* Align with top of homepage content */
-    padding-top:0;
+.type-page #nav-aligner {
+    /* Align with top of page content */
+    padding-top:1em;
 }
 #nav-aligner {
     /* Sticky side nav */
     position:sticky;
     top:0;
 
-    padding-top:1em;
+    padding-top:0;
     padding-right:1em;
     padding-left:1em;
     /* Keep the nav right aligned */
