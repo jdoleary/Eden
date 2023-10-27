@@ -513,11 +513,21 @@ li.task-list-item ul {
 }
 /* End Special checkbox styling */
 
+blockquote {
+    border-left:4px solid var(--accent);
+    padding:1em;
+    margin:0;
+}
 /* Start of Callout styling */
 /* ref: https://help.obsidian.md/Editing+and+formatting/Callouts */
 .callout {
     border-radius:4px;
     padding:1em;
+}
+blockquote.callout {
+    /* Override default blockquote styling */
+    margin: 0;
+    border:0;
 }
 .callout[data-callout="info"],
 .callout[data-callout="todo"] {

@@ -121,7 +121,7 @@ export const obsidianTags = /(?:^|\s)#([\w-_]+)\s/g;
 });
 
 
-export const obsidianStyleCallout = /\[!(\w+)\](-)?\s?/g;
+export const obsidianStyleCallout = /\[!(\w+)\](-)?(.*)/g;
 
 type RegexTest = [string, Array<string>, boolean?];
 function runTest(testName: string, regex: RegExp, testString: string, captureGroups: string[], useExplicitMatch?: boolean, only?: boolean) {

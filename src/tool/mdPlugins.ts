@@ -56,15 +56,17 @@ export default function plugins(md: MarkdownIt, config: Config) {
                                 const fullMatch = inlineMatches[0];
                                 const calloutType = inlineMatches[1];
                                 const isFolding = !!inlineMatches[2];
+                                const titleOverride = inlineMatches[3];
                                 // Remove  markdown that determines which type of callback it is
                                 tokenText.content = tokenText.content.replace(fullMatch, calloutType + ' ');
                                 tokens[start].attrJoin('class', 'callout');
                                 tokens[start].attrSet('data-callout', calloutType);
 
+                                const title = titleOverride ? titleOverride : capitalizeFirstLetter(tokenText.content)
                                 if (isFolding) {
 
                                     tokenText.type = 'html_inline';
-                                    tokenText.content = `<summary>${capitalizeFirstLetter(tokenText.content)}</summary>`;
+                                    tokenText.content = `<summary>${title}</summary>`;
                                     const detailsOpen = new state.Token('html_block', '', 0);
                                     detailsOpen.content = '<details>';
                                     calloutInline.children.unshift(detailsOpen);
@@ -75,7 +77,7 @@ export default function plugins(md: MarkdownIt, config: Config) {
 
                                 } else {
                                     tokenText.type = 'html_inline';
-                                    tokenText.content = `<div class="callout-title"><div class="callout-title-inner">${capitalizeFirstLetter(tokenText.content)}</div></div>`;
+                                    tokenText.content = `<div class="callout-title"><div class="callout-title-inner">${title}</div></div>`;
                                 }
                             }
                         }
