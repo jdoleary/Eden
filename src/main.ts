@@ -382,6 +382,7 @@ EXAMPLES
         padding-right:1.4em;
         text-align:right;
         color:#777;
+        white-space:nowrap;
     }
 </style>`;
     const homepagePath = 'index.html';
