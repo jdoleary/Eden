@@ -528,6 +528,9 @@ blockquote.callout {
     margin: 0;
     border:0;
 }
+.callout-title-inner {
+    margin-bottom: 1em; /* Match .callout padding */
+}
 .callout[data-callout="info"],
 .callout[data-callout="todo"] {
     background-color: #e5f0fc;
