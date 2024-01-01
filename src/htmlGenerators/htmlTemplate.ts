@@ -175,7 +175,10 @@ nav {
     padding-right:1em;
     padding-left:1em;
     /* Keep the nav right aligned */
-    min-width:280px;
+    width:280px;
+    /*Ensure that the width isn't larger due to padding so that
+    the media queries that need to take it's width into account are accurate*/
+    box-sizing: border-box;
     margin-left:auto;
 }
 /* min width is the 800 of the article + the 280 of the nav aligner*/
@@ -612,4 +615,59 @@ blockquote.callout {
     color: #9e9e9e;
 }
 /* End of Callout styling */
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+/* Styling for table header */
+th {
+    text-align: left;
+    padding: 12px;
+}
+
+/* Styling for table rows */
+tr:nth-child(even) {
+    background-color: #f2f2f2; /* Light gray for even rows */
+}
+
+tr:hover {
+    background-color: #ddd; /* Lighter gray for hover effect */
+}
+
+/* Styling for table cells */
+td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd; /* Subtle border for each cell */
+}
+
+/* Styling for table head cells */
+th, td {
+    text-align: left;
+    padding: 8px;
+}
+
+/* Responsive table */
+@media screen and (max-width: 600px) {
+    table, thead, tbody, th, td, tr {
+        display: block;
+    }
+
+    th, td {
+        width: auto;
+    }
+
+    th {
+        display:none;
+    }
+
+    tr { border: 1px solid #ccc; }
+
+    td {
+        border: none;
+        border-bottom: 1px solid #eee;
+    }
+}
 `
+
