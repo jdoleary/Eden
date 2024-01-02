@@ -190,9 +190,6 @@ nav {
     nav:empty {
         display:none;
     }
-    div#breadcrumbs {
-        display:none;
-    }
     article {
         max-width: 100%;
         width: 800px;
