@@ -298,6 +298,7 @@ body.type-directory #article-metadata {
     /* This must be declared explicitly because imgs default to centered and this needs
     to be inline*/
     display:inline;
+    vertical-align:middle;
 }
 
 
