@@ -108,17 +108,16 @@ export async function addContentsToTemplate(content: string, templateHtml: strin
     if (!isDir) {
         // Get file stat data on the harddrive
         try {
-            const statInfo = await Deno.stat(path.join(globalThis.parseDir, relativePath));
-            if (statInfo.birthtime) {
-                content = content.replace('{{created}}', `<span ${statInfo.birthtime ? `data-converttimeago="${statInfo.birthtime.getTime()}"` : ''}>${statInfo.birthtime?.toLocaleDateString()}</span>` || '');
-                const tocEntry = findTOCEntryFromFilepath(tableOfContents, filePath);
-                if (tocEntry) {
-                    tocEntry.createdAt = statInfo.birthtime;
-                }
+            const createdDate = metadata?.created && new Date(metadata.created);
+            content = content.replace('{{created}}', `<span ${createdDate ? `data-converttimeago="${createdDate.getTime()}"` : ''}>${createdDate?.toLocaleDateString()}</span>` || '');
+            const tocEntry = findTOCEntryFromFilepath(tableOfContents, filePath);
+            if (tocEntry) {
+                tocEntry.createdAt = createdDate;
             }
-            content = content.replace('{{modified}}', `<span ${statInfo.mtime ? `data-converttimeago="${statInfo.mtime.getTime()}"` : ''}>${statInfo.mtime?.toLocaleDateString()}</span>` || '');
+            const updatedDate = metadata?.updated && new Date(metadata.updated);
+            content = content.replace('{{modified}}', `<span ${updatedDate ? `data-converttimeago="${updatedDate.getTime()}"` : ''}>${updatedDate?.toLocaleDateString()}</span>` || '');
         } catch (e) {
-            console.error('❌ Err: Failed to get file stat for ', filePath);
+            console.error('❌ Err: Failed to get file stat for ', filePath, ';', e);
         }
     }
 
