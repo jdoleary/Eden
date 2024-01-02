@@ -96,6 +96,8 @@ body {
     /* body should have a margin on mobile so text isn't squished up againt the side*/
     margin: 1em;
     color: var(--text);
+    /* Easier on the eyes for reading */
+    line-height:1.6em;
 }
 /* Holy Grail Layout styling */
 body {
