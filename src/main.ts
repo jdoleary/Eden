@@ -632,22 +632,21 @@ async function process(filePath: string, { allFilesNames, tableOfContents, nav, 
         fileContents = fileContents.slice(metadataCharacterCount);
 
         // Get file stat data on the harddrive
-        let createdAt;
-        let modifiedAt;
+        let createdDate;
+        let updatedDate;
         try {
-            const statInfo = await Deno.stat(path.join(globalThis.parseDir, relativePath));
-            if (statInfo.birthtime) {
-                fileContents = fileContents.replace('{{created}}', `<span ${statInfo.birthtime ? `data-converttimeago="${statInfo.birthtime.getTime()}"` : ''}>${statInfo.birthtime?.toLocaleDateString()}</span>` || '');
-                createdAt = statInfo.birthtime;
+            createdDate = metadata?.created && new Date(metadata.created);
+            if (createdDate) {
+                fileContents = fileContents.replace('{{created}}', `<span ${createdDate ? `data-converttimeago="${createdDate.getTime()}"` : ''}>${createdDate?.toLocaleDateString()}</span>` || '');
                 const tocEntry = findTOCEntryFromFilepath(tableOfContents, filePath);
                 if (tocEntry) {
-                    tocEntry.createdAt = createdAt;
+                    tocEntry.createdAt = createdDate;
                 }
             }
-            modifiedAt = statInfo.mtime;
-            fileContents = fileContents.replace('{{modified}}', `<span ${statInfo.mtime ? `data-converttimeago="${statInfo.mtime.getTime()}"` : ''}>${statInfo.mtime?.toLocaleDateString()}</span>` || '');
+            updatedDate = metadata?.updated && new Date(metadata.updated);
+            fileContents = fileContents.replace('{{modified}}', `<span ${updatedDate ? `data-converttimeago="${updatedDate.getTime()}"` : ''}>${updatedDate?.toLocaleDateString()}</span>` || '');
         } catch (e) {
-            console.error('❌ Err: Failed to get file stat for ', filePath);
+            console.error('❌ Err: Failed to get file stat for ', filePath, ';', e);
         }
 
         let htmlString = markdownIt.render(fileContents);
@@ -659,8 +658,8 @@ async function process(filePath: string, { allFilesNames, tableOfContents, nav, 
             name: pathToPageName(filePath),
             contents: htmlString,
             metadata,
-            createdAt: createdAt?.getTime(),
-            modifiedAt: modifiedAt?.getTime(),
+            createdAt: createdDate?.getTime(),
+            modifiedAt: updatedDate?.getTime(),
             blockEmbeds: [],
             _internal: {
                 filePath

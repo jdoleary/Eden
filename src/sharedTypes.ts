@@ -19,6 +19,10 @@ export interface Metadata {
     title: string;
     subtitle: string;
     thumbnail?: string;
+    // May have custom metadata that the user defines such as `created`
+    // deno-lint-ignore no-explicit-any
+    [key: string]: any;
+
 }
 export type TableOfContentsEntry = {
     originalFilePath?: pathOSAbsolute,
