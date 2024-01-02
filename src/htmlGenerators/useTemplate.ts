@@ -109,13 +109,21 @@ export async function addContentsToTemplate(content: string, templateHtml: strin
         // Get file stat data on the harddrive
         try {
             const createdDate = metadata?.created && new Date(metadata.created);
-            content = content.replace('{{created}}', `<span ${createdDate ? `data-converttimeago="${createdDate.getTime()}"` : ''}>${createdDate?.toLocaleDateString()}</span>` || '');
+            if (createdDate) {
+                content = content.replace('{{created}}', `<span ${createdDate ? `data-converttimeago="${createdDate.getTime()}"` : ''}>${createdDate?.toLocaleDateString() || ''}</span>` || '');
+            } else {
+                content = content.replace('Created {{created}}', '');
+            }
             const tocEntry = findTOCEntryFromFilepath(tableOfContents, filePath);
             if (tocEntry) {
                 tocEntry.createdAt = createdDate;
             }
             const updatedDate = metadata?.updated && new Date(metadata.updated);
-            content = content.replace('{{modified}}', `<span ${updatedDate ? `data-converttimeago="${updatedDate.getTime()}"` : ''}>${updatedDate?.toLocaleDateString()}</span>` || '');
+            if (metadata?.updated) {
+                content = content.replace('{{modified}}', `<span ${updatedDate ? `data-converttimeago="${updatedDate.getTime()}"` : ''}>${updatedDate?.toLocaleDateString() || ''}</span>` || '');
+            } else {
+                content = content.replace('Updated {{modified}}', '');
+            }
         } catch (e) {
             console.error('❌ Err: Failed to get file stat for ', filePath, ';', e);
         }

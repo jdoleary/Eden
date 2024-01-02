@@ -642,9 +642,16 @@ async function process(filePath: string, { allFilesNames, tableOfContents, nav, 
                 if (tocEntry) {
                     tocEntry.createdAt = createdDate;
                 }
+            } else {
+                fileContents = fileContents.replace('Created {{created}}', '');
+
             }
             updatedDate = metadata?.updated && new Date(metadata.updated);
-            fileContents = fileContents.replace('{{modified}}', `<span ${updatedDate ? `data-converttimeago="${updatedDate.getTime()}"` : ''}>${updatedDate?.toLocaleDateString()}</span>` || '');
+            if (metadata?.updated) {
+                fileContents = fileContents.replace('{{modified}}', `<span ${updatedDate ? `data-converttimeago="${updatedDate.getTime()}"` : ''}>${updatedDate?.toLocaleDateString() || ''}</span>` || '');
+            } else {
+                fileContents = fileContents.replace('Updated {{modified}}', '');
+            }
         } catch (e) {
             console.error('❌ Err: Failed to get file stat for ', filePath, ';', e);
         }
