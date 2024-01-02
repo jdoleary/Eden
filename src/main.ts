@@ -273,10 +273,6 @@ EXAMPLES
         tableOfContents.push({ indent, pageName, relativePath: directoryPathSegment, isDir: true, hidden: false });
         // Add files to table of contents for use later for "next" and "prev" buttons to know order of pages
         for (const content of d.contents) {
-            if (content.isDirectory) {
-                const relativePath = pageNameToPagePath(directoryPathSegment, content.name);
-                dirNavItem.children.push({ name: content.name, hidden: false, isDir: content.isDirectory, webPath: '/' + relativePath, children: [] });
-            }
             if (content.isFile) {
                 if (content.name.endsWith('.md')) {
                     const name = content.name.replace('.md', '')
@@ -300,10 +296,7 @@ EXAMPLES
         }
         // Create an index page for every directory except for the parse dir (the table of contents better serves this)
         if (path.relative(globalThis.parseDir, d.dir) != '') {
-            // Only create Directory Index Files for directories that are non-empty
-            if (dirNavItem.children.length) {
-                createDirectoryIndexFile(d, templateHtml, { tableOfContents, config, backlinks });
-            }
+            createDirectoryIndexFile(d, templateHtml, { tableOfContents, config, backlinks });
         }
     }
 
