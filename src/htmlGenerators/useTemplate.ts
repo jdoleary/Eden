@@ -29,7 +29,7 @@ export async function addContentsToTemplate(content: string, templateHtml: strin
                 // No breadcrumb for current title
                 return '';
             }
-            return `<a class="breadcrumbs-item" href=${url}>${currentPathStep}</a>`;
+            return `<a class="breadcrumbs-item" href="${url}">${currentPathStep}</a>`;
         })].filter(x => !!x).join('<span class="center-dot">/</span>');
     }
     content = content.replace('{{breadcrumbs}}', breadcrumbs);

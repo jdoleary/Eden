@@ -273,12 +273,16 @@ EXAMPLES
         tableOfContents.push({ indent, pageName, relativePath: directoryPathSegment, isDir: true, hidden: false });
         // Add files to table of contents for use later for "next" and "prev" buttons to know order of pages
         for (const content of d.contents) {
+            if (content.isDirectory) {
+                const relativePath = pageNameToPagePath(directoryPathSegment, content.name);
+                dirNavItem.children.push({ name: content.name, hidden: false, isDir: content.isDirectory, webPath: '/' + relativePath, children: [] });
+            }
             if (content.isFile) {
                 if (content.name.endsWith('.md')) {
                     const name = content.name.replace('.md', '')
                     const relativePath = pageNameToPagePath(directoryPathSegment, content.name);
                     // Note: `hidden` will be updated once the page is processed and the metadata is inspected
-                    dirNavItem.children.push({ name, hidden: false, isDir: false, webPath: '/' + relativePath, children: [] });
+                    dirNavItem.children.push({ name, hidden: false, isDir: content.isDirectory, webPath: '/' + relativePath, children: [] });
                     tableOfContents.push({
                         originalFilePath: path.normalize(path.join(d.dir, content.name)),
                         indent: indent + 1,
