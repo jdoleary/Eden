@@ -127,14 +127,14 @@ hr {
     color: var(--accent);
 }
 .primary {
-    padding: 0.5em;
+    padding: 0.5em 1em;
     background-color: var(--primary);
     color: var(--background);
     border-radius: 4px;
     transition: 0.1s;
 }
 .secondary {
-    padding: 0.5em;
+    padding: 0.5em 1em;
     background-color: var(--secondary);
     color: var(--text);
     border-radius: 4px;
