@@ -1,7 +1,7 @@
 import * as path from "https://deno.land/std@0.177.0/path/mod.ts";
 import { Config, Garden, TableOfContents, TableOfContentsEntry, tableOfContentsURL, tagsDirectoryName } from "../sharedTypes.ts";
 import { Backlinks } from "../tool/backlinkFinder.ts";
-import { absoluteOsMdPathToWebPath, doesFileExist, getOutDir, pathOSAbsolute } from "../path.ts";
+import { absoluteOsMdPathToWebPath, doesFileExist, getOutDir, pageNameToPagePath, pathOSAbsolute } from "../path.ts";
 import { NavItem, navHTML } from "../tool/navigation.ts";
 
 // Takes a string that contains html with template designators (e.g. {{content}}) and fills all the templates
@@ -24,12 +24,11 @@ export async function addContentsToTemplate(content: string, templateHtml: strin
     if (relativePath) {
         breadcrumbs = [`<a href="/" class="breadcrumbs-item">${config.projectName || 'Home'}</a>`, ...relativePath.split(path.sep).map(currentPathStep => {
             const preUrl = relativePath.split(currentPathStep)[0];
-            const url = path.join('/', preUrl, currentPathStep);
             if (path.parse(currentPathStep).name == title) {
                 // No breadcrumb for current title
                 return '';
             }
-            return `<a class="breadcrumbs-item" href="${url}">${currentPathStep}</a>`;
+            return `<a class="breadcrumbs-item" href="/${pageNameToPagePath(preUrl, currentPathStep, '/')}">${currentPathStep}</a>`;
         })].filter(x => !!x).join('<span class="center-dot">/</span>');
     }
     content = content.replace('{{breadcrumbs}}', breadcrumbs);
