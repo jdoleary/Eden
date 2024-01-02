@@ -77,7 +77,7 @@ export const obsidianStyleEmbedBlockRegex = /!\[\[([^\^#\[\]*"/\\<>\n\r:|?]+)(\#
 });
 
 // Capture groups: [pageName, modified title, link to header]
-export const obsidianStyleBacklinkRegex = /\[\[([^\^#\[\]*"/\\<>\n\r:|?]+)(?:\|([\w\s\d-]+))?(?:#\^?([\w\s\d]+))?\]\]/g;
+export const obsidianStyleBacklinkRegex = /\[\[([^\^#\[\]*"/\\<>\n\r:|?]+)(?:\|([\w\s\d-]+))?(?:#\^?([\w\s\d-]+))?\]\]/g;
 ([
     ['[[backlink]]', ['backlink']],
     ['[[backlink with spaces]]', ['backlink with spaces']],
@@ -88,6 +88,7 @@ export const obsidianStyleBacklinkRegex = /\[\[([^\^#\[\]*"/\\<>\n\r:|?]+)(?:\|(
     ['[[Features#Advanced Potential Features]]', ['Features', undefined, 'Advanced Potential Features']],
     // Link to block id
     ['[[summary#^8fb9e2]]', ['summary', undefined, '8fb9e2']],
+    ['[[Core Concepts#^the-bonsai-tree]]', ['Core Concepts', undefined, 'the-bonsai-tree']]
 ] as RegexTest[]).map(([testString, captureGroups]) => {
     runTest(`obsidianStyleBacklinkRegex: ${testString}->${captureGroups} `, new RegExp(obsidianStyleBacklinkRegex), testString, captureGroups);
 });
