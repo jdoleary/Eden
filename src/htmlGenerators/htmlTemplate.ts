@@ -310,6 +310,9 @@ a:hover {
 a {
     color: var(--accent);
     text-decoration: none;
+    /* Ensure long links wont cause the page to allow for horizontal scrolling on small screens
+    which ruins the reading experience */
+    word-break: break-all;
 }
 
 img {
