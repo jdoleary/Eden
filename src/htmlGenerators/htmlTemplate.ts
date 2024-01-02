@@ -21,7 +21,6 @@ export const defaultHtmlTemplatePage = `<!DOCTYPE html>
 
 <body class="{{pageType}}">
     <header>
-        {{header}}
     </header>
     <div id="article-header" class="{{article-header-css}}">
         <div id="breadcrumbs">
