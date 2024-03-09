@@ -1,5 +1,5 @@
 import { extname, join } from "https://deno.land/std/path/mod.ts";
-import { readAll } from "https://deno.land/std/streams/read_all.ts"; // Import readAll from here
+import { readAll } from "https://deno.land/std@0.193.0/streams/read_all.ts";
 import { logVerbose } from "./console.ts";
 
 
