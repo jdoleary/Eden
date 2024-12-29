@@ -2,6 +2,7 @@
 ![Eden Logo](eden-logo.png)
 
 ![Tests](https://github.com/jdoleary/eden-markdown/actions/workflows/deno.yml/badge.svg)
+![Project Status: Alpha](https://img.shields.io/badge/Project_Status-Alpha-yellow)
 
 **Converts an Obsidian vault into a super-charged digital garden of static html.**
 
